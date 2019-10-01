@@ -14,25 +14,6 @@
  * limitations under the License.
  *@
 
-@this(
-    main_template: MainTemplate
-)
+@(url: String, msgKey: String)(implicit messages: Messages)
 
-@()(implicit request: Request[_], messages: Messages)
-
-@main_template(
-    title = messages("beforeYouContinue.title")
-    ) {
-
-    @components.back_link()
-
-    @components.heading("beforeYouContinue.heading")
-
-    <p>@messages("beforeYouContinue.p1")</p>
-    <p>@messages("beforeYouContinue.p2")</p>
-    <p>@messages("beforeYouContinue.p3")</p>
-    <p>
-        @messages("beforeYouContinue.p4")
-        @components.anchor("#", "beforeYouContinue.a").
-    </p>
-}
+<a href="@url">@messages(msgKey)</a>
