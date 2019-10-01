@@ -14,10 +14,21 @@
  * limitations under the License.
  */
 
-package generators
+package views
 
-import org.scalacheck.Arbitrary
-import pages._
+import views.behaviours.ViewBehaviours
+import views.html.BeforeYouContinueView
 
-trait PageGenerators {
+class BeforeYouContinueViewSpec extends ViewBehaviours {
+
+  "BeforeYouContinue view" must {
+
+    val view = viewFor[BeforeYouContinueView](Some(emptyUserAnswers))
+
+    val applyView = view.apply()(fakeRequest, messages)
+
+    behave like normalPage(applyView, "beforeYouContinue")
+
+    behave like pageWithBackLink(applyView)
+  }
 }
