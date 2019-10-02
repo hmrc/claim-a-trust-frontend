@@ -25,7 +25,7 @@
     title = messages("beforeYouContinue.title")
     ) {
 
-    @formHelper(action = BeforeYouContinueController.onPageLoad(), 'autoComplete -> "off") {
+    @formHelper(action = BeforeYouContinueController.onSubmit(), 'autoComplete -> "off") {
 
         @components.back_link()
 

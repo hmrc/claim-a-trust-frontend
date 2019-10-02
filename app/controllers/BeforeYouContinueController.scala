@@ -18,7 +18,9 @@ package controllers
 
 import controllers.actions._
 import javax.inject.Inject
-import pages.UtrPage
+import models.NormalMode
+import navigation.Navigator
+import pages.{BeforeYouContinuePage, UtrPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -28,6 +30,7 @@ import scala.concurrent.ExecutionContext
 
 class BeforeYouContinueController @Inject()(
                                        override val messagesApi: MessagesApi,
+                                       navigator: Navigator,
                                        identify: IdentifierAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
@@ -40,5 +43,10 @@ class BeforeYouContinueController @Inject()(
       request.userAnswers.get(UtrPage) map { utr =>
         Ok(view(utr))
       } getOrElse Redirect(routes.SessionExpiredController.onPageLoad())
+  }
+
+  def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData) {
+    implicit request =>
+      Redirect(navigator.nextPage(BeforeYouContinuePage, NormalMode, request.userAnswers))
   }
 }
