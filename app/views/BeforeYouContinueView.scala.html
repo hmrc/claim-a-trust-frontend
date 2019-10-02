@@ -19,7 +19,7 @@
     formHelper: FormWithCSRF
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(utr: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("beforeYouContinue.title")
@@ -29,7 +29,7 @@
 
         @components.back_link()
 
-        <span class="govuk-caption-xl">@messages("beforeYouContinue.subheading")</span>
+        <span class="govuk-caption-xl">@messages("beforeYouContinue.subheading", utr)</span>
         @components.heading("beforeYouContinue.heading", headingSize = "heading-large govuk-fieldset__heading")
 
         <p>@messages("beforeYouContinue.p1")</p>

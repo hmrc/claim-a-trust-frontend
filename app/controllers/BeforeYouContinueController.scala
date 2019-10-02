@@ -18,6 +18,7 @@ package controllers
 
 import controllers.actions._
 import javax.inject.Inject
+import pages.UtrPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
@@ -34,8 +35,10 @@ class BeforeYouContinueController @Inject()(
                                        view: BeforeYouContinueView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData) {
+  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      Ok(view())
+      request.userAnswers.get(UtrPage) map { utr =>
+        Ok(view(utr))
+      } getOrElse Redirect(routes.SessionExpiredController.onPageLoad())
   }
 }

@@ -17,6 +17,7 @@
 package controllers
 
 import base.SpecBase
+import pages.UtrPage
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import views.html.BeforeYouContinueView
@@ -27,7 +28,9 @@ class BeforeYouContinueControllerSpec extends SpecBase {
 
     "return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val answers = emptyUserAnswers.set(UtrPage, "0987654321").success.value
+
+      val application = applicationBuilder(userAnswers = Some(answers)).build()
 
       val request = FakeRequest(GET, routes.BeforeYouContinueController.onPageLoad().url)
 
@@ -38,7 +41,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view()(fakeRequest, messages).toString
+        view("0987654321")(fakeRequest, messages).toString
 
       application.stop()
     }

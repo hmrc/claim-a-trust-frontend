@@ -25,7 +25,7 @@ class BeforeYouContinueViewSpec extends ViewBehaviours {
 
     val view = viewFor[BeforeYouContinueView](Some(emptyUserAnswers))
 
-    val applyView = view.apply()(fakeRequest, messages)
+    val applyView = view("0987654321")(fakeRequest, messages)
 
     behave like normalPage(applyView, "beforeYouContinue")
 
