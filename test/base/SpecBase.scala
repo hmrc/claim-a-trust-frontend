@@ -28,6 +28,7 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.inject.{Injector, bind}
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
+import services.{FakeRelationshipEstablishmentService, RelationshipEstablishment}
 
 trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues with ScalaFutures with IntegrationPatience {
 
@@ -50,6 +51,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues with Sca
       .overrides(
         bind[DataRequiredAction].to[DataRequiredActionImpl],
         bind[IdentifierAction].to[FakeIdentifierAction],
-        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers))
+        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
+        bind[RelationshipEstablishment].toInstance(new FakeRelationshipEstablishmentService())
       )
 }

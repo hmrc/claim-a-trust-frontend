@@ -19,30 +19,38 @@ package controllers
 import controllers.actions._
 import javax.inject.Inject
 import models.NormalMode
+import models.requests.IdentifierRequest
 import navigation.Navigator
 import pages.{BeforeYouContinuePage, UtrPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import services.RelationshipEstablishment
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.BeforeYouContinueView
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class BeforeYouContinueController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        navigator: Navigator,
                                        identify: IdentifierAction,
+                                       ivRelationship: RelationshipEstablishment,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        val controllerComponents: MessagesControllerComponents,
                                        view: BeforeYouContinueView
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
+
+      val idRequest : IdentifierRequest[AnyContent] = IdentifierRequest(request, request.internalId)
+
       request.userAnswers.get(UtrPage) map { utr =>
-        Ok(view(utr))
-      } getOrElse Redirect(routes.SessionExpiredController.onPageLoad())
+        ivRelationship.check(utr) { _ =>
+            Future.successful(Ok(view(utr)))
+        }(idRequest)
+      } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
   }
 
   def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData) {

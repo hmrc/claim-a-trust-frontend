@@ -17,17 +17,12 @@
 package controllers.actions
 
 import base.SpecBase
-import com.google.inject.Inject
 import controllers.routes
 import play.api.mvc.{BodyParsers, Results}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.authorise.Predicate
-import uk.gov.hmrc.auth.core.retrieve.Retrieval
-import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.{ExecutionContext, Future}
 
 class AuthActionSpec extends SpecBase {
 
@@ -163,11 +158,4 @@ class AuthActionSpec extends SpecBase {
       }
     }
   }
-}
-
-class FakeFailingAuthConnector @Inject()(exceptionToReturn: Throwable) extends AuthConnector {
-  val serviceUrl: String = ""
-
-  override def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[A] =
-    Future.failed(exceptionToReturn)
 }

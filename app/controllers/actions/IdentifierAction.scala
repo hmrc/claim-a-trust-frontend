@@ -20,6 +20,7 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import controllers.routes
 import models.requests.IdentifierRequest
+import play.api.Logger
 import play.api.mvc.Results._
 import play.api.mvc._
 import uk.gov.hmrc.auth.core._
@@ -42,14 +43,20 @@ class AuthenticatedIdentifierAction @Inject()(
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
+    Logger.info(s"[AuthenticatedIdentifierAction] identifying user")
+
     authorised().retrieve(Retrievals.internalId) {
       _.map {
-        internalId => block(IdentifierRequest(request, internalId))
+        internalId =>
+          Logger.info(s"[AuthenticatedIdentifierAction] user authenticated and retrieved internalId")
+          block(IdentifierRequest(request, internalId))
       }.getOrElse(throw new UnauthorizedException("Unable to retrieve internal Id"))
     } recover {
       case _: NoActiveSession =>
+        Logger.info(s"[AuthenticatedIdentifierAction] no active session for user")
         Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
       case _: AuthorisationException =>
+        Logger.info(s"[AuthenticatedIdentifierAction] exception thrown when authorising")
         Redirect(routes.UnauthorisedController.onPageLoad())
     }
   }
