@@ -64,36 +64,3 @@ trait RelationshipEstablishment extends AuthorisedFunctions {
            (implicit request: IdentifierRequest[AnyContent]) : Future[Result]
 
 }
-
-//
-//sealed trait RelationshipEstablishmentActionFunction
-//  extends ActionRefiner[IdentifierRequest, IdentifierRequest] with AuthorisedFunctions
-//
-//class RelationshipEstablishmentAction(
-//                                               utr: UTR,
-//                                               override val authConnector: AuthConnector,
-//                                               config: FrontendAppConfig,
-//                                               val parser: BodyParsers.Default)
-//                                     (implicit val executionContext: ExecutionContext)
-//  extends RelationshipEstablishmentActionFunction {
-//
-//  override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, IdentifierRequest[A]]] = {
-//
-//    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
-//
-//    authorised(Relationship("TRUST", Set("UTR", utr.value))) {
-//      Logger.info(s"Relationship established in Trust IV for ${request.identifier}")
-//      Future.successful(Left(Redirect(routes.BeforeYouContinueController.onPageLoad())))
-//    } recoverWith {
-//      case FailedRelationship(msg) =>
-//        // relationship does not exist
-//        Logger.info(s"Relationship does not exist in Trust IV for ${request.identifier}")
-//        Future.successful(Right(request))
-//      case _: NoActiveSession =>
-//        Future.successful(Left(Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))))
-//      case _: AuthorisationException =>
-//        Future.successful(Left(Redirect(routes.UnauthorisedController.onPageLoad())))
-//    }
-//  }
-//
-//}
