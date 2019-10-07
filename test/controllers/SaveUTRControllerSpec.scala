@@ -36,6 +36,7 @@ class SaveUTRControllerSpec extends SpecBase {
   "SaveUTRController" must {
 
     "send UTR to session repo" when {
+
       "user answers does not exist" in {
 
         val captor = ArgumentCaptor.forClass(classOf[UserAnswers])

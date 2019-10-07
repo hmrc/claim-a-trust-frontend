@@ -12,8 +12,6 @@ GET        /check-your-answers                          controllers.CheckYourAns
 
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
 
-GET        /:utr                                        controllers.SaveUTRController.save(utr: String)
-
 GET        /before-you-continue                         controllers.BeforeYouContinueController.onPageLoad()
 POST       /before-you-continue                         controllers.BeforeYouContinueController.onSubmit()
 
@@ -23,3 +21,4 @@ GET        /change/managed-by-agent                        controllers.IsAgentMa
 POST       /change/managed-by-agent                        controllers.IsAgentManagingTrustController.onSubmit(mode: Mode = CheckMode)
 
 GET        /claimed                                     controllers.IvSuccessController.onPageLoad
+GET        /:utr                                        controllers.SaveUTRController.save(utr: String)

@@ -17,18 +17,32 @@
 package controllers
 
 import base.SpecBase
-import pages.UtrPage
+import connectors.TrustsStoreConnector
+import models.TrustsStoreRequest
+import navigation.{FakeNavigator, Navigator}
+import pages.{IsAgentManagingTrustPage, UtrPage}
+import org.scalatestplus.mockito.MockitoSugar.mock
+import org.mockito.Mockito._
+import org.mockito.Matchers.{eq => eqTo, _}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.api.inject.bind
+import play.api.mvc.Call
+import uk.gov.hmrc.http.HttpResponse
 import views.html.BeforeYouContinueView
 
+import scala.concurrent.Future
+
 class BeforeYouContinueControllerSpec extends SpecBase {
+
+  val utr = "0987654321"
+  val managedByAgent = true
 
   "BeforeYouContinue Controller" must {
 
     "return OK and the correct view for a GET" in {
 
-      val answers = emptyUserAnswers.set(UtrPage, "0987654321").success.value
+      val answers = emptyUserAnswers.set(UtrPage, utr).success.value
 
       val application = applicationBuilder(userAnswers = Some(answers)).build()
 
@@ -41,16 +55,28 @@ class BeforeYouContinueControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view("0987654321")(fakeRequest, messages).toString
+        view(utr)(fakeRequest, messages).toString
 
       application.stop()
     }
 
     "redirect to relationship establishment for a POST" in {
 
-      val answers = emptyUserAnswers.set(UtrPage, "0987654321").success.value
+      val fakeNavigator = new FakeNavigator(Call("GET", "/foo"))
 
-      val application = applicationBuilder(userAnswers = Some(answers)).build()
+      val connector = mock[TrustsStoreConnector]
+
+      when(connector.claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent)))(any(), any(), any()))
+        .thenReturn(Future.successful(HttpResponse(CREATED)))
+
+      val answers = emptyUserAnswers
+        .set(UtrPage, "0987654321").success.value
+        .set(IsAgentManagingTrustPage, true).success.value
+
+      val application = applicationBuilder(userAnswers = Some(answers))
+        .overrides(bind[TrustsStoreConnector].toInstance(connector))
+        .overrides(bind[Navigator].toInstance(fakeNavigator))
+        .build()
 
       val request = FakeRequest(POST, routes.BeforeYouContinueController.onSubmit().url)
 
@@ -59,6 +85,8 @@ class BeforeYouContinueControllerSpec extends SpecBase {
       status(result) mustEqual SEE_OTHER
 
       redirectLocation(result).value must include("0987654321")
+
+      verify(connector).claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent)))(any(), any(), any())
 
       application.stop()
 

@@ -16,7 +16,7 @@
 
 package controllers
 
-import controllers.actions._
+import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import javax.inject.Inject
 import models.{NormalMode, UserAnswers}
 import pages.UtrPage
@@ -27,9 +27,9 @@ import uk.gov.hmrc.play.bootstrap.controller.BackendController
 import scala.concurrent.{ExecutionContext, Future}
 
 class SaveUTRController @Inject()(
+                                   identify: IdentifierAction,
                                    val cc: ControllerComponents,
                                    getData: DataRetrievalAction,
-                                   identify: IdentifierAction,
                                    sessionRepository: SessionRepository
                                  )(implicit ec: ExecutionContext) extends BackendController(cc) {
 
@@ -40,7 +40,6 @@ class SaveUTRController @Inject()(
         case _ =>
           UserAnswers(request.internalId).set(UtrPage, utr)
       }
-
       for {
         updatedAnswers <- Future.fromTry(userAnswers)
         _              <- sessionRepository.set(updatedAnswers)

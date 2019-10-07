@@ -43,15 +43,6 @@ site.textarea.char_limit = (Limit is {0} characters)
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
-beforeYouContinue.title = Before you continue
-beforeYouContinue.heading = Before you continue
-beforeYouContinue.subheading = This trust’s UTR: {0}
-beforeYouContinue.p1 = You will be asked to answer several questions about the trust. This is so we can confirm you are authorised to view and amend the trust’s details.
-beforeYouContinue.p2 = Your answers must match the details provided to HMRC when the trust was registered or most recently updated online.
-beforeYouContinue.p3 = Do not enter any other details when answering these questions, even if someone from the trust wrote to HMRC to change them.
-beforeYouContinue.p4 = If you need help using the service
-beforeYouContinue.a = contact the trusts helpline
-
 isAgentManagingTrust.title = Is an agent managing the trust’s online register for the trustees?
 isAgentManagingTrust.heading = Is an agent managing the trust’s online register for the trustees?
 isAgentManagingTrust.subheading = This trust’s UTR: {0}
@@ -77,3 +68,11 @@ ivSuccess.no.agent.paragraph2 = You need to declare every year through this serv
 ivSuccess.no.agent.paragraph3 = If you have an agent, they will need to send you an authorisation link for you to approve so they can maintain the trust online.
 ivSuccess.no.agent.paragraph4 = If you need help using the service
 
+beforeYouContinue.title = Before you continue
+beforeYouContinue.heading = Before you continue
+beforeYouContinue.subheading = This trust’s UTR: {0}
+beforeYouContinue.p1 = You will be asked to answer several questions about the trust. This is so we can confirm you are authorised to view and amend the trust’s details.
+beforeYouContinue.p2 = Your answers must match the details provided to HMRC when the trust was registered or most recently updated online.
+beforeYouContinue.p3 = Do not enter any other details when answering these questions, even if someone from the trust wrote to HMRC to change them.
+beforeYouContinue.p4 = If you need help using the service
+beforeYouContinue.a = contact the trusts helpline

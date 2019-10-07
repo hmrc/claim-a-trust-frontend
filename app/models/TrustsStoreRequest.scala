@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package navigation
+package models
 
-import play.api.mvc.Call
-import pages._
-import models.{Mode, NormalMode, UserAnswers}
+import play.api.libs.json.{Json, Writes}
 
-class FakeNavigator(val desiredRoute: Call, mode: Mode = NormalMode) extends Navigator {
+final case class TrustsStoreRequest(internalId: String, utr: String, managedByAgent: Boolean)
 
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    desiredRoute
+object TrustsStoreRequest {
+
+  implicit val writes: Writes[TrustsStoreRequest] = Json.writes[TrustsStoreRequest]
+
 }
