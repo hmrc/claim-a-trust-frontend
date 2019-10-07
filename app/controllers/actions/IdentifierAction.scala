@@ -34,10 +34,12 @@ trait IdentifierAction extends ActionBuilder[IdentifierRequest, AnyContent] with
 
 class AuthenticatedIdentifierAction @Inject()(
                                                override val authConnector: AuthConnector,
-                                               config: FrontendAppConfig,
                                                val parser: BodyParsers.Default
                                              )
-                                             (implicit val executionContext: ExecutionContext) extends IdentifierAction with AuthorisedFunctions {
+                                             (implicit val executionContext: ExecutionContext,
+                                              implicit val config: FrontendAppConfig)
+
+  extends IdentifierAction with AuthorisedFunctions with AuthPartialFunctions {
 
   override def invokeBlock[A](request: Request[A], block: IdentifierRequest[A] => Future[Result]): Future[Result] = {
 
@@ -51,16 +53,13 @@ class AuthenticatedIdentifierAction @Inject()(
           Logger.info(s"[AuthenticatedIdentifierAction] user authenticated and retrieved internalId")
           block(IdentifierRequest(request, internalId))
       }.getOrElse(throw new UnauthorizedException("Unable to retrieve internal Id"))
-    } recover {
-      case _: NoActiveSession =>
-        Logger.info(s"[AuthenticatedIdentifierAction] no active session for user")
-        Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl)))
-      case _: AuthorisationException =>
-        Logger.info(s"[AuthenticatedIdentifierAction] exception thrown when authorising")
-        Redirect(routes.UnauthorisedController.onPageLoad())
+    } recoverWith {
+      recoverFromException
     }
   }
 }
+
+
 
 class SessionIdentifierAction @Inject()(
                                          config: FrontendAppConfig,

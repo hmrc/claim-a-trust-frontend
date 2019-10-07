@@ -42,7 +42,7 @@ class RelationshipEstablishmentServiceSpec extends SpecBase {
 
         val auth = new FakeFailingAuthConnector(new MissingBearerToken)
 
-        val service = new RelationshipEstablishmentService(auth, frontendAppConfig, ec)
+        val service = new RelationshipEstablishmentService(auth)
 
         val result = service.check(fakeInternalId, utr)(harness)
 
@@ -60,7 +60,7 @@ class RelationshipEstablishmentServiceSpec extends SpecBase {
 
             val auth = new FakeFailingAuthConnector(new FailedRelationship())
 
-            val service = new RelationshipEstablishmentService(auth, frontendAppConfig, ec)
+            val service = new RelationshipEstablishmentService(auth)
 
             val result = service.check(fakeInternalId, utr)(harness)
 
@@ -75,7 +75,7 @@ class RelationshipEstablishmentServiceSpec extends SpecBase {
 
           val auth = new FakeAuthConnector(Future.successful())
 
-          val service = new RelationshipEstablishmentService(auth, frontendAppConfig, ec)
+          val service = new RelationshipEstablishmentService(auth)
 
           val result = service.check(fakeInternalId, utr)(harness)
 

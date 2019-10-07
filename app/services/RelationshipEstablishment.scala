@@ -17,9 +17,9 @@
 package services
 
 import config.FrontendAppConfig
+import controllers.actions.AuthPartialFunctions
 import controllers.routes
 import javax.inject.Inject
-import models.requests.IdentifierRequest
 import play.api.Logger
 import play.api.mvc.Results.Redirect
 import play.api.mvc._
@@ -30,29 +30,32 @@ import uk.gov.hmrc.play.HeaderCarrierConverter
 import scala.concurrent.{ExecutionContext, Future}
 
 class RelationshipEstablishmentService @Inject()(
-                                                   val authConnector: AuthConnector,
-                                                   config: FrontendAppConfig,
-                                                   implicit val executionContext: ExecutionContext
-                                                 )
-  extends RelationshipEstablishment {
+                                                  val authConnector: AuthConnector
+                                                )(
+                                                  implicit val config: FrontendAppConfig,
+                                                  implicit val executionContext: ExecutionContext
+                                                )
+  extends RelationshipEstablishment with AuthPartialFunctions {
 
   def check(internalId: String, utr: String)(body: Request[AnyContent] => Future[Result])
-           (implicit request: Request[AnyContent]) : Future[Result] = {
+           (implicit request: Request[AnyContent]): Future[Result] = {
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    authorised(Relationship("TRUST", Set(BusinessKey("UTR", utr)))) {
-      Logger.info(s"Relationship established in Trust IV for user $internalId")
-        Future.successful(Redirect(routes.BeforeYouContinueController.onPageLoad()))
-    } recoverWith {
+    def failedRelationshipPF: PartialFunction[Throwable, Future[Result]] = {
       case FailedRelationship(msg) =>
         // relationship does not exist
         Logger.info(s"Relationship does not exist in Trust IV for user $internalId")
         body(request)
-      case _: NoActiveSession =>
-        Future.successful(Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl))))
-      case _: AuthorisationException =>
-        Future.successful(Redirect(routes.UnauthorisedController.onPageLoad()))
+    }
+
+    val recoverComposed = failedRelationshipPF orElse recoverFromException
+
+    authorised(Relationship("TRUST", Set(BusinessKey("UTR", utr)))) {
+      Logger.info(s"Relationship established in Trust IV for user $internalId")
+      Future.successful(Redirect(routes.BeforeYouContinueController.onPageLoad()))
+    } recoverWith {
+      recoverComposed
     }
   }
 
@@ -61,6 +64,6 @@ class RelationshipEstablishmentService @Inject()(
 trait RelationshipEstablishment extends AuthorisedFunctions {
 
   def check(internalId: String, utr: String)(body: Request[AnyContent] => Future[Result])
-           (implicit request: Request[AnyContent]) : Future[Result]
+           (implicit request: Request[AnyContent]): Future[Result]
 
 }
