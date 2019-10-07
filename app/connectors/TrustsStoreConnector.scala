@@ -18,7 +18,7 @@ package connectors
 
 import config.FrontendAppConfig
 import javax.inject.Inject
-import models.TrustStoreRequest
+import models.TrustsStoreRequest
 import play.api.libs.json.{JsValue, Json, Writes}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.play.bootstrap.http.HttpClient
@@ -29,7 +29,7 @@ class TrustsStoreConnector @Inject()(http: HttpClient, config : FrontendAppConfi
 
   val url: String = config.trustsStoreUrl + "/claim"
 
-  def claim(request: TrustStoreRequest)(implicit hc : HeaderCarrier, ec : ExecutionContext, writes: Writes[TrustStoreRequest]): Future[HttpResponse] = {
+  def claim(request: TrustsStoreRequest)(implicit hc : HeaderCarrier, ec : ExecutionContext, writes: Writes[TrustsStoreRequest]): Future[HttpResponse] = {
 
 //    val requestBody: JsValue = for {
 //      utr <- request.userAnswers.get(UtrPage)

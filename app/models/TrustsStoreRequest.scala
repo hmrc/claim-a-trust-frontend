@@ -18,10 +18,10 @@ package models
 
 import play.api.libs.json.{Json, Writes}
 
-final case class TrustStoreRequest(internalId: String, utr: String, managedByAgent: Boolean)
+final case class TrustsStoreRequest(internalId: String, utr: String, managedByAgent: Boolean)
 
-object TrustStoreRequest {
+object TrustsStoreRequest {
 
-  implicit val writes: Writes[TrustStoreRequest] = Json.writes[TrustStoreRequest]
+  implicit val writes: Writes[TrustsStoreRequest] = Json.writes[TrustsStoreRequest]
 
 }

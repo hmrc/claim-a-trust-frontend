@@ -17,7 +17,7 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import models.TrustStoreRequest
+import models.TrustsStoreRequest
 import org.scalatest.{AsyncWordSpec, MustMatchers, RecoverMethods}
 import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -47,7 +47,7 @@ class TrustsStoreConnectorSpec extends AsyncWordSpec with MustMatchers with Wire
   val internalId = "some-authenticated-internal-id"
   val managedByAgent = true
 
-  val request = TrustStoreRequest(internalId, utr, managedByAgent)
+  val request = TrustsStoreRequest(internalId, utr, managedByAgent)
 
   private def wiremock(payload: String, expectedStatus: Int, expectedResponse: String) =
     server.stubFor(

@@ -16,12 +16,13 @@
 
 package controllers
 
+import connectors.TrustsStoreConnector
 import controllers.actions._
 import javax.inject.Inject
-import models.NormalMode
 import models.requests.IdentifierRequest
+import models.{NormalMode, TrustsStoreRequest}
 import navigation.Navigator
-import pages.{BeforeYouContinuePage, UtrPage}
+import pages.{BeforeYouContinuePage, IsAgentManagingTrustPage, UtrPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.RelationshipEstablishment
@@ -38,7 +39,8 @@ class BeforeYouContinueController @Inject()(
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        val controllerComponents: MessagesControllerComponents,
-                                       view: BeforeYouContinueView
+                                       view: BeforeYouContinueView,
+                                       connector: TrustsStoreConnector
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
@@ -55,6 +57,12 @@ class BeforeYouContinueController @Inject()(
 
   def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
-      Redirect(navigator.nextPage(BeforeYouContinuePage, NormalMode, request.userAnswers))
+      (for {
+        utr <- request.userAnswers.get(UtrPage)
+        isManagedByAgent <- request.userAnswers.get(IsAgentManagingTrustPage)
+      } yield {
+        connector.claim(TrustsStoreRequest(request.internalId, utr, isManagedByAgent))
+        Redirect(navigator.nextPage(BeforeYouContinuePage, NormalMode, request.userAnswers))
+      }) getOrElse Redirect(routes.SessionExpiredController.onPageLoad())
   }
 }
