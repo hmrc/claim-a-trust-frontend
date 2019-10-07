@@ -19,7 +19,6 @@ package controllers
 import controllers.actions._
 import javax.inject.Inject
 import models.NormalMode
-import models.requests.IdentifierRequest
 import navigation.Navigator
 import pages.{BeforeYouContinuePage, UtrPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
