@@ -36,18 +36,18 @@ class RelationshipEstablishmentService @Inject()(
                                                  )
   extends RelationshipEstablishment {
 
-  def check(utr: String)(body: IdentifierRequest[AnyContent] => Future[Result])
-           (implicit request: IdentifierRequest[AnyContent]) : Future[Result] = {
+  def check(internalId: String, utr: String)(body: Request[AnyContent] => Future[Result])
+           (implicit request: Request[AnyContent]) : Future[Result] = {
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
     authorised(Relationship("TRUST", Set(BusinessKey("UTR", utr)))) {
-      Logger.info(s"Relationship established in Trust IV for user ${request.identifier}")
+      Logger.info(s"Relationship established in Trust IV for user $internalId")
         Future.successful(Redirect(routes.BeforeYouContinueController.onPageLoad()))
     } recoverWith {
       case FailedRelationship(msg) =>
         // relationship does not exist
-        Logger.info(s"Relationship does not exist in Trust IV for user ${request.identifier}")
+        Logger.info(s"Relationship does not exist in Trust IV for user $internalId")
         body(request)
       case _: NoActiveSession =>
         Future.successful(Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl))))
@@ -60,7 +60,7 @@ class RelationshipEstablishmentService @Inject()(
 
 trait RelationshipEstablishment extends AuthorisedFunctions {
 
-  def check(utr: String)(body: IdentifierRequest[AnyContent] => Future[Result])
-           (implicit request: IdentifierRequest[AnyContent]) : Future[Result]
+  def check(internalId: String, utr: String)(body: Request[AnyContent] => Future[Result])
+           (implicit request: Request[AnyContent]) : Future[Result]
 
 }

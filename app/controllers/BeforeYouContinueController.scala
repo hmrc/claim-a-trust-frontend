@@ -44,12 +44,10 @@ class BeforeYouContinueController @Inject()(
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
-      val idRequest : IdentifierRequest[AnyContent] = IdentifierRequest(request, request.internalId)
-
       request.userAnswers.get(UtrPage) map { utr =>
-        ivRelationship.check(utr) { _ =>
+        ivRelationship.check(request.internalId, utr) { _ =>
             Future.successful(Ok(view(utr)))
-        }(idRequest)
+        }
       } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
   }
 

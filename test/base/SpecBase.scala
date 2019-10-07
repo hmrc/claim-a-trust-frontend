@@ -34,6 +34,8 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues with Sca
 
   val userAnswersId = "id"
 
+  val fakeInternalId = "internalId"
+
   def emptyUserAnswers = UserAnswers(userAnswersId, Json.obj())
 
   def injector: Injector = app.injector
@@ -42,7 +44,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues with Sca
 
   def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
 
-  def fakeRequest = FakeRequest("", "")
+  implicit def fakeRequest = FakeRequest("", "")
 
   implicit def messages: Messages = messagesApi.preferred(fakeRequest)
 
