@@ -60,7 +60,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
       application.stop()
     }
 
-    "continue to nextPage after success from trusts-store" in {
+    "redirect to relationship establishment for a POST" in {
 
       val fakeNavigator = new FakeNavigator(Call("GET", "/foo"))
 
@@ -70,7 +70,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
         .thenReturn(Future.successful(HttpResponse(CREATED)))
 
       val answers = emptyUserAnswers
-        .set(UtrPage, utr).success.value
+        .set(UtrPage, "0987654321").success.value
         .set(IsAgentManagingTrustPage, true).success.value
 
       val application = applicationBuilder(userAnswers = Some(answers))
@@ -78,14 +78,17 @@ class BeforeYouContinueControllerSpec extends SpecBase {
         .overrides(bind[Navigator].toInstance(fakeNavigator))
         .build()
 
-      val request = FakeRequest(POST, routes.BeforeYouContinueController.onPageLoad().url)
+      val request = FakeRequest(POST, routes.BeforeYouContinueController.onSubmit().url)
 
       val result = route(application, request).value
 
       status(result) mustEqual SEE_OTHER
-      redirectLocation(result).value mustBe fakeNavigator.desiredRoute.url
+
+      redirectLocation(result).value must include("0987654321")
 
       verify(connector).claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent)))(any(), any(), any())
+
+      application.stop()
 
     }
   }

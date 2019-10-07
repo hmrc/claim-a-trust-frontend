@@ -19,8 +19,7 @@ package services
 import base.SpecBase
 import controllers.actions.{FakeAuthConnector, FakeFailingAuthConnector}
 import controllers.routes
-import models.requests.IdentifierRequest
-import play.api.mvc.{AnyContent, Results}
+import play.api.mvc.{AnyContent, Request, Results}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.{FailedRelationship, MissingBearerToken}
 
@@ -31,9 +30,8 @@ class RelationshipEstablishmentServiceSpec extends SpecBase {
 
   val utr = "1234567890"
 
-  def harness = (request: IdentifierRequest[AnyContent]) => Future.successful(Results.Ok)
+  def harness = (request: Request[AnyContent]) => Future.successful(Results.Ok)
 
-  implicit val identifierRequest = IdentifierRequest[AnyContent](fakeRequest, "identifier")
   implicit val ec = implicitly[ExecutionContext]
 
   "RelationshipEstablishment" when {
@@ -44,9 +42,9 @@ class RelationshipEstablishmentServiceSpec extends SpecBase {
 
         val auth = new FakeFailingAuthConnector(new MissingBearerToken)
 
-        val service = new RelationshipEstablishmentService(auth, frontendAppConfig, ec)
+        val service = new RelationshipEstablishmentService(auth)
 
-        val result = service.check(utr)(harness)
+        val result = service.check(fakeInternalId, utr)(harness)
 
         status(result) mustBe SEE_OTHER
 
@@ -62,9 +60,9 @@ class RelationshipEstablishmentServiceSpec extends SpecBase {
 
             val auth = new FakeFailingAuthConnector(new FailedRelationship())
 
-            val service = new RelationshipEstablishmentService(auth, frontendAppConfig, ec)
+            val service = new RelationshipEstablishmentService(auth)
 
-            val result = service.check(utr)(harness)
+            val result = service.check(fakeInternalId, utr)(harness)
 
             status(result) mustBe OK
           }
@@ -77,13 +75,13 @@ class RelationshipEstablishmentServiceSpec extends SpecBase {
 
           val auth = new FakeAuthConnector(Future.successful())
 
-          val service = new RelationshipEstablishmentService(auth, frontendAppConfig, ec)
+          val service = new RelationshipEstablishmentService(auth)
 
-          val result = service.check(utr)(harness)
+          val result = service.check(fakeInternalId, utr)(harness)
 
           status(result) mustBe SEE_OTHER
 
-          redirectLocation(result).value mustBe routes.BeforeYouContinueController.onPageLoad().url
+          redirectLocation(result).value mustBe routes.IndexController.onPageLoad().url
 
         }
 

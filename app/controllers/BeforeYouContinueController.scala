@@ -16,13 +16,12 @@
 
 package controllers
 
+import config.FrontendAppConfig
 import connectors.TrustsStoreConnector
 import controllers.actions._
 import javax.inject.Inject
-import models.requests.IdentifierRequest
-import models.{NormalMode, TrustsStoreRequest}
-import navigation.Navigator
-import pages.{BeforeYouContinuePage, IsAgentManagingTrustPage, UtrPage}
+import models.TrustsStoreRequest
+import pages.{IsAgentManagingTrustPage, UtrPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.RelationshipEstablishment
@@ -33,36 +32,48 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class BeforeYouContinueController @Inject()(
                                        override val messagesApi: MessagesApi,
-                                       navigator: Navigator,
                                        identify: IdentifierAction,
                                        ivRelationship: RelationshipEstablishment,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        val controllerComponents: MessagesControllerComponents,
                                        view: BeforeYouContinueView,
+                                       config: FrontendAppConfig,
                                        connector: TrustsStoreConnector
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
-      val idRequest : IdentifierRequest[AnyContent] = IdentifierRequest(request, request.internalId)
-
       request.userAnswers.get(UtrPage) map { utr =>
-        ivRelationship.check(utr) { _ =>
+        ivRelationship.check(request.internalId, utr) { _ =>
             Future.successful(Ok(view(utr)))
-        }(idRequest)
+        }
       } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
   }
 
-  def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
+
       (for {
         utr <- request.userAnswers.get(UtrPage)
         isManagedByAgent <- request.userAnswers.get(IsAgentManagingTrustPage)
       } yield {
-        connector.claim(TrustsStoreRequest(request.internalId, utr, isManagedByAgent))
-        Redirect(navigator.nextPage(BeforeYouContinuePage, NormalMode, request.userAnswers))
-      }) getOrElse Redirect(routes.SessionExpiredController.onPageLoad())
+
+        val successRedirect = routes.BeforeYouContinueController.onPageLoad().absoluteURL
+        val failureRedirect = routes.UnauthorisedController.onPageLoad().absoluteURL
+
+        val host = s"${config.relationshipEstablishmentJourneyService}/trusts-relationship-establishment/relationships/$utr"
+
+        val queryString : Map[String, Seq[String]] = Map(
+          "success" -> Seq(successRedirect),
+          "failure" -> Seq(failureRedirect)
+        )
+
+        connector.claim(TrustsStoreRequest(request.internalId, utr, isManagedByAgent)) map { _ =>
+          Redirect(host, queryString)
+        }
+
+      }) getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
   }
 }
