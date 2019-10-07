@@ -45,5 +45,23 @@ class BeforeYouContinueControllerSpec extends SpecBase {
 
       application.stop()
     }
+
+    "redirect to relationship establishment for a POST" in {
+
+      val answers = emptyUserAnswers.set(UtrPage, "0987654321").success.value
+
+      val application = applicationBuilder(userAnswers = Some(answers)).build()
+
+      val request = FakeRequest(POST, routes.BeforeYouContinueController.onSubmit().url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value must include("0987654321")
+
+      application.stop()
+
+    }
   }
 }

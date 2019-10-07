@@ -45,15 +45,15 @@ class RelationshipEstablishmentService @Inject()(
     def failedRelationshipPF: PartialFunction[Throwable, Future[Result]] = {
       case FailedRelationship(msg) =>
         // relationship does not exist
-        Logger.info(s"Relationship does not exist in Trust IV for user $internalId")
+        Logger.info(s"Relationship does not exist in Trust IV for user $internalId due to $msg")
         body(request)
     }
 
     val recoverComposed = failedRelationshipPF orElse recoverFromException
 
-    authorised(Relationship("TRUST", Set(BusinessKey("UTR", utr)))) {
+    authorised(Relationship(config.relationshipName, Set(BusinessKey(config.relationshipIdentifier, utr)))) {
       Logger.info(s"Relationship established in Trust IV for user $internalId")
-      Future.successful(Redirect(routes.BeforeYouContinueController.onPageLoad()))
+      Future.successful(Redirect(routes.IndexController.onPageLoad()))
     } recoverWith {
       recoverComposed
     }

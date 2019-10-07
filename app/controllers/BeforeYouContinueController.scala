@@ -16,11 +16,11 @@
 
 package controllers
 
+import config.FrontendAppConfig
 import controllers.actions._
 import javax.inject.Inject
-import models.NormalMode
 import navigation.Navigator
-import pages.{BeforeYouContinuePage, UtrPage}
+import pages.UtrPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.RelationshipEstablishment
@@ -37,7 +37,8 @@ class BeforeYouContinueController @Inject()(
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        val controllerComponents: MessagesControllerComponents,
-                                       view: BeforeYouContinueView
+                                       view: BeforeYouContinueView,
+                                       config: FrontendAppConfig
                                      )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
@@ -50,8 +51,23 @@ class BeforeYouContinueController @Inject()(
       } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
   }
 
-  def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-      Redirect(navigator.nextPage(BeforeYouContinuePage, NormalMode, request.userAnswers))
+
+      request.userAnswers.get(UtrPage) map { utr =>
+
+        val successRedirect = routes.BeforeYouContinueController.onPageLoad().absoluteURL
+        val failureRedirect = routes.UnauthorisedController.onPageLoad().absoluteURL
+
+        val host = s"${config.relationshipEstablishmentJourneyService}/trusts-relationship-establishment/relationships/$utr"
+
+        val queryString : Map[String, Seq[String]] = Map(
+          "success" -> Seq(successRedirect),
+          "failure" -> Seq(failureRedirect)
+        )
+
+        Future.successful(Redirect(host, queryString))
+
+      } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
   }
 }
