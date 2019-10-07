@@ -14,21 +14,18 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import models._
-import org.scalacheck.Arbitrary
-import org.scalacheck.Arbitrary.arbitrary
-import pages._
-import play.api.libs.json.{JsValue, Json}
+import pages.behaviours.PageBehaviours
 
-trait UserAnswersEntryGenerators extends PageGenerators with ModelGenerators {
+class IsAgentManagingTrustPageSpec extends PageBehaviours {
 
-  implicit lazy val arbitraryIsAgentManagingTrustUserAnswersEntry: Arbitrary[(IsAgentManagingTrustPage.type, JsValue)] =
-    Arbitrary {
-      for {
-        page  <- arbitrary[IsAgentManagingTrustPage.type]
-        value <- arbitrary[Boolean].map(Json.toJson(_))
-      } yield (page, value)
-    }
+  "IsAgentManagingTrustPage" must {
+
+    beRetrievable[Boolean](IsAgentManagingTrustPage)
+
+    beSettable[Boolean](IsAgentManagingTrustPage)
+
+    beRemovable[Boolean](IsAgentManagingTrustPage)
+  }
 }

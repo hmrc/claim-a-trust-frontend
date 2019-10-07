@@ -18,7 +18,7 @@ package controllers
 
 import controllers.actions._
 import javax.inject.Inject
-import models.UserAnswers
+import models.{NormalMode, UserAnswers}
 import pages.UtrPage
 import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import repositories.SessionRepository
@@ -27,24 +27,22 @@ import uk.gov.hmrc.play.bootstrap.controller.BackendController
 import scala.concurrent.{ExecutionContext, Future}
 
 class SaveUTRController @Inject()(
+                                   identify: IdentifierAction,
                                    val cc: ControllerComponents,
                                    getData: DataRetrievalAction,
-                                   identify: IdentifierAction,
                                    sessionRepository: SessionRepository
                                  )(implicit ec: ExecutionContext) extends BackendController(cc) {
 
   def save(utr: String): Action[AnyContent] = (identify andThen getData).async {
     implicit request =>
-
       val userAnswers = request.userAnswers match {
         case Some(userAnswers) => userAnswers.set(UtrPage, utr)
         case _ =>
           UserAnswers(request.internalId).set(UtrPage, utr)
       }
-
       for {
         updatedAnswers <- Future.fromTry(userAnswers)
         _              <- sessionRepository.set(updatedAnswers)
-      } yield Ok
+      } yield Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode))
   }
 }

@@ -28,6 +28,15 @@ import CheckYourAnswersHelper._
 
 class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messages) {
 
+  def isAgentManagingTrust: Option[AnswerRow] = userAnswers.get(IsAgentManagingTrustPage) map {
+    x =>
+      AnswerRow(
+        HtmlFormat.escape(messages("isAgentManagingTrust.checkYourAnswersLabel")),
+        yesOrNo(x),
+        routes.IsAgentManagingTrustController.onPageLoad(CheckMode).url
+      )
+  }
+
   private def yesOrNo(answer: Boolean)(implicit messages: Messages): Html =
     if (answer) {
       HtmlFormat.escape(messages("site.yes"))
