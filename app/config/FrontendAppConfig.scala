@@ -42,7 +42,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   lazy val languageTranslationEnabled: Boolean =
     configuration.get[Boolean]("microservice.services.features.welsh-translation")
 
-  lazy val trustsStoreUrl: String = configuration.get[Service]("microservice.service.trusts-store").baseUrl + "/trusts-store"
+  lazy val trustsStoreUrl: String = configuration.get[Service]("microservice.services.trusts-store").baseUrl + "/trusts-store"
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),

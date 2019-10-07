@@ -16,27 +16,40 @@
 
 package connectors
 
-import base.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock._
-import generators.Generators
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{MustMatchers, OptionValues}
-import play.api.Application
+import models.TrustStoreRequest
+import org.scalatest.{AsyncWordSpec, MustMatchers, RecoverMethods}
 import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.test.Helpers.CONTENT_TYPE
-import uk.gov.hmrc.http.HeaderCarrier
+import play.api.libs.json.Json
+import play.api.test.Helpers._
+import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream5xxResponse}
 import utils.WireMockHelper
 
-class TrustsStoreConnectorSpec extends SpecBase with MustMatchers with OptionValues with Generators with WireMockHelper with ScalaFutures {
+import scala.concurrent.ExecutionContext.Implicits.global
+
+class TrustsStoreConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with RecoverMethods {
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
-  val connector: TrustsStoreConnector = injector.instanceOf[TrustsStoreConnector]
+  lazy val app = new GuiceApplicationBuilder()
+    .configure(Seq(
+      "microservice.services.trusts-store.port" -> server.port(),
+      "auditing.enabled" -> false): _*
+    )
+    .build()
 
-  val url: String = frontendAppConfig.trustsStoreUrl + "/claim"
+  lazy val connector: TrustsStoreConnector = app.injector.instanceOf[TrustsStoreConnector]
 
-  private def wiremock(payload: String, expectedStatus: Int, expectedResponse : String)=
+  lazy val url: String = "/trusts-store/claim"
+
+  val utr = "1234567890"
+  val internalId = "some-authenticated-internal-id"
+  val managedByAgent = true
+
+  val request = TrustStoreRequest(internalId, utr, managedByAgent)
+
+  private def wiremock(payload: String, expectedStatus: Int, expectedResponse: String) =
     server.stubFor(
       post(urlEqualTo(url))
         .withHeader(CONTENT_TYPE, containing("application/json"))
@@ -48,32 +61,69 @@ class TrustsStoreConnectorSpec extends SpecBase with MustMatchers with OptionVal
         )
     )
 
-
-  override lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(Seq(
-      "microservice.services.trusts-store.port" -> server.port(),
-      "auditing.enabled" -> false): _*
-    ).build()
-
   "TrustsStoreConnector" must {
 
     "call POST /claim" which {
 
-      "returns 201" in {
+      "returns 201 CREATED" in {
 
-        val json = """{
-                        |  "internalId": "some-authenticated-internal-id",
-                        |  "utr": "1234567890",
-                        |  "managedByAgent": true
-                        |}""".stripMargin
+        val json = Json.stringify(Json.toJson(request))
+
+        val response =
+          """{
+            |  "utr": "a string representing the tax reference to associate with this internalId",
+            |  "managedByAgent": "boolean derived from answers in the claim a trust journey"
+            |}""".stripMargin
+
 
         wiremock(
           payload = json,
           expectedStatus = Status.CREATED,
-          expectedResponse = ""
+          expectedResponse = response
         )
 
-        val result  = connector.claim
+        connector.claim(request) map { response =>
+          response.status mustBe CREATED
+        }
+
+      }
+
+      "returns 400 BAD_REQUEST" in {
+
+        val json = Json.stringify(Json.toJson(request))
+
+        val response =
+          """{
+            |  "status": "400",
+            |  "message":  "Unable to parse request body into a TrustClaim"
+            |}""".stripMargin
+
+        wiremock(
+          payload = json,
+          expectedStatus = Status.BAD_REQUEST,
+          expectedResponse = response
+        )
+
+        recoverToSucceededIf[BadRequestException](connector.claim(request))
+
+      }
+      "returns 500 INTERNAL_SERVER_ERROR" in {
+
+        val json = Json.stringify(Json.toJson(request))
+
+        val response =
+          """{
+            |  "status": "500",
+            |  "message":  ""unable to store to trusts store""
+            |}""".stripMargin
+
+        wiremock(
+          payload = json,
+          expectedStatus = Status.INTERNAL_SERVER_ERROR,
+          expectedResponse = response
+        )
+
+        recoverToSucceededIf[Upstream5xxResponse](connector.claim(request))
 
       }
 
