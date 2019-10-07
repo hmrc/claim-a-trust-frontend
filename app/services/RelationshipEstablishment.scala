@@ -53,7 +53,7 @@ class RelationshipEstablishmentService @Inject()(
 
     authorised(Relationship(config.relationshipName, Set(BusinessKey(config.relationshipIdentifier, utr)))) {
       Logger.info(s"Relationship established in Trust IV for user $internalId")
-      Future.successful(Redirect(routes.IndexController.onPageLoad()))
+      Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
     } recoverWith {
       recoverComposed
     }

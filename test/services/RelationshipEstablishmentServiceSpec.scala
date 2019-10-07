@@ -81,7 +81,7 @@ class RelationshipEstablishmentServiceSpec extends SpecBase {
 
           status(result) mustBe SEE_OTHER
 
-          redirectLocation(result).value mustBe routes.BeforeYouContinueController.onPageLoad().url
+          redirectLocation(result).value mustBe routes.IvSuccessController.onPageLoad().url
 
         }
 

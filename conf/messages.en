@@ -37,7 +37,7 @@ site.hidden-edit = Change {0}
 site.no = No
 site.yes = Yes
 site.continue = Continue
-site.service_name = claim-a-trust-frontend
+site.service_name = Claim a trust
 site.textarea.char_limit = (Limit is {0} characters)
 
 unauthorised.title = You can’t access this service with this account
@@ -51,3 +51,29 @@ beforeYouContinue.p2 = Your answers must match the details provided to HMRC when
 beforeYouContinue.p3 = Do not enter any other details when answering these questions, even if someone from the trust wrote to HMRC to change them.
 beforeYouContinue.p4 = If you need help using the service
 beforeYouContinue.a = contact the trusts helpline
+
+isAgentManagingTrust.title = Is an agent managing the trust’s online register for the trustees?
+isAgentManagingTrust.heading = Is an agent managing the trust’s online register for the trustees?
+isAgentManagingTrust.subheading = This trust’s UTR: {0}
+isAgentManagingTrust.checkYourAnswersLabel = Is an agent managing the trust’s online register for the trustees?
+isAgentManagingTrust.error.required = Select yes if an agent is managing the trust’s online register for the trustees
+
+ivSuccess.subheading = The trust’s UTR: {0}
+ivSuccess.contactLink =  contact the trusts helpline
+
+ivSuccess.agent.title = You have successfully claimed the trust
+ivSuccess.agent.heading = You have successfully claimed the trust
+ivSuccess.agent.paragraph1 = You will need to tell your agent you have passed the trusts’s security questions.
+ivSuccess.agent.paragraph2 = Your agent then needs to send you an authorisation link to approve so they can maintain the trust online.
+ivSuccess.agent.paragraph3 = The Government Gateway organisation account used to claim this trust must be used to log in and approve this link. An agent cannot access the trust’s register until you complete this step.
+ivSuccess.agent.paragraph4 = If you want to view the register or do not have an agent,
+ivSuccess.agent.continueLink =  you can continue into the service
+ivSuccess.agent.paragraph5 = If you need help using the service
+
+ivSuccess.no.agent.title = You have successfully answered the trust’s security questions
+ivSuccess.no.agent.heading = You have successfully answered the trust’s security questions
+ivSuccess.no.agent.paragraph1 = You are now able to change the information HMRC holds about the settlors, trustees and beneficiaries.
+ivSuccess.no.agent.paragraph2 = You need to declare every year through this service and Self Assessment for Trusts that the information we have is up to date.
+ivSuccess.no.agent.paragraph3 = If you have an agent, they will need to send you an authorisation link for you to approve so they can maintain the trust online.
+ivSuccess.no.agent.paragraph4 = If you need help using the service
+

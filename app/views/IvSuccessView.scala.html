@@ -1,0 +1,48 @@
+@*
+ * Copyright 2019 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.FrontendAppConfig
+
+@this(
+ main_template: MainTemplate,
+ config: FrontendAppConfig
+)
+
+@(isAgent: Boolean, utr: String)(implicit request: Request[_], messages: Messages)
+
+@main_template(
+ title = if(isAgent) {messages("ivSuccess.agent.title")} else {messages("ivSuccess.no.agent.title")}
+) {
+
+    <span class="govuk-caption-xl">@messages("ivSuccess.subheading", utr)</span>
+    @if(isAgent) {
+        @components.heading("ivSuccess.agent.heading", headingSize = "heading-large govuk-fieldset__heading")
+        <p>@messages("ivSuccess.agent.paragraph1")</p>
+        <p>@messages("ivSuccess.agent.paragraph2")</p>
+        <p>@messages("ivSuccess.agent.paragraph3")</p>
+        <p>@messages("ivSuccess.agent.paragraph4") <a href="@config.trustsContinueUrl">@messages("ivSuccess.agent.continueLink")</a>.</p>
+        <p>@messages("ivSuccess.agent.paragraph5") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts" target="_blank">@messages("ivSuccess.contactLink")</a>.</p>
+    } else {
+        @components.heading("ivSuccess.no.agent.heading", headingSize = "heading-large govuk-fieldset__heading")
+        <p>@messages("ivSuccess.no.agent.paragraph1")</p>
+        <p>@messages("ivSuccess.no.agent.paragraph2")</p>
+        <p>@messages("ivSuccess.no.agent.paragraph3")</p>
+        <p>@messages("ivSuccess.no.agent.paragraph4") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts" target="_blank">@messages("ivSuccess.contactLink")</a>.</p>
+        @components.button_link(messages("site.continue"), config.trustsContinueUrl)
+    }
+
+}
+

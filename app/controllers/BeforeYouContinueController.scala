@@ -56,17 +56,19 @@ class BeforeYouContinueController @Inject()(
 
       request.userAnswers.get(UtrPage) map { utr =>
 
-        val successRedirect = routes.BeforeYouContinueController.onPageLoad().absoluteURL
-        val failureRedirect = routes.UnauthorisedController.onPageLoad().absoluteURL
+        ivRelationship.check(request.internalId, utr) { _ =>
+          val successRedirect = routes.BeforeYouContinueController.onPageLoad().absoluteURL
+          val failureRedirect = routes.UnauthorisedController.onPageLoad().absoluteURL
 
-        val host = s"${config.relationshipEstablishmentJourneyService}/trusts-relationship-establishment/relationships/$utr"
+          val host = s"${config.relationshipEstablishmentJourneyService}/trusts-relationship-establishment/relationships/$utr"
 
-        val queryString : Map[String, Seq[String]] = Map(
-          "success" -> Seq(successRedirect),
-          "failure" -> Seq(failureRedirect)
-        )
+          val queryString : Map[String, Seq[String]] = Map(
+            "success" -> Seq(successRedirect),
+            "failure" -> Seq(failureRedirect)
+          )
 
-        Future.successful(Redirect(host, queryString))
+          Future.successful(Redirect(host, queryString))
+        }
 
       } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
   }
