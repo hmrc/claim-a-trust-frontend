@@ -34,6 +34,12 @@ class NavigatorSpec extends SpecBase {
         case object UnknownPage extends Page
         navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id")) mustBe routes.IndexController.onPageLoad()
       }
+
+      "go to BeforeYouContinue from IsAgentManagingTrust" in {
+
+        navigator.nextPage(IsAgentManagingTrustPage, NormalMode, UserAnswers("id")) mustBe routes.BeforeYouContinueController.onPageLoad()
+
+      }
     }
 
     "in Check mode" must {
