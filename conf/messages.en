@@ -50,7 +50,7 @@ isAgentManagingTrust.checkYourAnswersLabel = Is an agent managing the trust’s 
 isAgentManagingTrust.error.required = Select yes if an agent is managing the trust’s online register for the trustees
 
 ivSuccess.subheading = The trust’s UTR: {0}
-ivSuccess.contactLink =  contact the trusts helpline
+ivSuccess.contactLink =  contact the trusts helpline (opens in a new window or tab)
 
 ivSuccess.agent.title = You have successfully claimed the trust
 ivSuccess.agent.heading = You have successfully claimed the trust
