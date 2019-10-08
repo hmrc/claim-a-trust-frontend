@@ -25,6 +25,7 @@ import pages.{IsAgentManagingTrustPage, UtrPage}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
+import services.RelationshipEstablishment
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
 import views.html.IsAgentManagingTrustView
 
@@ -39,24 +40,28 @@ class IsAgentManagingTrustController @Inject()(
                                          requireData: DataRequiredAction,
                                          formProvider: IsAgentManagingTrustFormProvider,
                                          val controllerComponents: MessagesControllerComponents,
-                                         view: IsAgentManagingTrustView
+                                         view: IsAgentManagingTrustView,
+                                         relationship: RelationshipEstablishment
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
       request.userAnswers.get(UtrPage) map { utr =>
 
-        val preparedForm = request.userAnswers.get(IsAgentManagingTrustPage) match {
-          case None => form
-          case Some(value) => form.fill(value)
+        relationship.check(request.internalId, utr) {
+          _ =>
+            val preparedForm = request.userAnswers.get(IsAgentManagingTrustPage) match {
+              case None => form
+              case Some(value) => form.fill(value)
+            }
+
+            Future.successful(Ok(view(preparedForm, mode, utr)))
         }
 
-        Ok(view(preparedForm, mode, utr))
-
-      } getOrElse Redirect(routes.SessionExpiredController.onPageLoad())
+      } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
 
   }
 

@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class BeforeYouContinueController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        identify: IdentifierAction,
-                                       ivRelationship: RelationshipEstablishment,
+                                       relationship: RelationshipEstablishment,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
                                        val controllerComponents: MessagesControllerComponents,
@@ -46,7 +46,7 @@ class BeforeYouContinueController @Inject()(
     implicit request =>
 
       request.userAnswers.get(UtrPage) map { utr =>
-        ivRelationship.check(request.internalId, utr) { _ =>
+        relationship.check(request.internalId, utr) { _ =>
             Future.successful(Ok(view(utr)))
         }
       } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
@@ -60,7 +60,7 @@ class BeforeYouContinueController @Inject()(
         isManagedByAgent <- request.userAnswers.get(IsAgentManagingTrustPage)
       } yield {
 
-        ivRelationship.check(request.internalId, utr) { _ =>
+        relationship.check(request.internalId, utr) { _ =>
           val successRedirect = routes.BeforeYouContinueController.onPageLoad().absoluteURL
           val failureRedirect = routes.UnauthorisedController.onPageLoad().absoluteURL
 
