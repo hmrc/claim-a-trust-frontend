@@ -77,15 +77,12 @@ beforeYouContinue.p3 = Do not enter any other details when answering these quest
 beforeYouContinue.p4 = If you need help using the service
 beforeYouContinue.a = contact the trusts helpline (opens in a new window or tab)
 
-locked.title = Sorry, you cannot access this trust
-locked.heading = Sorry, you cannot access this trust
-locked.p1 = The trustee trying to claim the trust has not passed the security questions asked by HMRC.
-locked.p2 = These questions need to be answered successfully so HMRC can prove the connection between the trustee and the trust.
-locked.p3 = The trustee will need to try again in 30 minutes.
-locked.p4 = If you need help with the service
-locked.link1 = contact the trusts helpline (opens in a new window or tab)
-locked.p5 = You can
-locked.link2 = return to register and maintain a trust for a client
+locked.title = Your answers do not match the details we hold about this trust
+locked.heading = Your answers do not match the details we hold about this trust
+locked.p1 = As you have had 3 unsuccessful tries at accessing this trust, you will need to try again in 30 minutes.
+locked.p2 = Your answers must match the details provided to HMRC when the trust was registered or most recently updated online.
+locked.p3 = If you need help with the service
+locked.link1 = contact the trusts helpline
 locked.subheading = This trust’s UTR: {0}
 
 stillProcessing.title = Sorry, you cannot access this trust

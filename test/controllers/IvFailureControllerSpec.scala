@@ -184,7 +184,7 @@ class IvFailureControllerSpec extends SpecBase {
 
         status(result) mustEqual OK
 
-        contentAsString(result) must include("The trustee trying to claim the trust has not passed the security questions asked by HMRC.")
+        contentAsString(result) must include("As you have had 3 unsuccessful tries at accessing this trust, you will need to try again in 30 minutes.")
 
         verify(connector).claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
 
