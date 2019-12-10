@@ -37,7 +37,7 @@ class NavigatorSpec extends SpecBase {
 
       "go to BeforeYouContinue from IsAgentManagingTrust" in {
 
-        navigator.nextPage(IsAgentManagingTrustPage, NormalMode, UserAnswers("id")) mustBe routes.BeforeYouContinueController.onPageLoad()
+        navigator.nextPage(IsAgentManagingTrustPage, NormalMode, UserAnswers("id")) mustBe routes.BeforeYouContinueController.onPageLoad(false)
 
       }
     }

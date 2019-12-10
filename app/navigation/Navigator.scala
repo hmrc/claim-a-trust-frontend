@@ -27,7 +27,7 @@ import models._
 class Navigator @Inject()() {
 
   private val normalRoutes: Page => UserAnswers => Call = {
-    case IsAgentManagingTrustPage => _ => routes.BeforeYouContinueController.onPageLoad()
+    case IsAgentManagingTrustPage => _ => routes.BeforeYouContinueController.onPageLoad(false)
     case _ => _ => routes.IndexController.onPageLoad()
   }
 

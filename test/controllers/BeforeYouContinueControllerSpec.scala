@@ -39,7 +39,6 @@ class BeforeYouContinueControllerSpec extends SpecBase {
   val utr = "0987654321"
   val managedByAgent = true
   val trustLocked = false
-  val claimed = true
 
   val fakeEstablishmentServiceFailing = new FakeRelationshipEstablishmentService(RelationshipNotFound)
 
@@ -51,7 +50,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(answers), fakeEstablishmentServiceFailing).build()
 
-      val request = FakeRequest(GET, routes.BeforeYouContinueController.onPageLoad().url)
+      val request = FakeRequest(GET, routes.BeforeYouContinueController.onPageLoad(false).url)
 
       val result = route(application, request).value
 
@@ -60,7 +59,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(utr, claimed)(fakeRequest, messages).toString
+        view(utr, false)(fakeRequest, messages).toString
 
       application.stop()
     }
