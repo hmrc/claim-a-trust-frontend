@@ -24,7 +24,7 @@ GET        /check-your-answers                          controllers.CheckYourAns
 
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
 
-GET        /before-you-continue                         controllers.BeforeYouContinueController.onPageLoad()
+GET        /before-you-continue                         controllers.BeforeYouContinueController.onPageLoad(claimed: Boolean = true)
 POST       /before-you-continue                         controllers.BeforeYouContinueController.onSubmit()
 
 GET        /managed-by-agent                               controllers.IsAgentManagingTrustController.onPageLoad(mode: Mode = NormalMode)

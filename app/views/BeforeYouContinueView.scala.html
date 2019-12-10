@@ -19,7 +19,7 @@
     formHelper: FormWithCSRF
 )
 
-@(utr: String)(implicit request: Request[_], messages: Messages)
+@(utr: String, claimed: Boolean)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("beforeYouContinue.title")
@@ -32,7 +32,11 @@
         <span class="govuk-caption-xl">@messages("beforeYouContinue.subheading", utr)</span>
         @components.heading("beforeYouContinue.heading", headingSize = "heading-large govuk-fieldset__heading")
 
+@if(claimed){
+        <p>@messages("beforeYouContinue.p5")</p>
+    } else {
         <p>@messages("beforeYouContinue.p1")</p>
+        }
         <p>@messages("beforeYouContinue.p2")</p>
         <p>@messages("beforeYouContinue.p3")</p>
         <p>

@@ -23,12 +23,26 @@ class BeforeYouContinueViewSpec extends ViewBehaviours {
 
   "BeforeYouContinue view" must {
 
-    val view = viewFor[BeforeYouContinueView](Some(emptyUserAnswers))
+    "display specific content before 1st time going through IV" when {
 
-    val applyView = view("0987654321")(fakeRequest, messages)
+      val view = viewFor[BeforeYouContinueView](Some(emptyUserAnswers))
 
-    behave like normalPage(applyView, "beforeYouContinue")
+      val applyView = view("0987654321", false)(fakeRequest, messages)
 
-    behave like pageWithBackLink(applyView)
+      behave like normalPage(applyView, "beforeYouContinue" , "p1", "p2", "p3", "p4")
+
+      behave like pageWithBackLink(applyView)
+    }
+
+    "display specific content when returning user already enrolled" when {
+
+      val view = viewFor[BeforeYouContinueView](Some(emptyUserAnswers))
+
+      val applyView = view("0987654321", true)(fakeRequest, messages)
+
+      behave like normalPage(applyView, "beforeYouContinue", "p5", "p2", "p3", "p4")
+
+      behave like pageWithBackLink(applyView)
+    }
   }
 }

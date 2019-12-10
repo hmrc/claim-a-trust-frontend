@@ -42,12 +42,12 @@ class BeforeYouContinueController @Inject()(
                                      )(implicit ec: ExecutionContext,
                                        config: FrontendAppConfig) extends FrontendBaseController with I18nSupport with AuthPartialFunctions {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onPageLoad(claimed: Boolean): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
       request.userAnswers.get(UtrPage) map { utr =>
         def body = {
-            Future.successful(Ok(view(utr)))
+            Future.successful(Ok(view(utr, claimed)))
         }
         relationship.check(request.internalId, utr) flatMap {
           case RelationshipFound =>

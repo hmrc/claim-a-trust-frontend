@@ -75,6 +75,7 @@ beforeYouContinue.p1 = You will be asked to answer several questions about the t
 beforeYouContinue.p2 = Your answers must match the details provided to HMRC when the trust was registered or most recently updated online.
 beforeYouContinue.p3 = Do not enter any other details when answering these questions, even if someone from the trust wrote to HMRC to change them.
 beforeYouContinue.p4 = If you need help using the service
+beforeYouContinue.p5 = You will be asked to answer several questions about the trust. This is so we can confirm you are authorised to view and amend the trust’s details.
 beforeYouContinue.a = contact the trusts helpline (opens in a new window or tab)
 
 locked.title = Your answers do not match the details we hold about this trust
