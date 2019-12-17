@@ -16,11 +16,8 @@
 
 package views
 
-import controllers.actions.{DataRetrievalAction, FakeDataRetrievalAction}
 import views.behaviours.ViewBehaviours
 import views.html.IvSuccessView
-import play.api.inject.guice.GuiceApplicationBuilder
-import uk.gov.hmrc.auth.core.AffinityGroup.Organisation
 
 class IvSuccessViewSpec extends ViewBehaviours {
 
@@ -70,17 +67,54 @@ class IvSuccessViewSpec extends ViewBehaviours {
 
   "IvSuccess view with no Agent" must {
 
-    val view = viewFor[IvSuccessView](Some(emptyUserAnswers))
+    "render view when config.playbackEnabled is false" when {
 
-    val applyView = view.apply(isAgent = false, utr)(fakeRequest, messages)
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .configure("microservice.services.features.playback.enabled" -> false)
+        .build()
 
-    behave like normalPage(applyView, "ivSuccess.no.agent","paragraph1", "paragraph2","paragraph3",
-      "paragraph4")
+      val view = application.injector.instanceOf[IvSuccessView]
 
-    "display the correct subheading" in {
-      val doc = asDocument(applyView)
-      assertContainsText(doc, messages("ivSuccess.subheading", utr))
+      val applyView = view.apply(isAgent = false, utr)(fakeRequest, messages)
+
+      behave like normalPage(applyView, "ivSuccess.no.agent","paragraph1", "paragraph2","paragraph3")
+
+      "display the correct subheading" in {
+        val doc = asDocument(applyView)
+        assertContainsText(doc, messages("ivSuccess.subheading", utr))
+      }
+
+      "hide the continue button" in {
+        val doc = asDocument(applyView)
+        assertNotRenderedByCssSelector(doc, ".button")
+      }
+
     }
+
+    "render view when config.playbackEnabled is true" when {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .configure("microservice.services.features.playback.enabled" -> true)
+        .build()
+
+      val view = application.injector.instanceOf[IvSuccessView]
+
+      val applyView = view.apply(isAgent = false, utr)(fakeRequest, messages)
+
+      behave like normalPage(applyView, "ivSuccess.no.agent","paragraph1", "paragraph2","paragraph3")
+
+      "display the correct subheading" in {
+        val doc = asDocument(applyView)
+        assertContainsText(doc, messages("ivSuccess.subheading", utr))
+      }
+
+      "show the continue button" in {
+        val doc = asDocument(applyView)
+        assertRenderedByCssSelector(doc, ".button")
+      }
+
+    }
+
 
   }
 
