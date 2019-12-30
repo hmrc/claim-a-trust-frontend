@@ -13,4 +13,4 @@
 
 ->         /                          prod.Routes
 
-GET        /claim-a-trust/test-only/trusts-relationship-establishment/relationships/:utr        controllers.testOnlyDoNotUseInAppConf.TestRelationshipEstablishmentController.check(utr: String)
+GET        /claim-a-trust/test-only/check-your-identity-for-trusts/relationships/:utr        controllers.testOnlyDoNotUseInAppConf.TestRelationshipEstablishmentController.check(utr: String)
