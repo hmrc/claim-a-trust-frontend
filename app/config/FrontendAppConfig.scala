@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 HM Revenue & Customs
+ * Copyright 2020 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,7 +42,16 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   lazy val loginUrl: String = configuration.get[String]("urls.login")
   lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
 
-  lazy val trustsContinueUrl: String = configuration.get[String]("urls.trustsContinue")
+  lazy val useMaintainFrontend : Boolean =
+    configuration.get[Boolean]("microservice.services.features.useMaintainFrontend.enabled")
+
+  lazy val trustsContinueUrl: String = {
+    if(useMaintainFrontend) {
+      configuration.get[String]("urls.maintainContinue")
+    } else {
+      configuration.get[String]("urls.trustsContinue")
+    }
+  }
 
   lazy val languageTranslationEnabled: Boolean =
     configuration.get[Boolean]("microservice.services.features.welsh-translation")
