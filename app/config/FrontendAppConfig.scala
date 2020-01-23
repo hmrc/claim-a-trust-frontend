@@ -47,9 +47,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
 
   lazy val trustsContinueUrl: String = {
     if(useMaintainFrontend) {
-      configuration.get[String]("urls.trustsContinue")
-    } else {
       configuration.get[String]("urls.maintainContinue")
+    } else {
+      configuration.get[String]("urls.trustsContinue")
     }
   }
 
