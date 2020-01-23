@@ -42,7 +42,16 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   lazy val loginUrl: String = configuration.get[String]("urls.login")
   lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
 
-  lazy val trustsContinueUrl: String = configuration.get[String]("urls.trustsContinue")
+  lazy val useMaintainFrontend : Boolean =
+    configuration.get[Boolean]("microservice.services.features.useMaintainFrontend.enabled")
+
+  lazy val trustsContinueUrl: String = {
+    if(useMaintainFrontend) {
+      configuration.get[String]("urls.trustsContinue")
+    } else {
+      configuration.get[String]("urls.maintainContinue")
+    }
+  }
 
   lazy val languageTranslationEnabled: Boolean =
     configuration.get[Boolean]("microservice.services.features.welsh-translation")
