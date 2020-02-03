@@ -12,6 +12,8 @@ GET        /not-found                                   controllers.IvFailureCon
 
 GET        /something-went-wrong                        controllers.FallbackFailureController.onPageLoad
 
+GET        /logout                                      controllers.LogoutController.logout()
+
 GET        /claimed                                     controllers.IvSuccessController.onPageLoad
 
 GET        /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
