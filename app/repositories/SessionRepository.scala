@@ -21,7 +21,7 @@ import java.time.LocalDateTime
 import akka.stream.Materializer
 import javax.inject.Inject
 import models.UserAnswers
-import play.api.Configuration
+import play.api.{Configuration, Logger}
 import play.api.libs.json._
 import play.modules.reactivemongo.ReactiveMongoApi
 import reactivemongo.api.indexes.{Index, IndexType}
@@ -39,21 +39,39 @@ class DefaultSessionRepository @Inject()(
 
   private val collectionName: String = "user-answers"
 
+  private val lastUpdatedIndexKey = "lastUpdated"
+  private val lastUpdatedIndexName = "user-answers-last-updated-index"
+
   private val cacheTtl = config.get[Int]("mongodb.timeToLiveInSeconds")
 
   private def collection: Future[JSONCollection] =
     mongo.database.map(_.collection[JSONCollection](collectionName))
 
   private val lastUpdatedIndex = Index(
-    key     = Seq("lastUpdated" -> IndexType.Ascending),
-    name    = Some("user-answers-last-updated-index"),
+    key     = Seq(lastUpdatedIndexKey -> IndexType.Ascending),
+    name    = Some(lastUpdatedIndexName),
     options = BSONDocument("expireAfterSeconds" -> cacheTtl)
   )
 
+  def ensureTtlIndex(collection: JSONCollection) = {
+    collection.indexesManager.ensure(lastUpdatedIndex) flatMap {
+      newlyCreated =>
+        // false if the index already exists
+        if (!newlyCreated) {
+          Logger.info(s"Recreating time to live index, ttl: $cacheTtl")
+          for {
+            _ <- collection.indexesManager.drop(lastUpdatedIndexName)
+            _ <- collection.indexesManager.ensure(lastUpdatedIndex)
+          } yield ()
+        } else {
+          Logger.info(s"Time to live index created")
+          Future.successful(())
+        }
+    }
+  }
+
   val started: Future[Unit] =
-    collection.flatMap {
-      _.indexesManager.ensure(lastUpdatedIndex)
-    }.map(_ => ())
+    collection.flatMap(ensureTtlIndex).map(_ => ())
 
   override def get(id: String): Future[Option[UserAnswers]] =
     collection.flatMap(_.find(Json.obj("_id" -> id), None).one[UserAnswers])
