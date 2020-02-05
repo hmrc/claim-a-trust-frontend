@@ -1,7 +1,5 @@
 # microservice specific routes
 
-GET        /                                            controllers.IndexController.onPageLoad
-
 GET        /callback-failure                            controllers.IvFailureController.onTrustIvFailure
 
 GET        /locked                                      controllers.IvFailureController.trustLocked
