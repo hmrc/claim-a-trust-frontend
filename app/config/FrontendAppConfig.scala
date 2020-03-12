@@ -96,6 +96,9 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   lazy val failureUrl : String =
     configuration.get[String]("microservice.services.self.relationship-establishment.failureUrl")
 
+  lazy val countdownLength: String = configuration.get[String]("timeout.countdown")
+  lazy val timeoutLength: String = configuration.get[String]("timeout.length")
+
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
     "cymraeg" -> Lang("cy")
