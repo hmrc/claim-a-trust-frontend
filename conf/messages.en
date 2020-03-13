@@ -44,6 +44,11 @@ site.sign_out = Sign out
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
+#timeout dialog
+timeout.title=Your application will time out soon
+timeout.message=We will reset your application if you do not respond in
+timeout.keep-alive-button=Continue application
+
 isAgentManagingTrust.title = Is an agent managing the trust’s online register for the trustees?
 isAgentManagingTrust.heading = Is an agent managing the trust’s online register for the trustees?
 isAgentManagingTrust.subheading = This trust’s UTR: {0}
