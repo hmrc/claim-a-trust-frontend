@@ -35,12 +35,12 @@
         @components.error_summary(form.errors)
 
         <span class="govuk-caption-xl">@messages("isAgentManagingTrust.subheading", utr)</span>
-        @components.heading("isAgentManagingTrust.heading", headingSize = "heading-large govuk-fieldset__heading")
 
         @components.input_yes_no(
             field = form("value"),
             label = messages("isAgentManagingTrust.heading"),
-            labelClass = Some("visually-hidden")
+            labelClass = Some("heading-large"),
+            legendAsHeading = true
         )
 
         @components.submit_button()
