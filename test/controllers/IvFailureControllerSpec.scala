@@ -219,7 +219,7 @@ class IvFailureControllerSpec extends SpecBase {
 
         status(result) mustEqual OK
 
-        contentAsString(result) must include("The Unique Taxpayer Reference (UTR) entered does not match our records.")
+        contentAsString(result) must include("The Unique Taxpayer Reference (UTR) you gave for the trust does not match our records")
 
         application.stop()
       }
