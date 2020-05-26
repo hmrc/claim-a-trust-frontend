@@ -84,13 +84,12 @@ stillProcessing.link1=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor
 stillProcessing.p4=Gallwch
 stillProcessing.link2=ddychwelyd i gofrestru ymddiriedolaeth a’i chynnal ar gyfer cleient
 stillProcessing.subheading=Cyfeirnod Unigryw y Trethdalwr yr ymddiriedolaeth hon: {0}
+
 notFound.title=Nid yw’r Cyfeirnod Unigryw y Trethdalwr (UTR) a roesoch ar gyfer yr ymddiriedolaeth yn cyd-fynd â’n cofnodion
 notFound.heading=Nid yw’r Cyfeirnod Unigryw y Trethdalwr (UTR) a roesoch ar gyfer yr ymddiriedolaeth yn cyd-fynd â’n cofnodion
-notFound.p2=Gwiriwch eich bod wedi nodi Cyfeirnod Unigryw y Trethdalwr yr ymddiriedolaeth yn gywir.
-notFound.p3=Os nad oes gennych Gyfeirnod Unigryw y Trethdalwr ar gyfer yr ymddiriedolaeth. Bydd angen i chi gofrestru’r ymddiriedolaeth yn gyntaf.
-notFound.p4=Os oes angen help arnoch gyda’r gwasanaeth
-notFound.link2=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd)
-notFound.p5=Gallwch
-notFound.link3=ddychwelyd i gofrestru ymddiriedolaeth a’i chynnal ar gyfer cleient
+notFound.p1=Gwiriwch eich bod wedi nodi Cyfeirnod Unigryw y Trethdalwr yr ymddiriedolaeth yn gywir.
+notFound.p2=Os nad oes gennych Gyfeirnod Unigryw y Trethdalwr ar gyfer yr ymddiriedolaeth. Bydd angen i chi gofrestru’r ymddiriedolaeth yn gyntaf.
+notFound.p3=Os oes angen help arnoch gyda’r gwasanaeth
+notFound.link1=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd)
 notFound.button=Rhowch gynnig arall arni
 

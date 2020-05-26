@@ -35,6 +35,4 @@ POST       /managed-by-agent                               controllers.IsAgentMa
 GET        /change/managed-by-agent                        controllers.IsAgentManagingTrustController.onPageLoad(mode: Mode = CheckMode)
 POST       /change/managed-by-agent                        controllers.IsAgentManagingTrustController.onSubmit(mode: Mode = CheckMode)
 
-GET        /claimed                                     controllers.IvSuccessController.onPageLoad
-
 GET        /save/:utr                                        controllers.SaveUTRController.save(utr: String)
