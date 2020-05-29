@@ -239,8 +239,6 @@ class IvFailureControllerSpec extends SpecBase {
 
         status(result) mustEqual OK
 
-        contentAsString(result) must include("HMRC is still processing changes recently made to this trust.")
-
         application.stop()
       }
 

@@ -14,8 +14,11 @@
  * limitations under the License.
  *@
 
+@import config.FrontendAppConfig
+
 @this(
-main_template: MainTemplate
+  main_template: MainTemplate,
+  config: FrontendAppConfig
 )
 
 @(utr: String)(implicit request: Request[_], messages: Messages)
@@ -29,5 +32,5 @@ title = messages("notFound.title")
 <p>@messages("notFound.p1")</p>
 <p>@messages("notFound.p2")</p>
 <p>@messages("notFound.p3") <a target="_blank" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts">@messages("notFound.link1")</a>.</p>
-<p>@messages("notFound.p4") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts">@messages("notFound.link2")</a>.</p>
+@components.button_link("notFound.button", config.trustsRegistration)
 }
