@@ -68,8 +68,7 @@ trait StringViewBehaviours extends QuestionViewBehaviours[String] {
 
           val doc = asDocument(createView(form.withError(error)))
           val errorSpan = doc.getElementsByClass("error-message").first
-          errorSpan.text mustBe messages(errorMessage)
-        }
+          errorSpan.text mustBe s"""${messages("site.error")} ${messages(errorMessage)}"""        }
 
         "show an error prefix in the browser title" in {
 
