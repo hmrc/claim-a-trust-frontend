@@ -41,7 +41,9 @@
         }
 
         @field.errors.map { error =>
-        <span class="error-message" id="error-message-@{field.id}-input">@messages(error.message, error.args: _*)</span><span id="aria-period" class="visuallyhidden">.</span>
+        <span class="error-message" id="error-message-@{field.id}-input">
+            <span class="visually-hidden">@messages("site.error")</span> @messages(error.message, error.args: _*)</span>
+        <span id="aria-period" class="visuallyhidden">.</span>
         }
         <div class="multiple-choice">
             <input id="@{field.id}-yes" type="radio" name="@{field.id}" value="true" @if(field.value.contains("true")){checked="checked"} />
