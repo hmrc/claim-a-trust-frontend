@@ -1,9 +1,11 @@
 checkYourAnswers.title=Gwirio’ch Atebion
 checkYourAnswers.heading=Gwirio’ch Atebion
 checkYourAnswers.guidance=Arweiniad ar gyfer gwirio’ch atebion
+
 date.day=Diwrnod
 date.month=Mis
 date.year=Blwyddyn
+
 error.browser.title.prefix=Gwall:
 error.boolean=Rhowch ateb
 error.invalid_date=Rhowch ddyddiad cywir
@@ -18,12 +20,15 @@ error.non_numeric=Rhowch ateb gan ddefnyddio rhifau yn unig
 error.number=Nodwch rif dilys
 error.required=Nodwch ateb
 error.summary.title=Mae problem wedi codi
+
 index.title=claim-a-trust-frontend
 index.heading=claim-a-trust-frontend
 index.guidance=Croeso i’ch pen blaen newydd. Gweler y ffeil README am arweiniad ynghylch sut i ddechrau arni.
+
 session_expired.title=Er eich diogelwch, mae’r gwasanaeth hwn wedi’i ailosod
 session_expired.heading=Er eich diogelwch, mae’r gwasanaeth hwn wedi’i ailosod
 session_expired.guidance=Mae’r manylion yr ydych wedi’u rhoi wedi cael eu dileu gan nad ydych wedi mynd yn eich blaen â’r gwasanaeth am 15 munud.
+
 site.back=Yn ôl
 site.delete=Dileu
 site.edit=Newid
@@ -35,16 +40,20 @@ site.continue=Yn eich blaen
 site.service_name=Cofrestru Ymddiriedolaeth a’i Chynnal
 site.textarea.char_limit=(Y terfyn yw {0} o gymeriadau)
 site.sign_out=Allgofnodi
+
 unauthorised.title=Ni allwch ddefnyddio’r gwasanaeth hwn gyda’r cyfrif hwn
 unauthorised.heading=Ni allwch ddefnyddio’r gwasanaeth hwn gyda’r cyfrif hwn
+
 timeout.title=Bydd eich cais yn dod i ben cyn hir
 timeout.message=Byddwn yn ailosod eich cais os na fyddwch yn ymateb cyn pen
 timeout.keep-alive-button=Mynd yn eich blaen â’r cais
+
 isAgentManagingTrust.title=A oes asiant yn rheoli cofrestr ar-lein yr ymddiriedolaeth ar ran yr ymddiriedolwyr?
 isAgentManagingTrust.heading=A oes asiant yn rheoli cofrestr ar-lein yr ymddiriedolaeth ar ran yr ymddiriedolwyr?
 isAgentManagingTrust.subheading=Cyfeirnod Unigryw y Trethdalwr yr ymddiriedolaeth hon: {0}
 isAgentManagingTrust.checkYourAnswersLabel=A oes asiant yn rheoli cofrestr ar-lein yr ymddiriedolaeth ar ran yr ymddiriedolwyr?
 isAgentManagingTrust.error.required=Dewiswch ‘Iawn’ os oes asiant yn rheoli cofrestr ar-lein yr ymddiriedolaeth ar ran yr ymddiriedolwyr
+
 ivSuccess.subheading=Cyfeirnod Unigryw y Trethdalwr yr ymddiriedolaeth: {0}
 ivSuccess.contactLink=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd)
 ivSuccess.agent.title=Rydych wedi hawlio’r ymddiriedolaeth yn llwyddiannus
@@ -60,6 +69,7 @@ ivSuccess.no.agent.heading=Rydych wedi hawlio’r ymddiriedolaeth yn llwyddiannu
 ivSuccess.no.agent.paragraph1=Rydych bellach yn gallu newid yr wybodaeth sydd gan CThEM am y setlwyr, yr ymddiriedolwyr a’r buddiolwyr.
 ivSuccess.no.agent.paragraph2=Os oes gan yr ymddiriedolaeth rwymedigaeth treth, mae angen i chi ddatgan bob blwyddyn, drwy’r gwasanaeth hwn a Hunanasesiad ar gyfer Ymddiriedolaethau, fod yr wybodaeth sydd gennym yn gyfredol.
 ivSuccess.no.agent.paragraph3=Os oes angen help arnoch i ddefnyddio’r gwasanaeth
+
 beforeYouContinue.title=Cyn i chi fynd yn eich blaen
 beforeYouContinue.heading=Cyn i chi fynd yn eich blaen
 beforeYouContinue.subheading=Cyfeirnod Unigryw y Trethdalwr yr ymddiriedolaeth hon: {0}
@@ -68,14 +78,17 @@ beforeYouContinue.p2=Mae’n rhaid i’ch atebion gyd-fynd â’r manylion a rod
 beforeYouContinue.p3=Peidiwch â nodi unrhyw fanylion eraill wrth ateb y cwestiynau hyn, hyd yn oed os yw rhywun o’r ymddiriedolaeth wedi ysgrifennu at CThEM i’w newid.
 beforeYouContinue.p4=Os oes angen help arnoch i ddefnyddio’r gwasanaeth
 beforeYouContinue.a=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd)
+
 locked.title=Ni allwn baru’r wybodaeth a roesoch â chofrestr yr ymddiriedolaeth
 locked.heading=Ni allwn baru’r wybodaeth a roesoch â chofrestr yr ymddiriedolaeth
 locked.p1=Rhowch gynnig arall arni ym mhen 30 munud.
 locked.p2=Mae angen i chi ateb y cwestiynau diogelwch yn gywir er mwyn i chi allu hawlio’r ymddiriedolaeth (sy’n cysylltu’ch cyfrif Porth y Llywodraeth â’ch ymddiriedolaeth gofrestredig).
+
 locked.p3=Mae’n rhaid i’ch atebion gyd-fynd â’r manylion a roddwyd i CThEM pan gafodd yr ymddiriedolaeth ei chofrestru neu ei diweddaru ar-lein yn ddiweddaraf.
 locked.p4=Os oes angen help arnoch i ddefnyddio’r gwasanaeth
 locked.link1=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd)
 locked.subheading=Cyfeirnod Unigryw y Trethdalwr yr ymddiriedolaeth hon: {0}
+
 stillProcessing.title=Rydym yn prosesu’r newidiadau diweddaraf a wnaed i’r ymddiriedolaeth hon
 stillProcessing.heading=Rydym yn prosesu’r newidiadau diweddaraf a wnaed i’r ymddiriedolaeth hon
 stillProcessing.p2=Rhowch gynnig arall arni yn nes ymlaen.
