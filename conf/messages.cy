@@ -25,9 +25,9 @@ index.title=claim-a-trust-frontend
 index.heading=claim-a-trust-frontend
 index.guidance=Croeso i’ch pen blaen newydd. Gweler y ffeil README am arweiniad ynghylch sut i ddechrau arni.
 
-session_expired.title=Er eich diogelwch, mae’r gwasanaeth hwn wedi’i ailosod
-session_expired.heading=Er eich diogelwch, mae’r gwasanaeth hwn wedi’i ailosod
-session_expired.guidance=Mae’r manylion yr ydych wedi’u rhoi wedi cael eu dileu gan nad ydych wedi mynd yn eich blaen â’r gwasanaeth am 15 munud.
+session_expired.title=Mae CThEM yn dal i brosesu newidiadau a wnaed i’r ymddiriedolaeth hon yn ddiweddar.
+session_expired.heading=Mae CThEM yn dal i brosesu newidiadau a wnaed i’r ymddiriedolaeth hon yn ddiweddar.
+session_expired.guidance=Mae’r manylion yr ydych wedi’u rhoi
 
 site.back=Yn ôl
 site.delete=Dileu
@@ -79,9 +79,9 @@ beforeYouContinue.p3=Peidiwch â nodi unrhyw fanylion eraill wrth ateb y cwestiy
 beforeYouContinue.p4=Os oes angen help arnoch i ddefnyddio’r gwasanaeth
 beforeYouContinue.a=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd)
 
-locked.title=Ni allwn baru’r wybodaeth a roesoch â chofrestr yr ymddiriedolaeth
-locked.heading=Ni allwn baru’r wybodaeth a roesoch â chofrestr yr ymddiriedolaeth
-locked.p1=Rhowch gynnig arall arni ym mhen 30 munud.
+locked.title=Nid yw'ch atebion yn cyd-fynd â'r manylion sydd gennym am yr ymddiriedolaeth hon
+locked.heading=Nid yw'ch atebion yn cyd-fynd â'r manylion sydd gennym am yr ymddiriedolaeth hon
+locked.p1=Gan eich bod wedi gwneud tri chynnig aflwyddiannus i gael mynediad at yr ymddiriedolaeth hon, bydd angen i chi roi cynnig arall arni ymhen 30 munud.
 locked.p2=Mae angen i chi ateb y cwestiynau diogelwch yn gywir er mwyn i chi allu hawlio’r ymddiriedolaeth (sy’n cysylltu’ch cyfrif Porth y Llywodraeth â’ch ymddiriedolaeth gofrestredig).
 
 locked.p3=Mae’n rhaid i’ch atebion gyd-fynd â’r manylion a roddwyd i CThEM pan gafodd yr ymddiriedolaeth ei chofrestru neu ei diweddaru ar-lein yn ddiweddaraf.
@@ -89,8 +89,9 @@ locked.p4=Os oes angen help arnoch i ddefnyddio’r gwasanaeth
 locked.link1=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd)
 locked.subheading=Cyfeirnod Unigryw y Trethdalwr yr ymddiriedolaeth hon: {0}
 
-stillProcessing.title=Rydym yn prosesu’r newidiadau diweddaraf a wnaed i’r ymddiriedolaeth hon
-stillProcessing.heading=Rydym yn prosesu’r newidiadau diweddaraf a wnaed i’r ymddiriedolaeth hon
+stillProcessing.title=Mae’n ddrwg gennym, ni allwch gael mynediad at yr ymddiriedolaeth hon
+stillProcessing.heading=Mae’n ddrwg gennym, ni allwch gael mynediad at yr ymddiriedolaeth hon
+stillProcessing.p1=Mae CThEM yn dal i brosesu newidiadau a wnaed i’r ymddiriedolaeth hon yn ddiweddar.
 stillProcessing.p2=Rhowch gynnig arall arni yn nes ymlaen.
 stillProcessing.p3=Os oes angen help arnoch gyda’r gwasanaeth
 stillProcessing.link1=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd)
@@ -101,7 +102,7 @@ stillProcessing.subheading=Cyfeirnod Unigryw y Trethdalwr yr ymddiriedolaeth hon
 notFound.title=Nid yw’r Cyfeirnod Unigryw y Trethdalwr (UTR) a roesoch ar gyfer yr ymddiriedolaeth yn cyd-fynd â’n cofnodion
 notFound.heading=Nid yw’r Cyfeirnod Unigryw y Trethdalwr (UTR) a roesoch ar gyfer yr ymddiriedolaeth yn cyd-fynd â’n cofnodion
 notFound.p1=Gwiriwch eich bod wedi nodi Cyfeirnod Unigryw y Trethdalwr yr ymddiriedolaeth yn gywir.
-notFound.p2=Os nad oes gennych Gyfeirnod Unigryw y Trethdalwr ar gyfer yr ymddiriedolaeth. Bydd angen i chi gofrestru’r ymddiriedolaeth yn gyntaf.
+notFound.p2=Os nad oes gennych Gyfeirnod Unigryw y Trethdalwr ar gyfer yr ymddiriedolaeth, bydd angen i chi gofrestru’r ymddiriedolaeth yn gyntaf.
 notFound.p3=Os oes angen help arnoch gyda’r gwasanaeth
 notFound.link1=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd)
 notFound.button=Rhowch gynnig arall arni
