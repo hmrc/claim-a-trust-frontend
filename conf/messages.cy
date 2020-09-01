@@ -21,10 +21,6 @@ error.number=Nodwch rif dilys
 error.required=Nodwch ateb
 error.summary.title=Mae problem wedi codi
 
-index.title=claim-a-trust-frontend
-index.heading=claim-a-trust-frontend
-index.guidance=Croeso i’ch pen blaen newydd. Gweler y ffeil README am arweiniad ynghylch sut i ddechrau arni.
-
 session_expired.title=Mae CThEM yn dal i brosesu newidiadau a wnaed i’r ymddiriedolaeth hon yn ddiweddar.
 session_expired.heading=Mae CThEM yn dal i brosesu newidiadau a wnaed i’r ymddiriedolaeth hon yn ddiweddar.
 session_expired.guidance=Mae’r manylion yr ydych wedi’u rhoi
@@ -79,8 +75,8 @@ beforeYouContinue.p3=Peidiwch â nodi unrhyw fanylion eraill wrth ateb y cwestiy
 beforeYouContinue.p4=Os oes angen help arnoch i ddefnyddio’r gwasanaeth
 beforeYouContinue.a=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd)
 
-locked.title=Nid yw'ch atebion yn cyd-fynd â'r manylion sydd gennym am yr ymddiriedolaeth hon
-locked.heading=Nid yw'ch atebion yn cyd-fynd â'r manylion sydd gennym am yr ymddiriedolaeth hon
+locked.title=Nid yw’ch atebion yn cyd-fynd â’r manylion sydd gennym am yr ymddiriedolaeth hon
+locked.heading=Nid yw’ch atebion yn cyd-fynd â’r manylion sydd gennym am yr ymddiriedolaeth hon
 locked.p1=Gan eich bod wedi gwneud tri chynnig aflwyddiannus i gael mynediad at yr ymddiriedolaeth hon, bydd angen i chi roi cynnig arall arni ymhen 30 munud.
 locked.p2=Mae angen i chi ateb y cwestiynau diogelwch yn gywir er mwyn i chi allu hawlio’r ymddiriedolaeth (sy’n cysylltu’ch cyfrif Porth y Llywodraeth â’ch ymddiriedolaeth gofrestredig).
 
