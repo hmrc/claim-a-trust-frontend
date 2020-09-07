@@ -8,12 +8,14 @@ lazy val appName: String = "claim-a-trust-frontend"
 
 lazy val root = (project in file("."))
   .enablePlugins(PlayScala, SbtAutoBuildPlugin, SbtDistributablesPlugin, SbtArtifactory)
+  .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(DefaultBuildSettings.scalaSettings: _*)
   .settings(DefaultBuildSettings.defaultSettings(): _*)
   .settings(SbtDistributablesPlugin.publishingSettings: _*)
   .settings(inConfig(Test)(testSettings): _*)
   .settings(majorVersion := 0)
   .settings(
+    scalaVersion := "2.11.11",
     name := appName,
     RoutesKeys.routesImport += "models._",
     TwirlKeys.templateImports ++= Seq(
@@ -34,6 +36,7 @@ lazy val root = (project in file("."))
     ScoverageKeys.coverageHighlighting := true,
     scalacOptions ++= Seq("-feature"),
     libraryDependencies ++= AppDependencies(),
+    dependencyOverrides ++= AppDependencies.overrides,
     retrieveManaged := true,
     evictionWarningOptions in update :=
       EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
