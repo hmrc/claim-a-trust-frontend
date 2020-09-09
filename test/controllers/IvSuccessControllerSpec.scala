@@ -58,7 +58,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
       val view = application.injector.instanceOf[IvSuccessView]
 
-      val viewAsString = view(isAgent = false, utr)(fakeRequest, messages).toString
+      val viewAsString = view(isAgent = false, utr)(request, messages).toString
 
       when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
         .thenReturn(Future.successful(RelationshipFound))
@@ -98,7 +98,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
       val view = application.injector.instanceOf[IvSuccessView]
 
-      val viewAsString = view(isAgent = true, utr)(fakeRequest, messages).toString
+      val viewAsString = view(isAgent = true, utr)(request, messages).toString
 
       when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
         .thenReturn(Future.successful(RelationshipFound))
