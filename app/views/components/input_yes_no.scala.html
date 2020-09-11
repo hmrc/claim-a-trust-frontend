@@ -17,6 +17,7 @@
 @(
         field: Field,
         label: String,
+        caption: Option[String] = None,
         secondaryLabel: Option[String] = None,
         inputClass: Option[String] = None,
         hint: Option[String] = None,
@@ -30,8 +31,11 @@
 <div class="form-group @if(field.hasErrors){form-group-error}">
     <fieldset class="inline" id="@{field.id}">
 
-        <legend id="@{field.id}-legend">
-            @if(legendAsHeading){<h1 id="@{field.id}-id" class="legend-as-heading heading-large">}
+        <legend id="@{field.id}-legend" class="hmrc-page-heading">
+            @if(legendAsHeading){@if(caption.isDefined){
+                <span id="caption" class="govuk-caption-xl" aria-hidden="true">@caption.get</span>}
+                <h1 id="@{field.id}-id" class="legend-as-heading heading-large" aria-describedby="caption">
+                }
             @label
             @if(legendAsHeading){</h1>}
         </legend>

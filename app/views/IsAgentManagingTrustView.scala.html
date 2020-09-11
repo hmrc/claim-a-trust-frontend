@@ -34,12 +34,12 @@
 
         @components.error_summary(form.errors)
 
-        <span class="govuk-caption-xl">@messages("isAgentManagingTrust.subheading", utr)</span>
 
         @components.input_yes_no(
             field = form("value"),
             label = messages("isAgentManagingTrust.heading"),
             labelClass = Some("heading-large"),
+            caption = Some(messages("isAgentManagingTrust.subheading", utr)),
             legendAsHeading = true
         )
 

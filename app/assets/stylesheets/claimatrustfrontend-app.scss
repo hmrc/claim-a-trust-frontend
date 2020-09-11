@@ -27,8 +27,19 @@
 @import 'location-autocomplete.min';
 @import 'partials/_modal';
 
+$error-colour: #d4351c;
+
+.push-text-top--3 {
+    padding-top: govuk-spacing(3);
+}
+
 .field-error {
-    border:4px solid #b10e1e !important;
+    border:4px solid $error-colour !important;
+}
+.field-error:focus {
+    border:4px solid $govuk-text-colour !important;
+    -webkit-box-shadow: none;
+    box-shadow:none;
 }
 
 .govuk-warning-text {
@@ -116,17 +127,98 @@
 }
 
 @media print {
-  .govuk-caption-xl {
-    font-family: sans-serif;
-  }
+    .govuk-caption-xl {
+        font-family: sans-serif;
+    }
 }
 
 @media (min-width: 40.0625em) {
-  .govuk-caption-xl {
-    font-size: 27px;
-    line-height: 1.11111;
-  }
+    .govuk-caption-xl {
+        font-size: 27px;
+        line-height: 1.11111;
+    }
 }
+
+@media print {
+    .govuk-caption-xl {
+        font-size: 18pt;
+        line-height: 1.15;
+    }
+}
+
+.heading-no-top-margin {
+    margin-top: 0;
+}
+
+.heading-36, h1, .h1-heading {
+    margin-top: 0
+}
+
+.heading-large, .heading-medium {
+    margin-top: 0 !important;
+    word-break: break-word;
+}
+
+.heading-with-top-margin {
+    margin-top: .625em;
+}
+
+#value__listbox, #country__listbox {
+    @media (min-width: 641px) {
+        width: calc(75% - 4px)
+    }
+}
+
+#country {
+    @media (min-width: 641px) {
+        width:75%;
+    }
+}
+
+.autocomplete__wrapper span {display:none;}
+
+.heading-confirmation {
+    background-color: #00703c;
+    color: #fff;
+    padding: .6em;
+    text-align: center;
+    margin-top: 0;
+
+    .reference-text {
+        color: #fff;
+        margin-top: 1em;
+        display: block;
+        font-weight: 100;
+    }
+    .reference-number {
+        font-weight: 800;
+        font-size: 1em;
+        margin-top: 0;
+    }
+}
+
+.govuk-main-wrapper--l {
+    padding-top: 50px;
+
+    @include media(mobile) {
+        padding-top: 0;
+    }
+}
+
+.error-message {margin-bottom:15px;}
+
+@media print {
+    .print-hidden, .header-wrapper, .service-info, .report-error  {
+        display: none !important;
+    }
+    .content__body {width: 100%;}
+    .heading-xlarge {font-size: 27px;}
+    .heading-large {font-size: 24px;}
+    .heading-medium {font-size: 19px;}
+    ul li, p, .govuk-warning-text {font-size: 16px;}
+}
+
+.multiple-choice.first {clear:both;}
 
 .clearfix {
     @include govuk-clearfix;

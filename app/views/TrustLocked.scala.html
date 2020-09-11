@@ -24,8 +24,11 @@ main_template: MainTemplate
     title = messages("locked.title")
 ) {
 
-    <span class="govuk-caption-xl">@messages("locked.subheading", utr)</span>
-    @components.heading("locked.heading", headingSize = "heading-large govuk-fieldset__heading")
+    @components.heading(
+        headingKey = "locked.heading",
+        headingSize = "heading-large govuk-fieldset__heading",
+        subheading = Some(messages("locked.subheading", utr))
+    )
 
     <p>@messages("locked.p1")</p>
     <p>@messages("locked.p2")</p>
