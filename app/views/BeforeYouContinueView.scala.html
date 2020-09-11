@@ -29,8 +29,11 @@
 
         @components.back_link()
 
-        <span class="govuk-caption-xl">@messages("beforeYouContinue.subheading", utr)</span>
-        @components.heading("beforeYouContinue.heading", headingSize = "heading-large govuk-fieldset__heading")
+        @components.heading(
+            headingKey = "beforeYouContinue.heading",
+            headingSize = "heading-large govuk-fieldset__heading",
+            subheading = Some(messages("beforeYouContinue.subheading", utr))
+        )
 
         <p>@messages("beforeYouContinue.p1")</p>
         <p>@messages("beforeYouContinue.p2")</p>

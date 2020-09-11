@@ -24,8 +24,11 @@ main_template: MainTemplate
 title = messages("stillProcessing.title")
 ) {
 
-<span class="govuk-caption-xl">@messages("stillProcessing.subheading", utr)</span>
-@components.heading("stillProcessing.heading", headingSize = "heading-large govuk-fieldset__heading")
+@components.heading(
+ headingKey = "stillProcessing.heading",
+ headingSize = "heading-large govuk-fieldset__heading",
+ subheading = Some(messages("stillProcessing.subheading", utr))
+)
 
 <p>@messages("stillProcessing.p1")</p>
 <p>@messages("stillProcessing.p2")</p>
