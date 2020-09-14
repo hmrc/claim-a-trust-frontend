@@ -33,35 +33,28 @@
             headingSize = "heading-large govuk-fieldset__heading",
             subheading = Some(messages("ivSuccess.subheading", utr))
         )
+        <p>@messages("ivSuccess.agent.paragraph1")</p>
+        <p>@messages("ivSuccess.agent.paragraph2")</p>
+        <p>@messages("ivSuccess.agent.paragraph3")</p>
+
+        @if(config.playbackEnabled) {
+            <p>@messages("ivSuccess.agent.paragraph4") <a href="@config.trustsContinueUrl">@messages("ivSuccess.agent.continueLink")</a>.</p>
+        }
+
+        <p>@messages("ivSuccess.agent.paragraph5") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts" target="_blank">@messages("ivSuccess.contactLink")</a>.</p>
+
     } else {
         @components.heading(
             headingKey = "ivSuccess.no.agent.heading",
             headingSize = "heading-large govuk-fieldset__heading",
             subheading = Some(messages("ivSuccess.subheading", utr))
         )
-    }
-
-    <span class="govuk-caption-xl">@messages("ivSuccess.subheading", utr)</span>
-    @if(isAgent) {
-        <p>@messages("ivSuccess.agent.paragraph1")</p>
-        <p>@messages("ivSuccess.agent.paragraph2")</p>
-        <p>@messages("ivSuccess.agent.paragraph3")</p>
-
-            @if(config.playbackEnabled) {
-                <p>@messages("ivSuccess.agent.paragraph4") <a href="@config.trustsContinueUrl">@messages("ivSuccess.agent.continueLink")</a>.</p>
-            }
-
-        <p>@messages("ivSuccess.agent.paragraph5") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts" target="_blank">@messages("ivSuccess.contactLink")</a>.</p>
-
-    } else {
-            <p>@messages("ivSuccess.no.agent.paragraph1")</p>
-            <p>@messages("ivSuccess.no.agent.paragraph2")</p>
-            <p>@messages("ivSuccess.no.agent.paragraph3") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts" target="_blank">@messages("ivSuccess.contactLink")</a>.</p>
+        <p>@messages("ivSuccess.no.agent.paragraph1")</p>
+        <p>@messages("ivSuccess.no.agent.paragraph2")</p>
+        <p>@messages("ivSuccess.no.agent.paragraph3") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts" target="_blank">@messages("ivSuccess.contactLink")</a>.</p>
 
         @if(config.playbackEnabled) {
             @components.button_link(messages("site.continue"), config.trustsContinueUrl)
         }
     }
-
 }
-
