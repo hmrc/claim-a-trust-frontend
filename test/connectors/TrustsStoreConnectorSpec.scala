@@ -26,8 +26,6 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream5xxResponse}
 import utils.WireMockHelper
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
 class TrustsStoreConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with RecoverMethods {
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()

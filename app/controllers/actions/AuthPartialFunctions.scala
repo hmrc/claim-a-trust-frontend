@@ -23,11 +23,11 @@ import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
 import uk.gov.hmrc.auth.core.{AuthorisationException, NoActiveSession}
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 
 trait AuthPartialFunctions {
 
-  def recoverFromException()(implicit executor: ExecutionContext, config : FrontendAppConfig) : PartialFunction[Throwable, Future[Result]] = {
+  def recoverFromException()(implicit config : FrontendAppConfig) : PartialFunction[Throwable, Future[Result]] = {
     case _: NoActiveSession =>
       Logger.info(s"[AuthenticatedIdentifierAction] no active session for user")
       Future.successful(Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl))))

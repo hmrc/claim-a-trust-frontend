@@ -25,13 +25,11 @@ import uk.gov.hmrc.auth.core.{FailedRelationship, MissingBearerToken}
 
 import scala.concurrent.ExecutionContext.Implicits._
 import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, ExecutionContext, Future}
+import scala.concurrent.{Await, Future}
 
 class RelationshipEstablishmentServiceSpec extends SpecBase with ScalaFutures {
 
   val utr = "1234567890"
-
-  implicit val ec = implicitly[ExecutionContext]
 
   "RelationshipEstablishment" when {
 
@@ -73,7 +71,7 @@ class RelationshipEstablishmentServiceSpec extends SpecBase with ScalaFutures {
 
         "return RelationshipFound" in {
 
-          val auth = new FakeAuthConnector(Future.successful())
+          val auth = new FakeAuthConnector(Future.successful(()))
 
           val service = new RelationshipEstablishmentService(auth)
 

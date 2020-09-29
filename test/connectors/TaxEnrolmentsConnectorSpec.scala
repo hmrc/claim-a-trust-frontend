@@ -23,10 +23,8 @@ import org.scalatest.{AsyncWordSpec, MustMatchers, RecoverMethods}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream4xxResponse}
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
-
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with RecoverMethods {
 

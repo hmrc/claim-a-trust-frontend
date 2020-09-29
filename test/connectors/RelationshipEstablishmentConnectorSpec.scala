@@ -18,17 +18,13 @@ package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import config.FrontendAppConfig
-import models.{RelationshipEstablishmentStatus, TaxEnrolmentsRequest}
+import models.RelationshipEstablishmentStatus
 import org.scalatest.{AsyncWordSpec, MustMatchers, RecoverMethods}
 import play.api.Application
-import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{JsValue, Json}
-import play.api.test.Helpers._
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream4xxResponse}
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class RelationshipEstablishmentConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with RecoverMethods {
 
