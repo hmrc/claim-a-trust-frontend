@@ -46,7 +46,7 @@ timeout.keep-alive-button=Mynd yn eich blaen â’r cais
 
 isAgentManagingTrust.title=A oes asiant yn rheoli cofrestr ar-lein yr ymddiriedolaeth ar ran yr ymddiriedolwyr?
 isAgentManagingTrust.heading=A oes asiant yn rheoli cofrestr ar-lein yr ymddiriedolaeth ar ran yr ymddiriedolwyr?
-isAgentManagingTrust.subheading=Cyfeirnod Unigryw y Trethdalwr yr ymddiriedolaeth hon: {0}
+isAgentManagingTrust.subheading=UTR yr ymddiriedolaeth hon: {0}
 isAgentManagingTrust.checkYourAnswersLabel=A oes asiant yn rheoli cofrestr ar-lein yr ymddiriedolaeth ar ran yr ymddiriedolwyr?
 isAgentManagingTrust.error.required=Dewiswch ‘Iawn’ os oes asiant yn rheoli cofrestr ar-lein yr ymddiriedolaeth ar ran yr ymddiriedolwyr
 
@@ -68,7 +68,7 @@ ivSuccess.no.agent.paragraph3=Os oes angen help arnoch i ddefnyddio’r gwasanae
 
 beforeYouContinue.title=Cyn i chi fynd yn eich blaen
 beforeYouContinue.heading=Cyn i chi fynd yn eich blaen
-beforeYouContinue.subheading=Cyfeirnod Unigryw y Trethdalwr yr ymddiriedolaeth hon: {0}
+beforeYouContinue.subheading=UTR yr ymddiriedolaeth hon: {0}
 beforeYouContinue.p1=Gofynnir i chi ateb sawl cwestiwn am yr ymddiriedolaeth. Mae hyn er mwyn i chi allu hawlio’r ymddiriedolaeth (sy’n cysylltu’ch cyfrif Porth y Llywodraeth â’ch ymddiriedolaeth gofrestredig).
 beforeYouContinue.p2=Mae’n rhaid i’ch atebion gyd-fynd â’r manylion a roddwyd i CThEM pan gafodd yr ymddiriedolaeth ei chofrestru neu ei diweddaru ar-lein yn ddiweddaraf.
 beforeYouContinue.p3=Peidiwch â nodi unrhyw fanylion eraill wrth ateb y cwestiynau hyn, hyd yn oed os yw rhywun o’r ymddiriedolaeth wedi ysgrifennu at CThEM i’w newid.
@@ -83,7 +83,7 @@ locked.p2=Mae angen i chi ateb y cwestiynau diogelwch yn gywir er mwyn i chi all
 locked.p3=Mae’n rhaid i’ch atebion gyd-fynd â’r manylion a roddwyd i CThEM pan gafodd yr ymddiriedolaeth ei chofrestru neu ei diweddaru ar-lein yn ddiweddaraf.
 locked.p4=Os oes angen help arnoch i ddefnyddio’r gwasanaeth
 locked.link1=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd)
-locked.subheading=Cyfeirnod Unigryw y Trethdalwr yr ymddiriedolaeth hon: {0}
+locked.subheading=UTR yr ymddiriedolaeth hon: {0}
 
 stillProcessing.title=Mae’n ddrwg gennym, ni allwch gael mynediad at yr ymddiriedolaeth hon
 stillProcessing.heading=Mae’n ddrwg gennym, ni allwch gael mynediad at yr ymddiriedolaeth hon
@@ -93,7 +93,7 @@ stillProcessing.p3=Os oes angen help arnoch gyda’r gwasanaeth
 stillProcessing.link1=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd)
 stillProcessing.p4=Gallwch
 stillProcessing.link2=ddychwelyd i gofrestru ymddiriedolaeth a’i chynnal ar gyfer cleient
-stillProcessing.subheading=Cyfeirnod Unigryw y Trethdalwr yr ymddiriedolaeth hon: {0}
+stillProcessing.subheading=UTR yr ymddiriedolaeth hon: {0}
 
 notFound.title=Nid yw’r Cyfeirnod Unigryw y Trethdalwr (UTR) a roesoch ar gyfer yr ymddiriedolaeth yn cyd-fynd â’n cofnodion
 notFound.heading=Nid yw’r Cyfeirnod Unigryw y Trethdalwr (UTR) a roesoch ar gyfer yr ymddiriedolaeth yn cyd-fynd â’n cofnodion
