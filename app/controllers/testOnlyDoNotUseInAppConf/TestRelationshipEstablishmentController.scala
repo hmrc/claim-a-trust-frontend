@@ -82,10 +82,12 @@ class TestRelationshipEstablishmentController @Inject()(
                                                        (implicit ec : ExecutionContext)
   extends FrontendBaseController {
 
+  private val logger = Logger(getClass)
+
   def check(utr: String) = identify.async {
     implicit request =>
 
-      Logger.warn("[TestRelationshipEstablishmentController] TrustIV is using a test route, you don't want this in production.")
+      logger.warn("[TestRelationshipEstablishmentController] TrustIV is using a test route, you don't want this in production.")
 
       val succeedRegex = "(1\\d{9})".r
       val failRegex = "(2\\d{9})".r

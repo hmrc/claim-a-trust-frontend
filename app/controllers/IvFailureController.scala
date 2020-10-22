@@ -27,6 +27,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.Session
 import views.html.{TrustLocked, TrustNotFound, TrustStillProcessing}
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -43,22 +44,24 @@ class IvFailureController @Inject()(
                                      connector: TrustsStoreConnector
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
+  private val logger = Logger(getClass)
+
   private def renderFailureReason(utr: String, journeyId: String)(implicit hc : HeaderCarrier) = {
     relationshipEstablishmentConnector.journeyId(journeyId) map {
       case RelationshipEstablishmentStatus.Locked =>
-        Logger.info(s"[IvFailure][status] $utr is locked")
+        logger.info(s"[Claiming][Trust IV][status][Session ID: ${Session.id(hc)}] $utr is locked")
         Redirect(routes.IvFailureController.trustLocked())
       case RelationshipEstablishmentStatus.NotFound =>
-        Logger.info(s"[IvFailure][status] $utr was not found")
+        logger.info(s"[Claiming][Trust IV][status][Session ID: ${Session.id(hc)}] $utr was not found")
         Redirect(routes.IvFailureController.trustNotFound())
       case RelationshipEstablishmentStatus.InProcessing =>
-        Logger.info(s"[IvFailure][status] $utr is processing")
+        logger.info(s"[Claiming][Trust IV][status][Session ID: ${Session.id(hc)}] $utr is processing")
         Redirect(routes.IvFailureController.trustStillProcessing())
       case UnsupportedRelationshipStatus(reason) =>
-        Logger.warn(s"[IvFailure][status] Unsupported IV failure reason: $reason")
+        logger.warn(s"[Claiming][Trust IV][status][Session ID: ${Session.id(hc)}] Unsupported IV failure reason: $reason")
         Redirect(routes.FallbackFailureController.onPageLoad())
       case UpstreamRelationshipError(response) =>
-        Logger.warn(s"[IvFailure][status] HTTP response: $response")
+        logger.warn(s"[Claiming][Trust IV][status][Session ID: ${Session.id(hc)}] HTTP response: $response")
         Redirect(routes.FallbackFailureController.onPageLoad())
     }
   }
@@ -71,14 +74,14 @@ class IvFailureController @Inject()(
           val queryString = request.getQueryString("journeyId")
 
           queryString.fold{
-            Logger.warn(s"[IVFailureController][onTrustIvFailure] unable to retrieve a journeyId to determine the reason")
+            logger.warn(s"[Claiming][Trust IV][Session ID: ${Session.id(hc)}] unable to retrieve a journeyId to determine the reason")
             Future.successful(Redirect(routes.FallbackFailureController.onPageLoad()))
           }{
             journeyId =>
               renderFailureReason(utr, journeyId)
           }
         case None =>
-          Logger.warn(s"[IVFailureController][onTrustIvFailure] unable to retrieve a UTR")
+          logger.warn(s"[Claiming][Trust IV] unable to retrieve a UTR")
           Future.successful(Redirect(routes.FallbackFailureController.onPageLoad()))
       }
   }
@@ -90,24 +93,36 @@ class IvFailureController @Inject()(
         isManagedByAgent <- request.userAnswers.get(IsAgentManagingTrustPage)
       } yield {
         connector.claim(TrustsStoreRequest(request.internalId, utr, isManagedByAgent, trustLocked = true)) map { _ =>
+          logger.info(s"[Claiming][Trust IV][Session ID: ${Session.id(hc)}] failed IV 3 times, trust is locked out from IV")
           Ok(lockedView(utr))
         }
-      }) getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      }) getOrElse {
+        logger.error(s"[Claiming][Trust IV][Session ID: ${Session.id(hc)}] unable to determine if trust is locked out from IV")
+        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      }
   }
 
   def trustNotFound : Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       request.userAnswers.get(UtrPage) map {
         utr =>
+          logger.info(s"[Claiming][Trust IV][Session ID: ${Session.id(hc)}] IV was unable to find the trust for utr $utr")
           Future.successful(Ok(notFoundView(utr)))
-      } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      } getOrElse {
+        logger.error(s"[Claiming][Trust IV][Session ID: ${Session.id(hc)}] no utr stored in user answers when informing user the trust was not found")
+        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      }
   }
 
   def trustStillProcessing : Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       request.userAnswers.get(UtrPage) map {
         utr =>
+          logger.info(s"[Claiming][Trust IV][Session ID: ${Session.id(hc)}] IV determined the trust utr $utr was still processing")
           Future.successful(Ok(stillProcessingView(utr)))
-      } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      } getOrElse {
+        logger.error(s"[Claiming][Trust IV][Session ID: ${Session.id(hc)}] no utr stored in user answers when informing user trust was still processing")
+        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      }
   }
 }

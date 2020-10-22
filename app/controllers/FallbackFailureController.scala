@@ -18,17 +18,22 @@ package controllers
 
 import handlers.ErrorHandler
 import javax.inject.Inject
+import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.Session
 
 class FallbackFailureController @Inject()(
                                         val controllerComponents: MessagesControllerComponents,
                                         errorHandler: ErrorHandler
                                       ) extends FrontendBaseController with I18nSupport {
 
+  private val logger = Logger(getClass)
+
   def onPageLoad: Action[AnyContent] = Action {
     implicit request =>
+      logger.error(s"[Claiming][Trust IV][Session ID: ${Session.id(hc)}] Trust IV encountered a problem that could not be recovered from")
       InternalServerError(errorHandler.internalServerErrorTemplate)
   }
 }

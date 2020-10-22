@@ -28,6 +28,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.Session
 import views.html.IvSuccessView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -47,6 +48,8 @@ class IvSuccessController @Inject()(
   extends FrontendBaseController with I18nSupport
                                     with AuthPartialFunctions {
 
+  private val logger = Logger(getClass)
+
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
@@ -60,11 +63,13 @@ class IvSuccessController @Inject()(
               case Some(value) => value
             }
 
+            logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] successfully enrolled utr $utr to users credential after passing Trust IV, user can now maintain the trust")
+
             Ok(view(isAgentManagingTrust, utr))
 
           } recover {
             case _ =>
-              Logger.error(s"[TaxEnrolments][error] failed to create enrolment for ${request.internalId} $utr")
+              logger.error(s"[Claiming][Session ID: ${Session.id(hc)}] failed to create enrolment for utr $utr with tax-enrolments, users credential has not been updated, user needs to claim again")
               InternalServerError(errorHandler.internalServerErrorTemplate)
           }
         }
@@ -75,10 +80,14 @@ class IvSuccessController @Inject()(
           case RelationshipFound =>
             onRelationshipFound
           case RelationshipNotFound =>
+            logger.warn(s"[Claiming][Session ID: ${Session.id(hc)}] no relationship found in Trust IV, cannot continue with enrolling the credential, sending the user back to the start of Trust IV")
             onRelationshipNotFound
         }
         
-      } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      } getOrElse {
+        logger.warn(s"[Claiming][Session ID: ${Session.id(hc)}] no utr found in user answers, unable to continue with enrolling credential and claiming the trust on behalf of the user")
+        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      }
 
   }
 }
