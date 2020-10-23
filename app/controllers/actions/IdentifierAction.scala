@@ -44,11 +44,8 @@ class AuthenticatedIdentifierAction @Inject()(
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
-    Logger.info(s"[AuthenticatedIdentifierAction] identifying user")
-
     authorised().retrieve(Retrievals.internalId and Retrievals.credentials) {
       case Some(internalId) ~ Some(credentials) =>
-          Logger.info(s"[AuthenticatedIdentifierAction] user authenticated and retrieved internalId")
           block(IdentifierRequest(request, internalId, credentials))
       case _ =>
         throw new UnauthorizedException("Unable to retrieve internal Id")

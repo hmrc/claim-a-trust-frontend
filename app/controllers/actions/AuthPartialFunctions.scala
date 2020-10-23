@@ -29,10 +29,8 @@ trait AuthPartialFunctions {
 
   def recoverFromException()(implicit config : FrontendAppConfig) : PartialFunction[Throwable, Future[Result]] = {
     case _: NoActiveSession =>
-      Logger.info(s"[AuthenticatedIdentifierAction] no active session for user")
       Future.successful(Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl))))
     case _: AuthorisationException =>
-      Logger.info(s"[AuthenticatedIdentifierAction] exception thrown when authorising")
       Future.successful(Redirect(routes.UnauthorisedController.onPageLoad()))
   }
 

@@ -23,6 +23,7 @@ import play.api.mvc._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.HeaderCarrierConverter
+import utils.Session
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -40,6 +41,7 @@ class RelationshipEstablishmentService @Inject()(
                                                 )
   extends RelationshipEstablishment {
 
+  private val logger = Logger(getClass)
 
   def check(internalId: String, utr: String)(implicit request: Request[AnyContent]): Future[RelationEstablishmentStatus] = {
 
@@ -48,14 +50,15 @@ class RelationshipEstablishmentService @Inject()(
     def failedRelationshipPF: PartialFunction[Throwable, Future[RelationEstablishmentStatus]] = {
       case FailedRelationship(msg) =>
         // relationship does not exist
-        Logger.info(s"Relationship does not exist in Trust IV for user $internalId due to $msg")
+        logger.warn(s"[Claiming][Session ID: ${Session.id(hc)}] Relationship does not exist in Trust IV for user and utr $utr due to error $msg")
         Future.successful(RelationshipNotFound)
       case e : Throwable =>
+        logger.error(s"[Claiming][Session ID: ${Session.id(hc)}] Service was unable to determine if an IV relationship existed in Trust IV. Cannot continue with the journey")
         throw RelationshipError(e.getMessage)
     }
 
     authorised(Relationship(config.relationshipName, Set(BusinessKey(config.relationshipIdentifier, utr)))) {
-      Logger.info(s"Relationship established in Trust IV for user $internalId")
+      logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] Relationship established in Trust IV for user and utr $utr")
         Future.successful(RelationshipFound)
     } recoverWith {
       failedRelationshipPF

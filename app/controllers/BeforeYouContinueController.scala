@@ -22,10 +22,12 @@ import controllers.actions._
 import javax.inject.Inject
 import models.TrustsStoreRequest
 import pages.{IsAgentManagingTrustPage, UtrPage}
+import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import utils.Session
 import views.html.BeforeYouContinueView
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,6 +44,8 @@ class BeforeYouContinueController @Inject()(
                                      )(implicit ec: ExecutionContext,
                                        config: FrontendAppConfig) extends FrontendBaseController with I18nSupport with AuthPartialFunctions {
 
+  private val logger = Logger(getClass)
+
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
@@ -51,11 +55,15 @@ class BeforeYouContinueController @Inject()(
         }
         relationship.check(request.internalId, utr) flatMap {
           case RelationshipFound =>
+            logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] relationship is already established in IV for utr $utr sending user to successfully claimed")
             Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
           case RelationshipNotFound =>
             body
         }
-      } getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      } getOrElse {
+        logger.error(s"[Claiming][Session ID: ${Session.id(hc)}] no utr available in user answers, cannot continue with claiming the trust")
+        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      }
   }
 
   def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData).async {
@@ -79,6 +87,7 @@ class BeforeYouContinueController @Inject()(
           )
 
           connector.claim(TrustsStoreRequest(request.internalId, utr, isManagedByAgent, trustLocked = false)) map { _ =>
+            logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] saved users utr $utr in trusts-store so they can be identified when they return from Trust IV. Sending the user into Trust IV to answer questions")
             Redirect(host, queryString)
           }
 
@@ -86,10 +95,14 @@ class BeforeYouContinueController @Inject()(
 
         relationship.check(request.internalId, utr) flatMap {
           case RelationshipFound =>
+            logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] relationship is already established in IV for utr $utr sending user to successfully claimed")
             Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
           case RelationshipNotFound =>
             onRelationshipNotFound
         }
-      }) getOrElse Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      }) getOrElse {
+        logger.error(s"[Claiming][Session ID: ${Session.id(hc)}] no utr available in user answers, cannot continue with claiming the trust")
+        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+      }
   }
 }

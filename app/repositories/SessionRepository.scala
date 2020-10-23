@@ -57,13 +57,11 @@ class DefaultSessionRepository @Inject()(
       newlyCreated =>
         // false if the index already exists
         if (!newlyCreated) {
-          Logger.info(s"Recreating time to live index, ttl: $cacheTtl")
           for {
             _ <- collection.indexesManager.drop(lastUpdatedIndexName)
             _ <- collection.indexesManager.ensure(lastUpdatedIndex)
           } yield ()
         } else {
-          Logger.info(s"Time to live index created")
           Future.successful(())
         }
     }
