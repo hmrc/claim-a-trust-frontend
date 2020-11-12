@@ -18,7 +18,7 @@ package models
 
 import play.api.libs.json.{Json, Writes}
 
-final case class TrustsStoreRequest(internalId: String, utr: String, managedByAgent: Boolean, trustLocked: Boolean)
+final case class TrustsStoreRequest(internalId: String, id: String, managedByAgent: Boolean, trustLocked: Boolean)
 
 object TrustsStoreRequest {
 
