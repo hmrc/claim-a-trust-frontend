@@ -55,7 +55,9 @@ class BeforeYouContinueController @Inject()(
         }
         relationship.check(request.internalId, utr) flatMap {
           case RelationshipFound =>
-            logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] relationship is already established in IV for utr $utr sending user to successfully claimed")
+            logger.info(s"[Claiming][Session ID: ${Session.id(hc)}]" +
+              s" relationship is already established in IV for utr $utr sending user to successfully claimed")
+
             Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
           case RelationshipNotFound =>
             body
@@ -87,7 +89,10 @@ class BeforeYouContinueController @Inject()(
           )
 
           connector.claim(TrustsStoreRequest(request.internalId, utr, isManagedByAgent, trustLocked = false)) map { _ =>
-            logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] saved users utr $utr in trusts-store so they can be identified when they return from Trust IV. Sending the user into Trust IV to answer questions")
+            logger.info(s"[Claiming][Session ID: ${Session.id(hc)}]" +
+              s" saved users utr $utr in trusts-store so they can be identified when they" +
+              s" return from Trust IV. Sending the user into Trust IV to answer questions")
+
             Redirect(host, queryString)
           }
 
@@ -95,7 +100,9 @@ class BeforeYouContinueController @Inject()(
 
         relationship.check(request.internalId, utr) flatMap {
           case RelationshipFound =>
-            logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] relationship is already established in IV for utr $utr sending user to successfully claimed")
+            logger.info(s"[Claiming][Session ID: ${Session.id(hc)}]" +
+              s" relationship is already established in IV for utr $utr sending user to successfully claimed")
+
             Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
           case RelationshipNotFound =>
             onRelationshipNotFound
