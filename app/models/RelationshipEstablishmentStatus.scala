@@ -26,6 +26,7 @@ object RelationshipEstablishmentStatus {
   case object NotFound extends RelationshipEstablishmentStatus
   case object InProcessing extends RelationshipEstablishmentStatus
   case class UnsupportedRelationshipStatus(reason: String) extends RelationshipEstablishmentStatus
+  case object NoRelationshipStatus extends RelationshipEstablishmentStatus
   case class UpstreamRelationshipError(reason: String) extends RelationshipEstablishmentStatus
 
   import play.api.http.Status._
@@ -39,6 +40,7 @@ object RelationshipEstablishmentStatus {
             case Some("UTR_NOT_FOUND")      => NotFound
             case Some("UTR_IN_PROCESSING")  => InProcessing
             case Some(unsupported)          => UnsupportedRelationshipStatus(unsupported)
+            case _                          => NoRelationshipStatus
           }
         case status => UpstreamRelationshipError(s"Unexpected HTTP response code $status")
       }

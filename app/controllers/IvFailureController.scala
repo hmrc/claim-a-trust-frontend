@@ -63,6 +63,9 @@ class IvFailureController @Inject()(
       case UpstreamRelationshipError(response) =>
         logger.warn(s"[Claiming][Trust IV][status][Session ID: ${Session.id(hc)}] HTTP response: $response")
         Redirect(routes.FallbackFailureController.onPageLoad())
+      case _ =>
+        logger.warn(s"[Claiming][Trust IV][status][Session ID: ${Session.id(hc)}] No errorKey in HTTP response")
+        Redirect(routes.FallbackFailureController.onPageLoad())
     }
   }
 
