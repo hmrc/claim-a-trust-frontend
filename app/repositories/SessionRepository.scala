@@ -20,7 +20,7 @@ import java.time.LocalDateTime
 
 import javax.inject.Inject
 import models.UserAnswers
-import play.api.{Configuration, Logger}
+import play.api.Configuration
 import play.api.libs.json._
 import play.modules.reactivemongo.ReactiveMongoApi
 import reactivemongo.api.indexes.{Index, IndexType}

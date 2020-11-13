@@ -18,7 +18,6 @@ package controllers.actions
 
 import config.FrontendAppConfig
 import controllers.routes
-import play.api.Logger
 import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
 import uk.gov.hmrc.auth.core.{AuthorisationException, NoActiveSession}
