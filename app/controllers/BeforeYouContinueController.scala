@@ -22,37 +22,32 @@ import controllers.actions._
 import javax.inject.Inject
 import models.TrustsStoreRequest
 import pages.{IsAgentManagingTrustPage, UtrPage}
-import play.api.Logger
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
-import uk.gov.hmrc.play.bootstrap.controller.FrontendBaseController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
 import views.html.BeforeYouContinueView
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class BeforeYouContinueController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       identify: IdentifierAction,
-                                       relationship: RelationshipEstablishment,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: BeforeYouContinueView,
-                                       connector: TrustsStoreConnector
-                                     )(implicit ec: ExecutionContext,
-                                       config: FrontendAppConfig) extends FrontendBaseController with I18nSupport with AuthPartialFunctions {
-
-  private val logger = Logger(getClass)
+                                             override val messagesApi: MessagesApi,
+                                             identify: IdentifierAction,
+                                             relationship: RelationshipEstablishment,
+                                             getData: DataRetrievalAction,
+                                             requireData: DataRequiredAction,
+                                             val controllerComponents: MessagesControllerComponents,
+                                             view: BeforeYouContinueView,
+                                             connector: TrustsStoreConnector
+                                           )(implicit ec: ExecutionContext, config: FrontendAppConfig)
+  extends FrontendBaseController with I18nSupport with AuthPartialFunctions with Logging {
 
   def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
       request.userAnswers.get(UtrPage) map { utr =>
-        def body = {
-            Future.successful(Ok(view(utr)))
-        }
         relationship.check(request.internalId, utr) flatMap {
           case RelationshipFound =>
             logger.info(s"[Claiming][Session ID: ${Session.id(hc)}]" +
@@ -60,7 +55,7 @@ class BeforeYouContinueController @Inject()(
 
             Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
           case RelationshipNotFound =>
-            body
+            Future.successful(Ok(view(utr)))
         }
       } getOrElse {
         logger.error(s"[Claiming][Session ID: ${Session.id(hc)}] no utr available in user answers, cannot continue with claiming the trust")

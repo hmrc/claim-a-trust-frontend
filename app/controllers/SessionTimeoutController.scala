@@ -19,9 +19,9 @@ package controllers
 import config.FrontendAppConfig
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import play.api.{Configuration, Environment, Logger}
+import play.api.{Configuration, Environment, Logging}
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
-import uk.gov.hmrc.play.bootstrap.controller.FrontendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Session
 
 import scala.concurrent.Future
@@ -30,9 +30,7 @@ import scala.concurrent.Future
 class SessionTimeoutController @Inject()(val appConfig: FrontendAppConfig,
                                          val config: Configuration,
                                          val env: Environment,
-                                         mcc: MessagesControllerComponents) extends FrontendController(mcc) with AuthRedirects {
-
-  private val logger = Logger(getClass)
+                                         mcc: MessagesControllerComponents) extends FrontendController(mcc) with AuthRedirects with Logging {
 
   val keepAlive: Action[AnyContent] = Action.async { implicit request =>
     logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] user requested to extend the time remaining to complete Trust IV, user has not been signed out")

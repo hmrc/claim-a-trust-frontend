@@ -177,7 +177,7 @@ class IvFailureControllerSpec extends SpecBase {
         val connector = mock[TrustsStoreConnector]
 
         when(connector.claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any()))
-          .thenReturn(Future.successful(HttpResponse(CREATED)))
+          .thenReturn(Future.successful(HttpResponse(CREATED, "")))
 
         val answers = emptyUserAnswers
           .set(UtrPage, utr).success.value

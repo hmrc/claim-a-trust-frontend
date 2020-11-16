@@ -20,24 +20,23 @@ import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import javax.inject.Inject
 import models.{NormalMode, UserAnswers}
 import pages.UtrPage
-import play.api.Logger
-import play.api.mvc.{Action, AnyContent, ControllerComponents}
+import play.api.Logging
+import play.api.i18n.I18nSupport
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
-import uk.gov.hmrc.play.bootstrap.controller.BackendController
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class SaveUTRController @Inject()(
                                    identify: IdentifierAction,
-                                   val cc: ControllerComponents,
+                                   val controllerComponents: MessagesControllerComponents,
                                    getData: DataRetrievalAction,
                                    sessionRepository: SessionRepository,
                                    relationship: RelationshipEstablishment
-                                 )(implicit ec: ExecutionContext) extends BackendController(cc) {
-
-  private val logger = Logger(getClass)
+                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   def save(utr: String): Action[AnyContent] = (identify andThen getData).async {
     implicit request =>

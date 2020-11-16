@@ -23,7 +23,7 @@ import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.{BadRequestException, HeaderCarrier, Upstream5xxResponse}
+import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
 class TrustsStoreConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with RecoverMethods {
@@ -102,7 +102,9 @@ class TrustsStoreConnectorSpec extends AsyncWordSpec with MustMatchers with Wire
           expectedResponse = response
         )
 
-        recoverToSucceededIf[BadRequestException](connector.claim(request))
+        connector.claim(request) map { response =>
+          response.status mustBe BAD_REQUEST
+        }
 
       }
       "returns 500 INTERNAL_SERVER_ERROR" in {
@@ -121,7 +123,9 @@ class TrustsStoreConnectorSpec extends AsyncWordSpec with MustMatchers with Wire
           expectedResponse = response
         )
 
-        recoverToSucceededIf[Upstream5xxResponse](connector.claim(request))
+        connector.claim(request) map { response =>
+          response.status mustBe INTERNAL_SERVER_ERROR
+        }
 
       }
 
