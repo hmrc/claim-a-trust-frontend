@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@
 package repositories
 
 import java.time.LocalDateTime
-
 import javax.inject.Inject
 import models.UserAnswers
 import play.api.Configuration
+import play.api.Logger.logger
 import play.api.libs.json._
 import play.modules.reactivemongo.ReactiveMongoApi
 import reactivemongo.api.indexes.{Index, IndexType}
@@ -34,7 +34,6 @@ class DefaultSessionRepository @Inject()(
                                           mongo: ReactiveMongoApi,
                                           config: Configuration
                                         )(implicit ec: ExecutionContext) extends SessionRepository {
-
 
   private val collectionName: String = "user-answers"
 
@@ -52,7 +51,7 @@ class DefaultSessionRepository @Inject()(
     options = BSONDocument("expireAfterSeconds" -> cacheTtl)
   )
 
-  def ensureTtlIndex(collection: JSONCollection) = {
+  def ensureTtlIndex(collection: JSONCollection): Future[Unit] = {
     collection.indexesManager.ensure(lastUpdatedIndex) flatMap {
       newlyCreated =>
         // false if the index already exists
@@ -90,6 +89,36 @@ class DefaultSessionRepository @Inject()(
             lastError.ok
       }
     }
+  }
+
+  final val dropIndexes: Unit = {
+
+    val dropIndexesFeatureEnabled: Boolean = config.get[Boolean]("microservice.services.features.mongo.dropIndexes")
+
+    def logIndexes: Future[Unit] = {
+      for {
+        collection <- mongo.database.map(_.collection[JSONCollection](collectionName))
+        indexes <- collection.indexesManager.list()
+      } yield {
+        logger.info(s"[IndexesManager] indexes found on mongo collection $collectionName: $indexes")
+        ()
+      }
+    }
+
+    for {
+      _ <- logIndexes
+      _ <- if (dropIndexesFeatureEnabled) {
+        for {
+          collection <- mongo.database.map(_.collection[JSONCollection](collectionName))
+          _ <- collection.indexesManager.dropAll()
+          _ <- Future.successful(logger.info(s"[IndexesManager] dropped indexes on collection $collectionName"))
+          _ <- logIndexes
+        } yield ()
+      } else {
+        logger.info(s"[IndexesManager] indexes not modified on collection $collectionName")
+        Future.successful(())
+      }
+    } yield ()
   }
 }
 
