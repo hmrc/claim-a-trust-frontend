@@ -16,11 +16,8 @@
 
 package repositories
 
-import java.time.LocalDateTime
-import javax.inject.Inject
 import models.UserAnswers
 import play.api.Configuration
-import play.api.Logger.logger
 import play.api.libs.json._
 import play.modules.reactivemongo.ReactiveMongoApi
 import reactivemongo.api.indexes.{Index, IndexType}
@@ -28,14 +25,16 @@ import reactivemongo.bson.BSONDocument
 import reactivemongo.play.json.ImplicitBSONHandlers.JsObjectDocumentWriter
 import reactivemongo.play.json.collection.JSONCollection
 
+import java.time.LocalDateTime
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class DefaultSessionRepository @Inject()(
-                                          mongo: ReactiveMongoApi,
-                                          config: Configuration
-                                        )(implicit ec: ExecutionContext) extends SessionRepository {
+                                          val mongo: ReactiveMongoApi,
+                                          val config: Configuration
+                                        )(implicit val ec: ExecutionContext) extends SessionRepository with IndexManager {
 
-  private val collectionName: String = "user-answers"
+  override val collectionName: String = "user-answers"
 
   private val lastUpdatedIndexKey = "lastUpdated"
   private val lastUpdatedIndexName = "user-answers-last-updated-index"
@@ -89,36 +88,6 @@ class DefaultSessionRepository @Inject()(
             lastError.ok
       }
     }
-  }
-
-  final val dropIndexes: Unit = {
-
-    val dropIndexesFeatureEnabled: Boolean = config.get[Boolean]("microservice.services.features.mongo.dropIndexes")
-
-    def logIndexes: Future[Unit] = {
-      for {
-        collection <- mongo.database.map(_.collection[JSONCollection](collectionName))
-        indexes <- collection.indexesManager.list()
-      } yield {
-        logger.info(s"[IndexesManager] indexes found on mongo collection $collectionName: $indexes")
-        ()
-      }
-    }
-
-    for {
-      _ <- logIndexes
-      _ <- if (dropIndexesFeatureEnabled) {
-        for {
-          collection <- mongo.database.map(_.collection[JSONCollection](collectionName))
-          _ <- collection.indexesManager.dropAll()
-          _ <- Future.successful(logger.info(s"[IndexesManager] dropped indexes on collection $collectionName"))
-          _ <- logIndexes
-        } yield ()
-      } else {
-        logger.info(s"[IndexesManager] indexes not modified on collection $collectionName")
-        Future.successful(())
-      }
-    } yield ()
   }
 }
 
