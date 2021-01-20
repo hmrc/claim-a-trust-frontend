@@ -50,7 +50,8 @@ class LogoutController @Inject()(
       val auditData = Map(
         "sessionId" -> Session.id(hc),
         "event" -> "signout",
-        "service" -> "trusts-frontend"
+        "service" -> "claim-a-trust-frontend",
+        "userGroup" -> request.affinityGroup.toString
       )
 
       val auditDataWithUtr = request.userAnswers.get(UtrPage).fold(auditData) { utr =>
