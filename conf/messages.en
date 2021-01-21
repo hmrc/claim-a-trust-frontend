@@ -37,6 +37,7 @@ site.yes = Yes
 site.continue = Continue
 site.service_name = Register and Maintain a Trust
 site.textarea.char_limit = (Limit is {0} characters)
+site.sign_in = Sign in
 site.sign_out = Sign out
 
 unauthorised.title = You can’t access this service with this account

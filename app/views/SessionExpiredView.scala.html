@@ -29,4 +29,9 @@
 
     <p>@messages("session_expired.guidance")</p>
     <p>@messages("session_expired.guidance.2")</p>
+
+    @components.button_link(
+                            messageKey = messages("site.sign_in"),
+                            href = appConfig.loginUrl
+                            )
 }
