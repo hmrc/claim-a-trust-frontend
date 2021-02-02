@@ -18,7 +18,6 @@ package controllers
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
-import models.NormalMode
 import play.api.Configuration
 import play.api.i18n.{Lang, MessagesApi}
 import play.api.mvc._
@@ -32,7 +31,7 @@ class LanguageSwitchController @Inject()(
                                           cc: MessagesControllerComponents
                                         ) extends LanguageController(configuration, languageUtils, cc) {
 
-  override def fallbackURL: String = routes.IsAgentManagingTrustController.onPageLoad(mode = NormalMode).url
+  override def fallbackURL: String = appConfig.loginContinueUrl
 
   override def languageMap: Map[String, Lang] = appConfig.languageMap
 
