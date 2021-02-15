@@ -22,23 +22,35 @@ final case class TaxEnrolmentsRequest(identifier: String)
 
 object TaxEnrolmentsRequest {
 
+  object Taxable {
+    val IDENTIFIER = "SAUTR"
+    val VERIFIER = "SAUTR1"
+  }
+
+  object NonTaxable {
+    val IDENTIFIER = "URN"
+    val VERIFIER = "URN1"
+  }
+
   implicit val writes: Writes[TaxEnrolmentsRequest] = Writes { self => {
 
+    case class Values(identifier: String, verifier: String)
+
     val identifierAndVerifierKey = if (self.identifier.length == 10) {
-      ("SAUTR", "SAUTR1")
+      Values(Taxable.IDENTIFIER, Taxable.VERIFIER)
     } else {
-      ("URN", "URN1")
+      Values(NonTaxable.IDENTIFIER, NonTaxable.VERIFIER)
     }
 
     Json.obj(
       "identifiers" -> Json.arr(
         Json.obj(
-          "key" -> identifierAndVerifierKey._1,
+          "key" -> identifierAndVerifierKey.identifier,
           "value" -> self.identifier
         )),
       "verifiers" -> Json.arr(
         Json.obj(
-          "key" -> identifierAndVerifierKey._2,
+          "key" -> identifierAndVerifierKey.verifier,
           "value" -> self.identifier
         )
       )
