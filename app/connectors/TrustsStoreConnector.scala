@@ -29,11 +29,11 @@ class TrustsStoreConnector @Inject()(http: HttpClient, config : FrontendAppConfi
 
   val url: String = config.trustsStoreUrl + "/claim"
 
-  def claim(request: TrustsStoreRequest)(implicit hc : HeaderCarrier, ec : ExecutionContext, writes: Writes[TrustsStoreRequest]): Future[HttpResponse] = {
-
-    val response = http.POST[JsValue, HttpResponse](url, Json.toJson(request))
-
-    response
+  def claim(request: TrustsStoreRequest)
+           (implicit hc : HeaderCarrier,
+            ec : ExecutionContext,
+            writes: Writes[TrustsStoreRequest]): Future[HttpResponse] = {
+    http.POST[JsValue, HttpResponse](url, Json.toJson(request))
   }
 
 }

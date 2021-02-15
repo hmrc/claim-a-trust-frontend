@@ -19,6 +19,7 @@ package connectors
 import com.github.tomakehurst.wiremock.client.WireMock._
 import models.TrustsStoreRequest
 import org.scalatest.{AsyncWordSpec, MustMatchers, RecoverMethods}
+import play.api.Application
 import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
@@ -30,7 +31,7 @@ class TrustsStoreConnectorSpec extends AsyncWordSpec with MustMatchers with Wire
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
-  lazy val app = new GuiceApplicationBuilder()
+  lazy val app: Application = new GuiceApplicationBuilder()
     .configure(Seq(
       "microservice.services.trusts-store.port" -> server.port(),
       "auditing.enabled" -> false): _*
@@ -45,7 +46,12 @@ class TrustsStoreConnectorSpec extends AsyncWordSpec with MustMatchers with Wire
   val internalId = "some-authenticated-internal-id"
   val managedByAgent = true
 
-  val request = TrustsStoreRequest(internalId, utr, managedByAgent, false)
+  val request: TrustsStoreRequest = TrustsStoreRequest(
+    internalId = internalId,
+    id = utr,
+    managedByAgent = managedByAgent,
+    trustLocked = false
+  )
 
   private def wiremock(payload: String, expectedStatus: Int, expectedResponse: String) =
     server.stubFor(
@@ -69,7 +75,7 @@ class TrustsStoreConnectorSpec extends AsyncWordSpec with MustMatchers with Wire
 
         val response =
           """{
-            |  "utr": "a string representing the tax reference to associate with this internalId",
+            |  "id": "a string representing the tax reference to associate with this internalId",
             |  "managedByAgent": "boolean derived from answers in the claim a trust journey"
             |}""".stripMargin
 
@@ -107,6 +113,7 @@ class TrustsStoreConnectorSpec extends AsyncWordSpec with MustMatchers with Wire
         }
 
       }
+
       "returns 500 INTERNAL_SERVER_ERROR" in {
 
         val json = Json.stringify(Json.toJson(request))
