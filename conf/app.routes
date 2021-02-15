@@ -30,9 +30,9 @@ GET        /unauthorised                                controllers.Unauthorised
 GET        /before-you-continue                         controllers.BeforeYouContinueController.onPageLoad()
 POST       /before-you-continue                         controllers.BeforeYouContinueController.onSubmit()
 
-GET        /managed-by-agent                               controllers.IsAgentManagingTrustController.onPageLoad(mode: Mode = NormalMode)
-POST       /managed-by-agent                               controllers.IsAgentManagingTrustController.onSubmit(mode: Mode = NormalMode)
-GET        /change/managed-by-agent                        controllers.IsAgentManagingTrustController.onPageLoad(mode: Mode = CheckMode)
-POST       /change/managed-by-agent                        controllers.IsAgentManagingTrustController.onSubmit(mode: Mode = CheckMode)
+GET        /managed-by-agent                            controllers.IsAgentManagingTrustController.onPageLoad(mode: Mode = NormalMode)
+POST       /managed-by-agent                            controllers.IsAgentManagingTrustController.onSubmit(mode: Mode = NormalMode)
+GET        /change/managed-by-agent                     controllers.IsAgentManagingTrustController.onPageLoad(mode: Mode = CheckMode)
+POST       /change/managed-by-agent                     controllers.IsAgentManagingTrustController.onSubmit(mode: Mode = CheckMode)
 
-GET        /save/:utr                                        controllers.SaveUTRController.save(utr: String)
+GET        /save/:identifier                            controllers.SaveIdentifierController.save(identifier: String)

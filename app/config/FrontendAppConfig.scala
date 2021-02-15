@@ -64,8 +64,11 @@ class FrontendAppConfig @Inject() (val configuration: Configuration, servicesCon
   lazy val relationshipName : String =
     configuration.get[String]("microservice.services.self.relationship-establishment.name")
 
-  lazy val relationshipIdentifier : String =
-    configuration.get[String]("microservice.services.self.relationship-establishment.identifier")
+  lazy val relationshipTaxableIdentifier : String =
+    configuration.get[String]("microservice.services.self.relationship-establishment.taxable.identifier")
+
+  lazy val relationshipNonTaxableIdentifier : String =
+    configuration.get[String]("microservice.services.self.relationship-establishment.nonTaxable.identifier")
 
   private def relationshipEstablishmentFrontendPath(utr: String) : String =
     s"${configuration.get[String]("microservice.services.relationship-establishment-frontend.path")}/$utr"
@@ -82,11 +85,11 @@ class FrontendAppConfig @Inject() (val configuration: Configuration, servicesCon
   lazy val relationshipEstablishmentStubbed: Boolean =
     configuration.get[Boolean]("microservice.services.features.stubRelationshipEstablishment")
 
-  def relationshipEstablishmentFrontendtUrl(utr: String) : String = {
+  def relationshipEstablishmentFrontendtUrl(identifier: String) : String = {
     if(relationshipEstablishmentStubbed) {
-      s"${stubbedRelationshipEstablishmentFrontendHost}/${stubbedRelationshipEstablishmentFrontendPath(utr)}"
+      s"${stubbedRelationshipEstablishmentFrontendHost}/${stubbedRelationshipEstablishmentFrontendPath(identifier)}"
     } else {
-      s"${relationshipEstablishmentFrontendHost}/${relationshipEstablishmentFrontendPath(utr)}"
+      s"${relationshipEstablishmentFrontendHost}/${relationshipEstablishmentFrontendPath(identifier)}"
     }
   }
 

@@ -19,7 +19,7 @@ package controllers
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import pages.UtrPage
+import pages.IdentifierPage
 import play.api.Logging
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
@@ -56,7 +56,7 @@ class LogoutController @Inject()(
           "userGroup" -> request.affinityGroup.toString
         )
 
-        val auditDataWithUtr = request.userAnswers.get(UtrPage).fold(auditData) { utr =>
+        val auditDataWithUtr = request.userAnswers.get(IdentifierPage).fold(auditData) { utr =>
           auditData ++ Map("utr" -> utr)
         }
 

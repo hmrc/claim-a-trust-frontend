@@ -23,7 +23,7 @@ import navigation.{FakeNavigator, Navigator}
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.{IsAgentManagingTrustPage, UtrPage}
+import pages.{IsAgentManagingTrustPage, IdentifierPage}
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -40,7 +40,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new IsAgentManagingTrustFormProvider()
   val form = formProvider()
-  val utr = "0987654321"
+  val identifier = "0987654321"
 
   lazy val isAgentManagingTrustRoute = routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
 
@@ -51,7 +51,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
     "return OK and the correct view for a GET" in {
 
       val userAnswers = emptyUserAnswers
-        .set(UtrPage, utr)
+        .set(IdentifierPage, identifier)
         .success
         .value
 
@@ -68,7 +68,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form, NormalMode, utr)(request, messages).toString
+        view(form, NormalMode, identifier)(request, messages).toString
 
       application.stop()
     }
@@ -78,7 +78,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
       val userAnswers = UserAnswers(userAnswersId)
         .set(IsAgentManagingTrustPage, true)
         .success.value
-        .set(UtrPage, utr)
+        .set(IdentifierPage, identifier)
         .success.value
 
       val application = applicationBuilder(
@@ -94,7 +94,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual OK
 
       contentAsString(result) mustEqual
-        view(form.fill(true), NormalMode, utr)(request, messages).toString
+        view(form.fill(true), NormalMode, identifier)(request, messages).toString
 
       application.stop()
     }
@@ -129,7 +129,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
     "return a Bad Request and errors when invalid data is submitted" in {
 
       val userAnswers = emptyUserAnswers
-        .set(UtrPage, utr)
+        .set(IdentifierPage, identifier)
         .success
         .value
 
@@ -150,7 +150,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar {
       status(result) mustEqual BAD_REQUEST
 
       contentAsString(result) mustEqual
-        view(boundForm, NormalMode, utr)(request, messages).toString
+        view(boundForm, NormalMode, identifier)(request, messages).toString
 
       application.stop()
     }

@@ -56,7 +56,7 @@ class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClient,co
   private def relationshipEstablishmentDeleteUrl(credId: String): String = s"${config.relationshipEstablishmentBaseUrl}/test/relationship/$credId"
 
   private def newRelationship(credId: String, utr: String): Relationship =
-    Relationship(config.relationshipName, Set(BusinessKey(config.relationshipIdentifier, utr)), credId)
+    Relationship(config.relationshipName, Set(BusinessKey(config.relationshipTaxableIdentifier, utr)), credId)
 
   def createRelationship(credId: String, utr: String)(implicit headerCarrier: HeaderCarrier) =
     httpClient.POST[RelationshipJson,HttpResponse](relationshipEstablishmentPostUrl,RelationshipJson(newRelationship(credId, utr)))

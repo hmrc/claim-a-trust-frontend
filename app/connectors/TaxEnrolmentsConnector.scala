@@ -29,7 +29,8 @@ class TaxEnrolmentsConnector @Inject()(http: HttpClient, config : FrontendAppCon
 
   val url: String = config.taxEnrolmentsUrl + s"/service/${config.serviceName}/enrolment"
 
-  def enrol(request: TaxEnrolmentsRequest)(implicit hc : HeaderCarrier, ec : ExecutionContext, writes: Writes[TaxEnrolmentsRequest]): Future[EnrolmentResponse] = {
+  def enrol(request: TaxEnrolmentsRequest)
+           (implicit hc : HeaderCarrier, ec : ExecutionContext, writes: Writes[TaxEnrolmentsRequest]): Future[EnrolmentResponse] = {
 
     val response = http.PUT[JsValue, EnrolmentResponse](url, Json.toJson(request))
 

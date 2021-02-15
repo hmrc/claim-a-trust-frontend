@@ -21,7 +21,7 @@ import forms.IsAgentManagingTrustFormProvider
 import javax.inject.Inject
 import models.Mode
 import navigation.Navigator
-import pages.{IsAgentManagingTrustPage, UtrPage}
+import pages.{IsAgentManagingTrustPage, IdentifierPage}
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -52,7 +52,7 @@ class IsAgentManagingTrustController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
-      request.userAnswers.get(UtrPage) map { utr =>
+      request.userAnswers.get(IdentifierPage) map { identifier =>
 
         lazy val body = {
             val preparedForm = request.userAnswers.get(IsAgentManagingTrustPage) match {
@@ -60,19 +60,21 @@ class IsAgentManagingTrustController @Inject()(
               case Some(value) => form.fill(value)
             }
 
-            Future.successful(Ok(view(preparedForm, mode, utr)))
+            Future.successful(Ok(view(preparedForm, mode, identifier)))
         }
 
-        relationship.check(request.internalId, utr) flatMap {
+        relationship.check(request.internalId, identifier) flatMap {
           case RelationshipFound =>
-            logger.info(s"[Claiming][Trust IV][Session ID: ${Session.id(hc)}] user has recently passed IV for utr $utr, sending user to successfully claimed")
+            logger.info(s"[Claiming][Trust IV][Session ID: ${Session.id(hc)}]" +
+              s" user has recently passed IV for $identifier, sending user to successfully claimed")
+
             Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
           case RelationshipNotFound =>
             body
         }
 
       } getOrElse {
-        logger.error(s"[Claiming][Trust IV][Session ID: ${Session.id(hc)}] unable to retrieve utr from user answers")
+        logger.error(s"[Claiming][Trust IV][Session ID: ${Session.id(hc)}] unable to retrieve identifier from user answers")
         Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
       }
 
@@ -83,10 +85,10 @@ class IsAgentManagingTrustController @Inject()(
 
       form.bindFromRequest().fold(
         formWithErrors =>
-          request.userAnswers.get(UtrPage) map { utr =>
+          request.userAnswers.get(IdentifierPage) map { utr =>
             Future.successful(BadRequest(view(formWithErrors, mode, utr)))
           } getOrElse {
-            logger.error(s"[Claiming][Trust IV][Session ID: ${Session.id(hc)}] unable to retrieve utr from user answers")
+            logger.error(s"[Claiming][Trust IV][Session ID: ${Session.id(hc)}] unable to retrieve identifier from user answers")
             Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
           }
         ,

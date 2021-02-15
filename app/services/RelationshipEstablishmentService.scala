@@ -18,6 +18,7 @@ package services
 
 import config.FrontendAppConfig
 import javax.inject.Inject
+import models.RelationshipForIdentifier
 import play.api.Logging
 import play.api.mvc._
 import uk.gov.hmrc.auth.core._
@@ -34,29 +35,36 @@ case object RelationshipNotFound extends RelationEstablishmentStatus
 case class RelationshipError(reason : String) extends Exception(reason)
 
 class RelationshipEstablishmentService @Inject()(
-                                                  val authConnector: AuthConnector
+                                                  val authConnector: AuthConnector,
+                                                  relationshipForIdentifier: RelationshipForIdentifier
                                                 )(
                                                   implicit val config: FrontendAppConfig,
                                                   implicit val executionContext: ExecutionContext
                                                 )
   extends RelationshipEstablishment with Logging {
 
-  def check(internalId: String, utr: String)(implicit request: Request[AnyContent]): Future[RelationEstablishmentStatus] = {
+  def check(internalId: String, identifier: String)(implicit request: Request[AnyContent]): Future[RelationEstablishmentStatus] = {
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
 
     def failedRelationshipPF: PartialFunction[Throwable, Future[RelationEstablishmentStatus]] = {
       case FailedRelationship(msg) =>
         // relationship does not exist
-        logger.warn(s"[Claiming][Session ID: ${Session.id(hc)}] Relationship does not exist in Trust IV for user and utr $utr due to error $msg")
+        logger.warn(s"[Claiming][Session ID: ${Session.id(hc)}]" +
+          s" Relationship does not exist in Trust IV for user and $identifier due to error $msg")
+
         Future.successful(RelationshipNotFound)
       case e : Throwable =>
-        logger.error(s"[Claiming][Session ID: ${Session.id(hc)}] Service was unable to determine if an IV relationship existed in Trust IV. Cannot continue with the journey")
+        logger.error(s"[Claiming][Session ID: ${Session.id(hc)}]" +
+          s" Service was unable to determine if an IV relationship existed in Trust IV. Cannot continue with the journey")
+
         throw RelationshipError(e.getMessage)
     }
 
-    authorised(Relationship(config.relationshipName, Set(BusinessKey(config.relationshipIdentifier, utr)))) {
-      logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] Relationship established in Trust IV for user and utr $utr")
+    val relationshipToCheck = relationshipForIdentifier(identifier)
+
+    authorised(relationshipToCheck) {
+      logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] Relationship established in Trust IV for user and $identifier")
         Future.successful(RelationshipFound)
     } recoverWith {
       failedRelationshipPF

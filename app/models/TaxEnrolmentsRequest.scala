@@ -18,24 +18,33 @@ package models
 
 import play.api.libs.json.{Json, Writes}
 
-final case class TaxEnrolmentsRequest(utr: String)
+final case class TaxEnrolmentsRequest(identifier: String)
 
 object TaxEnrolmentsRequest {
 
-  implicit val writes: Writes[TaxEnrolmentsRequest] = Writes { request =>
+  implicit val writes: Writes[TaxEnrolmentsRequest] = Writes { self => {
+
+    val identifierAndVerifierKey = if (self.identifier.length == 10) {
+      ("SAUTR", "SAUTR1")
+    } else {
+      ("URN", "URN1")
+    }
+
     Json.obj(
       "identifiers" -> Json.arr(
         Json.obj(
-          "key" -> "SAUTR",
-          "value" -> request.utr
+          "key" -> identifierAndVerifierKey._1,
+          "value" -> self.identifier
         )),
       "verifiers" -> Json.arr(
         Json.obj(
-          "key" -> "SAUTR1",
-          "value" -> request.utr
+          "key" -> identifierAndVerifierKey._2,
+          "value" -> self.identifier
         )
       )
     )
+  }
+
   }
 
 }

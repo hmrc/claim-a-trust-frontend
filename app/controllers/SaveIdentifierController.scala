@@ -19,7 +19,7 @@ package controllers
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import javax.inject.Inject
 import models.{NormalMode, UserAnswers}
-import pages.UtrPage
+import pages.IdentifierPage
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -30,7 +30,7 @@ import utils.Session
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SaveUTRController @Inject()(
+class SaveIdentifierController @Inject()(
                                    identify: IdentifierAction,
                                    val controllerComponents: MessagesControllerComponents,
                                    getData: DataRetrievalAction,
@@ -38,27 +38,30 @@ class SaveUTRController @Inject()(
                                    relationship: RelationshipEstablishment
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
-  def save(utr: String): Action[AnyContent] = (identify andThen getData).async {
+  def save(identifier: String): Action[AnyContent] = (identify andThen getData).async {
     implicit request =>
 
       lazy val body = {
           val userAnswers = request.userAnswers match {
-            case Some(userAnswers) => userAnswers.set(UtrPage, utr)
+            case Some(userAnswers) =>
+              userAnswers.set(IdentifierPage, identifier)
             case _ =>
-              UserAnswers(request.internalId).set(UtrPage, utr)
+              UserAnswers(request.internalId).set(IdentifierPage, identifier)
           }
           for {
             updatedAnswers <- Future.fromTry(userAnswers)
             _              <- sessionRepository.set(updatedAnswers)
           } yield {
-            logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] user has started the claim a trust journey for utr $utr")
+            logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] user has started the claim a trust journey for $identifier")
             Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode))
           }
       }
 
-      relationship.check(request.internalId, utr) flatMap {
+      relationship.check(request.internalId, identifier) flatMap {
         case RelationshipFound =>
-          logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] relationship is already established in IV for utr $utr sending user to successfully claimed")
+          logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] " +
+            s"relationship is already established in IV for $identifier sending user to successfully claimed")
+
           Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
         case RelationshipNotFound =>
           body
