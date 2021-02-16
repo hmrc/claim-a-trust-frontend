@@ -83,7 +83,7 @@ beforeYouContinue.a = contact the trusts helpline (opens in a new window or tab)
 
 locked.title = Your answers do not match the details we hold about this trust
 locked.heading = Your answers do not match the details we hold about this trust
-locked.p1 = As you have had 3 unsuccessful tries at accessing this trust you will need to try again in 30 minutes.
+locked.p1 = As you have had three unsuccessful tries at accessing this trust you will need to try again in 30 minutes.
 locked.p2 = You need to answer the security questions correctly so you can claim the trust (which links your Government Gateway account to your registered trust).
 locked.p3 = Your answers must match the details provided to HMRC when the trust was registered or most recently updated online.
 locked.p4 = If you need help using the service,
