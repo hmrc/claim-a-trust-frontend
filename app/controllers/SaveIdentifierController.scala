@@ -18,11 +18,12 @@ package controllers
 
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import javax.inject.Inject
+import models.requests.OptionalDataRequest
 import models.{NormalMode, UserAnswers}
 import pages.IdentifierPage
 import play.api.Logging
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
 import repositories.SessionRepository
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -38,34 +39,48 @@ class SaveIdentifierController @Inject()(
                                    relationship: RelationshipEstablishment
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
+  private val UtrRegex = "^([0-9]{10})$".r
+  private val UrnRegex = "^((?i)[a-z]{2}trust[0-9]{8})$".r
+
   def save(identifier: String): Action[AnyContent] = (identify andThen getData).async {
     implicit request =>
 
-      lazy val body = {
-          val userAnswers = request.userAnswers match {
-            case Some(userAnswers) =>
-              userAnswers.set(IdentifierPage, identifier)
-            case _ =>
-              UserAnswers(request.internalId).set(IdentifierPage, identifier)
-          }
-          for {
-            updatedAnswers <- Future.fromTry(userAnswers)
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield {
-            logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] user has started the claim a trust journey for $identifier")
-            Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode))
-          }
+      identifier match {
+        case UtrRegex(utr) => checkIfAlreadyHaveIvRelationship(utr)
+        case UrnRegex(urn) => checkIfAlreadyHaveIvRelationship(urn)
+        case _ =>
+          logger.error(s"[Claiming][Session ID: ${Session.id(hc)}] " +
+            s"Identifier provided is not a valid URN or UTR")
+          Future.successful(Redirect(routes.FallbackFailureController.onPageLoad()))
       }
 
-      relationship.check(request.internalId, identifier) flatMap {
-        case RelationshipFound =>
-          logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] " +
-            s"relationship is already established in IV for $identifier sending user to successfully claimed")
+  }
 
-          Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
-        case RelationshipNotFound =>
-          body
+  private def checkIfAlreadyHaveIvRelationship(identifier: String)(implicit request: OptionalDataRequest[AnyContent]): Future[Result] = {
+    relationship.check(request.internalId, identifier) flatMap {
+      case RelationshipFound =>
+        logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] " +
+          s"relationship is already established in IV for $identifier sending user to successfully claimed")
+
+        Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
+      case RelationshipNotFound =>
+        saveAndContinue(identifier)
+    }
+  }
+
+  private def saveAndContinue(identifier: String)(implicit request: OptionalDataRequest[AnyContent]): Future[Result] = {
+      val userAnswers = request.userAnswers match {
+        case Some(userAnswers) =>
+          userAnswers.set(IdentifierPage, identifier)
+        case _ =>
+          UserAnswers(request.internalId).set(IdentifierPage, identifier)
       }
-
+      for {
+        updatedAnswers <- Future.fromTry(userAnswers)
+        _              <- sessionRepository.set(updatedAnswers)
+      } yield {
+        logger.info(s"[Claiming][Session ID: ${Session.id(hc(request))}] user has started the claim a trust journey for $identifier")
+        Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode))
+      }
   }
 }

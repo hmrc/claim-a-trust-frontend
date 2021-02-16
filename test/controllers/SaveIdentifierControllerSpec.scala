@@ -32,12 +32,32 @@ import scala.concurrent.Future
 
 class SaveIdentifierControllerSpec extends SpecBase {
 
-  val utr = "0987654321"
+  val utr = "1234567890"
   val urn = "ABTRUST12345678"
 
   val fakeEstablishmentServiceFailing = new FakeRelationshipEstablishmentService(RelationshipNotFound)
 
   "SaveIdentifierController" when {
+
+    "invalid identifier provided" must {
+
+      "render an error page" in {
+
+        val mockSessionRepository = mock[SessionRepository]
+
+        val application = applicationBuilder(userAnswers = None, fakeEstablishmentServiceFailing)
+          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+          .build()
+
+        val request = FakeRequest(GET, routes.SaveIdentifierController.save("123").url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+        redirectLocation(result).value mustBe routes.FallbackFailureController.onPageLoad().url
+      }
+
+    }
 
     "utr provided" must {
 
