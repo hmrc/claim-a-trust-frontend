@@ -27,7 +27,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, 
 import repositories.SessionRepository
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.Session
+import utils.{Regex, Session}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -39,15 +39,12 @@ class SaveIdentifierController @Inject()(
                                    relationship: RelationshipEstablishment
                                  )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
-  private val UtrRegex = "^([0-9]{10})$".r
-  private val UrnRegex = "^((?i)[a-z]{2}trust[0-9]{8})$".r
-
   def save(identifier: String): Action[AnyContent] = (identify andThen getData).async {
     implicit request =>
 
       identifier match {
-        case UtrRegex(utr) => checkIfAlreadyHaveIvRelationship(utr)
-        case UrnRegex(urn) => checkIfAlreadyHaveIvRelationship(urn)
+        case Regex.UtrRegex(utr) => checkIfAlreadyHaveIvRelationship(utr)
+        case Regex.UrnRegex(urn) => checkIfAlreadyHaveIvRelationship(urn)
         case _ =>
           logger.error(s"[Claiming][Session ID: ${Session.id(hc)}] " +
             s"Identifier provided is not a valid URN or UTR")

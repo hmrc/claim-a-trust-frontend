@@ -17,57 +17,16 @@
 package controllers.testOnlyDoNotUseInAppConf
 
 import com.google.inject.Inject
-import config.FrontendAppConfig
 import controllers.actions.IdentifierAction
+import models.requests.IdentifierRequest
 import play.api.Logging
 import play.api.i18n.MessagesApi
-import play.api.libs.json.Json
-import play.api.mvc.MessagesControllerComponents
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.http.HttpClient
+import utils.{Regex, Session}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-case class BusinessKey(name: String,value: String)
-
-object BusinessKey {
-  implicit val format = Json.format[BusinessKey]
-}
-
-case class Relationship(relationshipName: String, businessKeys: Set[BusinessKey], credId: String)
-
-object Relationship {
-  implicit val format = Json.format[Relationship]
-}
-case class RelationshipJson(relationship: Relationship, ttlSeconds:Int =1440)
-
-object RelationshipJson {
-  implicit val format = Json.format[RelationshipJson]
-}
-
-class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClient,config: FrontendAppConfig)
-                                                  (implicit val ec : ExecutionContext) {
-
-  private val relationshipEstablishmentPostUrl: String = s"${config.relationshipEstablishmentBaseUrl}/relationship-establishment/relationship/"
-
-  private def relationshipEstablishmentGetUrl(credId :String): String = s"${config.relationshipEstablishmentBaseUrl}/relationship-establishment/relationship/$credId"
-
-  private def relationshipEstablishmentDeleteUrl(credId: String): String = s"${config.relationshipEstablishmentBaseUrl}/test/relationship/$credId"
-
-  private def newRelationship(credId: String, utr: String): Relationship =
-    Relationship(config.relationshipName, Set(BusinessKey(config.relationshipTaxableIdentifier, utr)), credId)
-
-  def createRelationship(credId: String, utr: String)(implicit headerCarrier: HeaderCarrier) =
-    httpClient.POST[RelationshipJson,HttpResponse](relationshipEstablishmentPostUrl,RelationshipJson(newRelationship(credId, utr)))
-
-  def getRelationship(credId: String)(implicit headerCarrier: HeaderCarrier) =
-    httpClient.GET(relationshipEstablishmentGetUrl(credId))
-
-  def deleteRelationship(credId: String)(implicit headerCarrier: HeaderCarrier) =
-    httpClient.DELETE(relationshipEstablishmentDeleteUrl(credId))
-
-}
 
 /**
  * Test controller and connector to relationship-establishment to set a relationship for a given UTR.
@@ -82,25 +41,38 @@ class TestRelationshipEstablishmentController @Inject()(
                                                        (implicit ec : ExecutionContext)
   extends FrontendBaseController with Logging {
 
-  def check(utr: String) = identify.async {
+  def check(identifier: String) = identify.async {
     implicit request =>
 
-      logger.warn("[TestRelationshipEstablishmentController] TrustIV is using a test route, you don't want this in production.")
+      logger.info("[Claiming] TrustIV is using a test route, you don't want this in production.")
 
-      val succeedRegex = "(1\\d{9})".r
-      val failRegex = "(2\\d{9})".r
-
-      utr match {
-        case utr @ succeedRegex(_) =>
-          relationshipEstablishmentConnector.createRelationship(request.credentials.providerId, utr) map {
-            _ =>
-              Redirect(controllers.routes.IvSuccessController.onPageLoad())
+      identifier match {
+        case Regex.UtrRegex(utr) =>
+          if (utr.startsWith("1")) {
+            createRelationship(utr)
+          } else {
+            logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] UTR did not start with '1', failing IV")
+            Future.successful(Redirect(controllers.routes.FallbackFailureController.onPageLoad()))
           }
-        case failRegex(_) =>
-          Future.successful(Redirect(controllers.routes.IvFailureController.onTrustIvFailure()))
+        case Regex.UrnRegex(urn) =>
+          if (urn.head.toLower == "a".head) {
+            createRelationship(urn)
+          } else {
+            logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] URN did not start with 'A', failing IV")
+            Future.successful(Redirect(controllers.routes.FallbackFailureController.onPageLoad()))
+          }
         case _ =>
-          Future.successful(Redirect(controllers.routes.IvFailureController.onTrustIvFailure()))
+          logger.error(s"[Claiming][Session ID: ${Session.id(hc)}] " +
+            s"Identifier provided is not a valid URN or UTR $identifier")
+          Future.successful(Redirect(controllers.routes.FallbackFailureController.onPageLoad()))
       }
+  }
+
+  private def createRelationship(identifier: String)(implicit request: IdentifierRequest[AnyContent]): Future[Result] =
+    relationshipEstablishmentConnector.createRelationship(request.credentials.providerId, identifier) map {
+    _ =>
+      logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] Stubbed IV relationship for $identifier")
+      Redirect(controllers.routes.IvSuccessController.onPageLoad())
   }
 
 }
