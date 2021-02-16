@@ -18,7 +18,7 @@ package connectors
 
 import config.FrontendAppConfig
 import javax.inject.Inject
-import models.TrustsStoreRequest
+import models.{TrustStoreResponse, TrustsStoreRequest}
 import play.api.libs.json.{JsValue, Json, Writes}
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
@@ -32,8 +32,8 @@ class TrustsStoreConnector @Inject()(http: HttpClient, config : FrontendAppConfi
   def claim(request: TrustsStoreRequest)
            (implicit hc : HeaderCarrier,
             ec : ExecutionContext,
-            writes: Writes[TrustsStoreRequest]): Future[HttpResponse] = {
-    http.POST[JsValue, HttpResponse](url, Json.toJson(request))
+            writes: Writes[TrustsStoreRequest]): Future[TrustStoreResponse] = {
+    http.POST[JsValue, TrustStoreResponse](url, Json.toJson(request))
   }
 
 }

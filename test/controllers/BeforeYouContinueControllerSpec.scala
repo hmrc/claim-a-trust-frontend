@@ -18,18 +18,17 @@ package controllers
 
 import base.SpecBase
 import connectors.TrustsStoreConnector
-import models.TrustsStoreRequest
+import models.{StatusStored, TrustsStoreRequest}
 import navigation.{FakeNavigator, Navigator}
-import pages.{IsAgentManagingTrustPage, IdentifierPage}
-import org.scalatestplus.mockito.MockitoSugar.mock
-import org.mockito.Mockito._
 import org.mockito.Matchers.{eq => eqTo, _}
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import org.mockito.Mockito._
+import org.scalatestplus.mockito.MockitoSugar.mock
+import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.inject.bind
 import play.api.mvc.Call
+import play.api.test.FakeRequest
+import play.api.test.Helpers._
 import services.{FakeRelationshipEstablishmentService, RelationshipNotFound}
-import uk.gov.hmrc.http.HttpResponse
 import views.html.BeforeYouContinueView
 
 import scala.concurrent.Future
@@ -71,7 +70,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
       val connector = mock[TrustsStoreConnector]
 
       when(connector.claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any()))
-        .thenReturn(Future.successful(HttpResponse(CREATED, "")))
+        .thenReturn(Future.successful(StatusStored))
 
       val answers = emptyUserAnswers
         .set(IdentifierPage, "0987654321").success.value

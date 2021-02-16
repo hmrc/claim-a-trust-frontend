@@ -18,15 +18,14 @@ package controllers
 
 import base.SpecBase
 import connectors.{RelationshipEstablishmentConnector, TrustsStoreConnector}
-import models.{RelationshipEstablishmentStatus, TrustsStoreRequest}
+import models.{RelationshipEstablishmentStatus, StatusStored, TrustsStoreRequest}
 import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.{verify, when}
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.{IsAgentManagingTrustPage, IdentifierPage}
+import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 
@@ -177,7 +176,7 @@ class IvFailureControllerSpec extends SpecBase {
         val connector = mock[TrustsStoreConnector]
 
         when(connector.claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any()))
-          .thenReturn(Future.successful(HttpResponse(CREATED, "")))
+          .thenReturn(Future.successful(StatusStored))
 
         val answers = emptyUserAnswers
           .set(IdentifierPage, utr).success.value

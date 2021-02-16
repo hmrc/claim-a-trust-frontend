@@ -17,7 +17,7 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import models.TrustsStoreRequest
+import models.{StatusStored, TrustsStoreRequest, UpstreamTrustStoreError}
 import org.scalatest.{AsyncWordSpec, MustMatchers, RecoverMethods}
 import play.api.Application
 import play.api.http.Status
@@ -87,7 +87,7 @@ class TrustsStoreConnectorSpec extends AsyncWordSpec with MustMatchers with Wire
         )
 
         connector.claim(request) map { response =>
-          response.status mustBe CREATED
+          response mustBe StatusStored
         }
 
       }
@@ -99,8 +99,9 @@ class TrustsStoreConnectorSpec extends AsyncWordSpec with MustMatchers with Wire
         val response =
           """{
             |  "status": "400",
-            |  "message":  "Unable to parse request body into a TrustClaim"
-            |}""".stripMargin
+            |  "message": "Unable to parse request body into a TrustClaim"
+            |}
+            |""".stripMargin
 
         wiremock(
           payload = json,
@@ -108,8 +109,8 @@ class TrustsStoreConnectorSpec extends AsyncWordSpec with MustMatchers with Wire
           expectedResponse = response
         )
 
-        connector.claim(request) map { response =>
-          response.status mustBe BAD_REQUEST
+        recoverToSucceededIf[UpstreamTrustStoreError] {
+          connector.claim(request)
         }
 
       }
@@ -130,10 +131,9 @@ class TrustsStoreConnectorSpec extends AsyncWordSpec with MustMatchers with Wire
           expectedResponse = response
         )
 
-        connector.claim(request) map { response =>
-          response.status mustBe INTERNAL_SERVER_ERROR
+        recoverToSucceededIf[UpstreamTrustStoreError] {
+          connector.claim(request)
         }
-
       }
 
     }
