@@ -30,7 +30,8 @@ class FrontendAppConfig @Inject() (val configuration: Configuration, servicesCon
   private val contactHost = configuration.get[String]("contact-frontend.host")
   private val contactFormServiceIdentifier = "trusts"
 
-  lazy val serviceName: String = configuration.get[String]("serviceName")
+  lazy val taxableEnrolmentServiceName: String = configuration.get[String]("microservice.services.tax-enrolments.taxable.serviceName")
+  lazy val nonTaxableEnrolmentServiceName: String = configuration.get[String]("microservice.services.tax-enrolments.non-taxable.serviceName")
 
   val analyticsToken: String = configuration.get[String](s"google-analytics.token")
 
@@ -103,9 +104,6 @@ class FrontendAppConfig @Inject() (val configuration: Configuration, servicesCon
 
   lazy val countdownLength: String = configuration.get[String]("timeout.countdown")
   lazy val timeoutLength: String = configuration.get[String]("timeout.length")
-
-  lazy val logoutAudit: Boolean =
-    configuration.get[Boolean]("microservice.services.features.auditing.logout")
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),

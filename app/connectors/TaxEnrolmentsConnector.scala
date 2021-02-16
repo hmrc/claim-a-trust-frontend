@@ -27,10 +27,14 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class TaxEnrolmentsConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
 
-  val url: String = config.taxEnrolmentsUrl + s"/service/${config.serviceName}/enrolment"
-
   def enrol(request: TaxEnrolmentsRequest)
            (implicit hc : HeaderCarrier, ec : ExecutionContext, writes: Writes[TaxEnrolmentsRequest]): Future[EnrolmentResponse] = {
+
+    val url: String = if (request.identifier.length == 10) {
+      s"${config.taxEnrolmentsUrl}/service/${config.taxableEnrolmentServiceName}/enrolment"
+    } else {
+      s"${config.taxEnrolmentsUrl}/service/${config.nonTaxableEnrolmentServiceName}/enrolment"
+    }
 
     val response = http.PUT[JsValue, EnrolmentResponse](url, Json.toJson(request))
 
