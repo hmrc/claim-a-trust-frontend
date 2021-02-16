@@ -73,7 +73,7 @@ class RelationshipEstablishmentConnectorSpec extends AsyncWordSpec with MustMatc
         val expectedJourneyFailureReason =
           """
             |{
-            | "errorKey": "UTR_NOT_FOUND"
+            | "errorKey": "TRUST_NOT_FOUND"
             |}""".stripMargin
 
         wiremock(
@@ -90,7 +90,7 @@ class RelationshipEstablishmentConnectorSpec extends AsyncWordSpec with MustMatc
         val expectedJourneyFailureReason =
           """
             |{
-            | "errorKey": "UTR_IN_PROCESSING"
+            | "errorKey": "TRUST_IN_PROCESSING"
             |}""".stripMargin
 
         wiremock(
