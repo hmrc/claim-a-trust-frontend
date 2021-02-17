@@ -35,7 +35,7 @@ class IvSuccessViewSpec extends ViewBehaviours {
       val applyView = view.apply(isAgent = true, utr)(fakeRequest, messages)
 
       behave like normalPage(applyView, "ivSuccess.agent", "paragraph1", "paragraph2", "paragraph3",
-        "paragraph4", "paragraph5")
+        "paragraph4", "paragraph5", "paragraph6")
     }
 
     "display the correct subheading" in {
@@ -51,7 +51,7 @@ class IvSuccessViewSpec extends ViewBehaviours {
 
   "IvSuccess view with no Agent" must {
 
-    "render view when config.playbackEnabled is true" when {
+    "render view" when {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .build()
@@ -60,7 +60,7 @@ class IvSuccessViewSpec extends ViewBehaviours {
 
       val applyView = view.apply(isAgent = false, utr)(fakeRequest, messages)
 
-      behave like normalPage(applyView, "ivSuccess.no.agent","paragraph1", "paragraph2","paragraph3")
+      behave like normalPage(applyView, "ivSuccess.no.agent","paragraph1", "li.1", "li.2", "li.3", "paragraph2","paragraph3")
 
       "display the correct subheading" in {
         val doc = asDocument(applyView)
