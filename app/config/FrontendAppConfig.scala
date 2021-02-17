@@ -69,8 +69,8 @@ class FrontendAppConfig @Inject() (val configuration: Configuration, servicesCon
   lazy val relationshipNonTaxableIdentifier : String =
     configuration.get[String]("microservice.services.self.relationship-establishment.nonTaxable.identifier")
 
-  private def relationshipEstablishmentFrontendPath(utr: String) : String =
-    s"${configuration.get[String]("microservice.services.relationship-establishment-frontend.path")}/$utr"
+  private def relationshipEstablishmentFrontendPath(identifier: String) : String =
+    s"${configuration.get[String]("microservice.services.relationship-establishment-frontend.path")}/$identifier"
 
   private def relationshipEstablishmentFrontendHost : String =
     configuration.get[String]("microservice.services.relationship-establishment-frontend.host")
