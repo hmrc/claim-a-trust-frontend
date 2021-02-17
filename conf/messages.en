@@ -59,12 +59,13 @@ ivSuccess.contactLink =  contact the trusts helpline (opens in a new window or t
 
 ivSuccess.agent.title = You have successfully claimed the trust
 ivSuccess.agent.heading = You have successfully claimed the trust
-ivSuccess.agent.paragraph1 = You need to tell your agent you have claimed the trust and passed the security questions
-ivSuccess.agent.paragraph2 = Your agent then needs to send you an authorisation link to approve so they can maintain the trust online.
-ivSuccess.agent.paragraph3 = The Government Gateway organisation account used to claim this trust must be used to log in and approve this link. An agent cannot access the trust’s register until you complete this step.
-ivSuccess.agent.paragraph4 = If you want to view the register,
-ivSuccess.agent.continueLink =  you can continue into the service
-ivSuccess.agent.paragraph5 = If you need help using the service
+ivSuccess.agent.paragraph1 = You need to tell your agent you have claimed the trust and passed the security questions.
+ivSuccess.agent.paragraph2 = Your agent will then need to send you an authorisation link that you need to approve.
+ivSuccess.agent.paragraph3 = To approve the authorisation link, you must login with the Government Gateway organisation account used to claim this trust.
+ivSuccess.agent.paragraph4 = Your agent cannot access this trust’s register, or manage the trust online until you approve the authorisation link.
+ivSuccess.agent.paragraph5 = You can continue into the service if you want to
+ivSuccess.agent.continueLink = view the register
+ivSuccess.agent.paragraph6 = If you need help using the service
 
 ivSuccess.no.agent.title = You have successfully claimed the trust
 ivSuccess.no.agent.heading = You have successfully claimed the trust

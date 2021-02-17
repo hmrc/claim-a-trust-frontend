@@ -25,10 +25,9 @@ class IvSuccessViewSpec extends ViewBehaviours {
 
   "IvSuccess view with Agent" must {
 
-    "display the register link when config.playbackEnabled is true" when {
+    "display the register link" when {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .configure("microservice.services.features.playback.enabled" -> true)
         .build()
 
       val view = application.injector.instanceOf[IvSuccessView]
@@ -48,53 +47,13 @@ class IvSuccessViewSpec extends ViewBehaviours {
       val doc = asDocument(applyView)
       assertContainsText(doc, messages("ivSuccess.subheading", utr))
     }
-
-    "do not display the register link when config.playbackEnabled is false" when {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .configure("microservice.services.features.playback.enabled" -> false)
-        .build()
-
-      val view = application.injector.instanceOf[IvSuccessView]
-
-      val applyView = view.apply(isAgent = true, utr)(fakeRequest, messages)
-
-      behave like normalPage(applyView, "ivSuccess.agent","paragraph1", "paragraph2","paragraph3",
-        "paragraph5")
-    }
-
   }
 
   "IvSuccess view with no Agent" must {
 
-    "render view when config.playbackEnabled is false" when {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .configure("microservice.services.features.playback.enabled" -> false)
-        .build()
-
-      val view = application.injector.instanceOf[IvSuccessView]
-
-      val applyView = view.apply(isAgent = false, utr)(fakeRequest, messages)
-
-      behave like normalPage(applyView, "ivSuccess.no.agent","paragraph1", "paragraph2","paragraph3")
-
-      "display the correct subheading" in {
-        val doc = asDocument(applyView)
-        assertContainsText(doc, messages("ivSuccess.subheading", utr))
-      }
-
-      "hide the continue button" in {
-        val doc = asDocument(applyView)
-        assertNotRenderedByCssSelector(doc, ".button")
-      }
-
-    }
-
     "render view when config.playbackEnabled is true" when {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .configure("microservice.services.features.playback.enabled" -> true)
         .build()
 
       val view = application.injector.instanceOf[IvSuccessView]
