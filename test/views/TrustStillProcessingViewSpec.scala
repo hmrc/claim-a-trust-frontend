@@ -22,18 +22,24 @@ import views.html.TrustStillProcessing
 class TrustStillProcessingViewSpec extends ViewBehaviours {
 
   val utr = "0987654321"
+  val urn = "ABTRUST12345678"
 
   "TrustStillProcessing view" must {
 
     val view = viewFor[TrustStillProcessing](Some(emptyUserAnswers))
 
-    val applyView = view.apply(utr)(fakeRequest, messages)
+    def applyView(id: String) = view.apply(id)(fakeRequest, messages)
 
-    behave like normalPage(applyView, "stillProcessing","p2")
+    behave like normalPage(applyView(utr), "stillProcessing","p2")
 
-    "display the correct subheading" in {
-      val doc = asDocument(applyView)
-      assertContainsText(doc, messages("stillProcessing.subheading", utr))
+    "display the correct subheading for a utr" in {
+      val doc = asDocument(applyView(utr))
+      assertContainsText(doc, messages("utr.subheading", utr))
+    }
+
+    "display the correct subheading for a urn" in {
+      val doc = asDocument(applyView(urn))
+      assertContainsText(doc, messages("urn.subheading", urn))
     }
 
   }

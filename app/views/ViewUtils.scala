@@ -28,4 +28,12 @@ object ViewUtils {
   def breadcrumbTitle(title: String)(implicit messages: Messages): String = {
     s"$title - ${messages("site.service_name")} - GOV.UK"
   }
+
+  def subheading(identifier: String)(implicit messages: Messages) : String = {
+    if (identifier.length == 10) {
+      s"${messages("utr.subheading", identifier)}"
+    } else {
+      s"${messages("urn.subheading", identifier)}"
+    }
+  }
 }

@@ -34,12 +34,11 @@
 
         @components.error_summary(form.errors)
 
-
         @components.input_yes_no(
             field = form("value"),
             label = messages("isAgentManagingTrust.heading"),
             labelClass = Some("heading-large"),
-            caption = Some(messages("isAgentManagingTrust.subheading", utr)),
+            caption = Some(subheading(utr)),
             legendAsHeading = true
         )
 

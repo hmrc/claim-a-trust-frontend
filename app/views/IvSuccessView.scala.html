@@ -31,7 +31,7 @@
         @components.heading(
             headingKey = "ivSuccess.agent.heading",
             headingSize = "heading-large govuk-fieldset__heading",
-            subheading = Some(messages("ivSuccess.subheading", utr))
+            subheading = Some(subheading(utr))
         )
         <p>@messages("ivSuccess.agent.paragraph1")</p>
         <p>@messages("ivSuccess.agent.paragraph2")</p>
@@ -46,7 +46,7 @@
         @components.heading(
             headingKey = "ivSuccess.no.agent.heading",
             headingSize = "heading-large govuk-fieldset__heading",
-            subheading = Some(messages("ivSuccess.subheading", utr))
+            subheading = Some(subheading(utr))
         )
         <p>@messages("ivSuccess.no.agent.paragraph1")</p>
         <ul class="govuk-list govuk-list--bullet">

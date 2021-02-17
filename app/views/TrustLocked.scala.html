@@ -27,7 +27,7 @@ main_template: MainTemplate
     @components.heading(
         headingKey = "locked.heading",
         headingSize = "heading-large govuk-fieldset__heading",
-        subheading = Some(messages("locked.subheading", utr))
+        subheading = Some(subheading(utr))
     )
 
     <p>@messages("locked.p1")</p>

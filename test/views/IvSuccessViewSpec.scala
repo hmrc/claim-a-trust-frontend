@@ -21,7 +21,8 @@ import views.html.IvSuccessView
 
 class IvSuccessViewSpec extends ViewBehaviours {
 
-  val utr = "0987654321"
+  val utr = "1234567890"
+  val urn = "ABTRUST12345678"
 
   "IvSuccess view with Agent" must {
 
@@ -38,14 +39,24 @@ class IvSuccessViewSpec extends ViewBehaviours {
         "paragraph4", "paragraph5", "paragraph6")
     }
 
-    "display the correct subheading" in {
+    "display the correct subheading for a utr" in {
 
       val view = viewFor[IvSuccessView](Some(emptyUserAnswers))
 
       val applyView = view.apply(isAgent = true, utr)(fakeRequest, messages)
 
       val doc = asDocument(applyView)
-      assertContainsText(doc, messages("ivSuccess.subheading", utr))
+      assertContainsText(doc, messages("utr.subheading", utr))
+    }
+
+    "display the correct subheading for a urn" in {
+
+      val view = viewFor[IvSuccessView](Some(emptyUserAnswers))
+
+      val applyView = view.apply(isAgent = true, urn)(fakeRequest, messages)
+
+      val doc = asDocument(applyView)
+      assertContainsText(doc, messages("urn.subheading", urn))
     }
   }
 
@@ -58,17 +69,22 @@ class IvSuccessViewSpec extends ViewBehaviours {
 
       val view = application.injector.instanceOf[IvSuccessView]
 
-      val applyView = view.apply(isAgent = false, utr)(fakeRequest, messages)
+      def applyView(id: String) = view.apply(isAgent = false, id)(fakeRequest, messages)
 
-      behave like normalPage(applyView, "ivSuccess.no.agent","paragraph1", "li.1", "li.2", "li.3", "paragraph2","paragraph3")
+      behave like normalPage(applyView(utr), "ivSuccess.no.agent","paragraph1", "li.1", "li.2", "li.3", "paragraph2","paragraph3")
 
-      "display the correct subheading" in {
-        val doc = asDocument(applyView)
-        assertContainsText(doc, messages("ivSuccess.subheading", utr))
+      "display the correct subheading for a utr" in {
+        val doc = asDocument(applyView(utr))
+        assertContainsText(doc, messages("utr.subheading", utr))
+      }
+
+      "display the correct subheading for a urn" in {
+        val doc = asDocument(applyView(urn))
+        assertContainsText(doc, messages("urn.subheading", urn))
       }
 
       "show the continue button" in {
-        val doc = asDocument(applyView)
+        val doc = asDocument(applyView(utr))
         assertRenderedByCssSelector(doc, ".button")
       }
 
