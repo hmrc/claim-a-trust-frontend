@@ -16,20 +16,6 @@
 
 package models
 
-import com.google.inject.Inject
-import config.FrontendAppConfig
-import uk.gov.hmrc.auth.core.{BusinessKey, Relationship}
-
-class RelationshipForIdentifier @Inject()(config: FrontendAppConfig) {
-
-  def apply(identifier: String): Relationship = {
-    val businessKey = if (IsUTR(identifier)) {
-      config.relationshipTaxableIdentifier
-    } else {
-      config.relationshipNonTaxableIdentifier
-    }
-
-    Relationship(config.relationshipName, Set(BusinessKey(businessKey, identifier)))
-  }
-
+case object IsUTR {
+  def apply(identifier: String): Boolean = identifier.length == 10
 }

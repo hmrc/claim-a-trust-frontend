@@ -18,7 +18,7 @@ package connectors
 
 import config.FrontendAppConfig
 import javax.inject.Inject
-import models.{EnrolmentResponse, TaxEnrolmentsRequest}
+import models.{EnrolmentResponse, IsUTR, TaxEnrolmentsRequest}
 import play.api.libs.json.{JsValue, Json, Writes}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.http.HttpClient
@@ -30,7 +30,7 @@ class TaxEnrolmentsConnector @Inject()(http: HttpClient, config : FrontendAppCon
   def enrol(request: TaxEnrolmentsRequest)
            (implicit hc : HeaderCarrier, ec : ExecutionContext, writes: Writes[TaxEnrolmentsRequest]): Future[EnrolmentResponse] = {
 
-    val url: String = if (request.identifier.length == 10) {
+    val url: String = if (IsUTR(request.identifier)) {
       s"${config.taxEnrolmentsUrl}/service/${config.taxableEnrolmentServiceName}/enrolment"
     } else {
       s"${config.taxEnrolmentsUrl}/service/${config.nonTaxableEnrolmentServiceName}/enrolment"

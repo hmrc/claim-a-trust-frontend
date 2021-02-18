@@ -16,6 +16,7 @@
 
 package views
 
+import models.IsUTR
 import play.api.data.Form
 import play.api.i18n.Messages
 
@@ -30,7 +31,7 @@ object ViewUtils {
   }
 
   def subheading(identifier: String)(implicit messages: Messages) : String = {
-    if (identifier.length == 10) {
+    if (IsUTR(identifier)) {
       s"${messages("utr.subheading", identifier)}"
     } else {
       s"${messages("urn.subheading", identifier)}"

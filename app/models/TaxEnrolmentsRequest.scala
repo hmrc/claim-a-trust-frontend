@@ -36,7 +36,7 @@ object TaxEnrolmentsRequest {
 
     case class Values(identifier: String, verifier: String)
 
-    val identifierAndVerifierKey = if (self.identifier.length == 10) {
+    val identifierAndVerifierKey = if (IsUTR(self.identifier)) {
       Values(Taxable.IDENTIFIER, Taxable.VERIFIER)
     } else {
       Values(NonTaxable.IDENTIFIER, NonTaxable.VERIFIER)
