@@ -18,11 +18,14 @@ package controllers.testOnlyDoNotUseInAppConf
 
 import com.google.inject.Inject
 import config.FrontendAppConfig
+import models.IsUTR
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClient,config: FrontendAppConfig)
+class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClient,
+                                                   config: FrontendAppConfig
+                                                  )
                                                   (implicit val ec : ExecutionContext) {
 
   private val relationshipEstablishmentPostUrl: String = s"${config.relationshipEstablishmentBaseUrl}/relationship-establishment/relationship/"
@@ -33,11 +36,18 @@ class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClient,co
   private def relationshipEstablishmentDeleteUrl(credId: String): String =
     s"${config.relationshipEstablishmentBaseUrl}/test/relationship/$credId"
 
-  private def newRelationship(credId: String, utr: String): Relationship =
-    Relationship(config.relationshipName, Set(BusinessKey(config.relationshipTaxableIdentifier, utr)), credId)
+  private def newRelationship(credId: String, identifier: String): Relationship = {
+    if (IsUTR(identifier)) {
+      Relationship(config.relationshipName, Set(BusinessKey(config.relationshipTaxableIdentifier, identifier)), credId)
+    } else {
+      Relationship(config.relationshipName, Set(BusinessKey(config.relationshipNonTaxableIdentifier, identifier)), credId)
+    }
+  }
 
-  def createRelationship(credId: String, utr: String)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
-    httpClient.POST[RelationshipJson,HttpResponse](relationshipEstablishmentPostUrl,RelationshipJson(newRelationship(credId, utr)))
+  def createRelationship(credId: String, identifier: String)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] = {
+    val ttl = config.relationshipTTL
+    httpClient.POST[RelationshipJson,HttpResponse](relationshipEstablishmentPostUrl, RelationshipJson(newRelationship(credId, identifier), ttl))
+  }
 
   def getRelationship(credId: String)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
     httpClient.GET(relationshipEstablishmentGetUrl(credId))

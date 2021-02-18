@@ -29,7 +29,7 @@ case class Relationship(relationshipName: String, businessKeys: Set[BusinessKey]
 object Relationship {
   implicit val format: OFormat[Relationship] = Json.format[Relationship]
 }
-case class RelationshipJson(relationship: Relationship, ttlSeconds:Int = 1440)
+case class RelationshipJson(relationship: Relationship, ttlSeconds: Int)
 
 object RelationshipJson {
   implicit val format : OFormat[RelationshipJson] = Json.format[RelationshipJson]

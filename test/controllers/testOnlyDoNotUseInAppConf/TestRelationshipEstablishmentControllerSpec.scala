@@ -20,11 +20,9 @@ import base.SpecBase
 import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatestplus.mockito.MockitoSugar.mock
-import play.api.Application
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, route, status, _}
-import play.test.WithApplication
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
