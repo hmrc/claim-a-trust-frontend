@@ -19,7 +19,7 @@
     formHelper: FormWithCSRF
 )
 
-@(utr: String)(implicit request: Request[_], messages: Messages)
+@(identifier: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = messages("beforeYouContinue.title")
@@ -32,7 +32,7 @@
         @components.heading(
             headingKey = "beforeYouContinue.heading",
             headingSize = "heading-large govuk-fieldset__heading",
-            subheading = Some(subheading(utr))
+            subheading = Some(subheading(identifier))
         )
 
         <p>@messages("beforeYouContinue.p1")</p>

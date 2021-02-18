@@ -21,7 +21,7 @@
  config: FrontendAppConfig
 )
 
-@(isAgent: Boolean, utr: String)(implicit request: Request[_], messages: Messages)
+@(isAgent: Boolean, identifier: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
  title = if(isAgent) {messages("ivSuccess.agent.title")} else {messages("ivSuccess.no.agent.title")}
@@ -31,7 +31,7 @@
         @components.heading(
             headingKey = "ivSuccess.agent.heading",
             headingSize = "heading-large govuk-fieldset__heading",
-            subheading = Some(subheading(utr))
+            subheading = Some(subheading(identifier))
         )
         <p>@messages("ivSuccess.agent.paragraph1")</p>
         <p>@messages("ivSuccess.agent.paragraph2")</p>
@@ -46,7 +46,7 @@
         @components.heading(
             headingKey = "ivSuccess.no.agent.heading",
             headingSize = "heading-large govuk-fieldset__heading",
-            subheading = Some(subheading(utr))
+            subheading = Some(subheading(identifier))
         )
         <p>@messages("ivSuccess.no.agent.paragraph1")</p>
         <ul class="govuk-list govuk-list--bullet">

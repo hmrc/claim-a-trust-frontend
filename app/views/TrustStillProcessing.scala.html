@@ -18,7 +18,7 @@
 main_template: MainTemplate
 )
 
-@(utr: String)(implicit request: Request[_], messages: Messages)
+@(identifier: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
 title = messages("stillProcessing.title")
@@ -27,7 +27,7 @@ title = messages("stillProcessing.title")
 @components.heading(
  headingKey = "stillProcessing.heading",
  headingSize = "heading-large govuk-fieldset__heading",
- subheading = Some(subheading(utr))
+ subheading = Some(subheading(identifier))
 )
 
 <p>@messages("stillProcessing.p2")</p>

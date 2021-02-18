@@ -22,7 +22,7 @@
     formHelper: FormWithCSRF
 )
 
-@(form: Form[_], mode: Mode, utr: String)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, identifier: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
     title = s"${errorPrefix(form)}${messages("isAgentManagingTrust.title")}"
@@ -38,7 +38,7 @@
             field = form("value"),
             label = messages("isAgentManagingTrust.heading"),
             labelClass = Some("heading-large"),
-            caption = Some(subheading(utr)),
+            caption = Some(subheading(identifier)),
             legendAsHeading = true
         )
 
