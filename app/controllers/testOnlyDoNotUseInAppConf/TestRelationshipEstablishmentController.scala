@@ -21,12 +21,11 @@ import controllers.actions.IdentifierAction
 import models.requests.IdentifierRequest
 import play.api.Logging
 import play.api.i18n.MessagesApi
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.{Regex, Session}
 
 import scala.concurrent.{ExecutionContext, Future}
-
 
 /**
  * Test controller and connector to relationship-establishment to set a relationship for a given UTR.
@@ -37,11 +36,10 @@ class TestRelationshipEstablishmentController @Inject()(
                                                          val controllerComponents: MessagesControllerComponents,
                                                          relationshipEstablishmentConnector: RelationshipEstablishmentConnector,
                                                          identify: IdentifierAction
-                                                       )
-                                                       (implicit ec : ExecutionContext)
+                                                       )(implicit ec: ExecutionContext)
   extends FrontendBaseController with Logging {
 
-  def check(identifier: String) = identify.async {
+  def check(identifier: String): Action[AnyContent] = identify.async {
     implicit request =>
 
       logger.info("[Claiming] TrustIV is using a test route, you don't want this in production.")
