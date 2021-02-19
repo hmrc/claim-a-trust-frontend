@@ -17,34 +17,34 @@
 package controllers
 
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
-import javax.inject.Inject
 import models.requests.OptionalDataRequest
 import models.{NormalMode, UserAnswers}
 import pages.IdentifierPage
 import play.api.Logging
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Request, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.{Regex, Session}
+import utils.{IdentifierRegex, Session}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class SaveIdentifierController @Inject()(
-                                   identify: IdentifierAction,
-                                   val controllerComponents: MessagesControllerComponents,
-                                   getData: DataRetrievalAction,
-                                   sessionRepository: SessionRepository,
-                                   relationship: RelationshipEstablishment
-                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+                                          identify: IdentifierAction,
+                                          val controllerComponents: MessagesControllerComponents,
+                                          getData: DataRetrievalAction,
+                                          sessionRepository: SessionRepository,
+                                          relationship: RelationshipEstablishment
+                                        )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   def save(identifier: String): Action[AnyContent] = (identify andThen getData).async {
     implicit request =>
 
       identifier match {
-        case Regex.UtrRegex(utr) => checkIfAlreadyHaveIvRelationship(utr)
-        case Regex.UrnRegex(urn) => checkIfAlreadyHaveIvRelationship(urn)
+        case IdentifierRegex.UtrRegex(utr) => checkIfAlreadyHaveIvRelationship(utr)
+        case IdentifierRegex.UrnRegex(urn) => checkIfAlreadyHaveIvRelationship(urn)
         case _ =>
           logger.error(s"[Claiming][Session ID: ${Session.id(hc)}] " +
             s"Identifier provided is not a valid URN or UTR")
@@ -66,18 +66,18 @@ class SaveIdentifierController @Inject()(
   }
 
   private def saveAndContinue(identifier: String)(implicit request: OptionalDataRequest[AnyContent]): Future[Result] = {
-      val userAnswers = request.userAnswers match {
-        case Some(userAnswers) =>
-          userAnswers.set(IdentifierPage, identifier)
-        case _ =>
-          UserAnswers(request.internalId).set(IdentifierPage, identifier)
-      }
-      for {
-        updatedAnswers <- Future.fromTry(userAnswers)
-        _              <- sessionRepository.set(updatedAnswers)
-      } yield {
-        logger.info(s"[Claiming][Session ID: ${Session.id(hc(request))}] user has started the claim a trust journey for $identifier")
-        Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode))
-      }
+    val userAnswers = request.userAnswers match {
+      case Some(userAnswers) =>
+        userAnswers.set(IdentifierPage, identifier)
+      case _ =>
+        UserAnswers(request.internalId).set(IdentifierPage, identifier)
+    }
+    for {
+      updatedAnswers <- Future.fromTry(userAnswers)
+      _              <- sessionRepository.set(updatedAnswers)
+    } yield {
+      logger.info(s"[Claiming][Session ID: ${Session.id(hc(request))}] user has started the claim a trust journey for $identifier")
+      Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode))
+    }
   }
 }

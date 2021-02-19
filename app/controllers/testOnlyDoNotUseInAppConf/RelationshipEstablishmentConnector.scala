@@ -19,14 +19,15 @@ package controllers.testOnlyDoNotUseInAppConf
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.IsUTR
+import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClient,
-                                                   config: FrontendAppConfig
-                                                  )
-                                                  (implicit val ec : ExecutionContext) {
+class RelationshipEstablishmentConnector @Inject()(
+                                                    val httpClient: HttpClient,
+                                                    config: FrontendAppConfig
+                                                  )(implicit val ec : ExecutionContext) {
 
   private val relationshipEstablishmentPostUrl: String = s"${config.relationshipEstablishmentBaseUrl}/relationship-establishment/relationship/"
 
@@ -46,13 +47,13 @@ class RelationshipEstablishmentConnector @Inject()(val httpClient: HttpClient,
 
   def createRelationship(credId: String, identifier: String)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] = {
     val ttl = config.relationshipTTL
-    httpClient.POST[RelationshipJson,HttpResponse](relationshipEstablishmentPostUrl, RelationshipJson(newRelationship(credId, identifier), ttl))
+    httpClient.POST[RelationshipJson, HttpResponse](relationshipEstablishmentPostUrl, RelationshipJson(newRelationship(credId, identifier), ttl))
   }
 
   def getRelationship(credId: String)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
-    httpClient.GET(relationshipEstablishmentGetUrl(credId))
+    httpClient.GET[HttpResponse](relationshipEstablishmentGetUrl(credId))
 
   def deleteRelationship(credId: String)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
-    httpClient.DELETE(relationshipEstablishmentDeleteUrl(credId))
+    httpClient.DELETE[HttpResponse](relationshipEstablishmentDeleteUrl(credId))
 
 }

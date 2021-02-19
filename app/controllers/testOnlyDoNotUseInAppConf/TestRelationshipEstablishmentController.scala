@@ -23,7 +23,7 @@ import play.api.Logging
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.{Regex, Session}
+import utils.{IdentifierRegex, Session}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -45,14 +45,14 @@ class TestRelationshipEstablishmentController @Inject()(
       logger.info("[Claiming] TrustIV is using a test route, you don't want this in production.")
 
       identifier match {
-        case Regex.UtrRegex(utr) =>
+        case IdentifierRegex.UtrRegex(utr) =>
           if (utr.startsWith("1")) {
             createRelationship(utr)
           } else {
             logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] UTR did not start with '1', failing IV")
             Future.successful(Redirect(controllers.routes.FallbackFailureController.onPageLoad()))
           }
-        case Regex.UrnRegex(urn) =>
+        case IdentifierRegex.UrnRegex(urn) =>
           if (urn.head.toLower == "a".head) {
             createRelationship(urn)
           } else {
