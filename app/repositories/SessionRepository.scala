@@ -20,9 +20,10 @@ import models.UserAnswers
 import play.api.Configuration
 import play.api.libs.json._
 import play.modules.reactivemongo.ReactiveMongoApi
+import reactivemongo.api.bson.collection.BSONSerializationPack
 import reactivemongo.api.indexes.{Index, IndexType}
-import reactivemongo.bson.BSONDocument
-import reactivemongo.play.json.ImplicitBSONHandlers.JsObjectDocumentWriter
+import reactivemongo.api.bson.BSONDocument
+import reactivemongo.play.json.collection.Helpers.idWrites
 import reactivemongo.play.json.collection.JSONCollection
 
 import java.time.LocalDateTime
@@ -44,10 +45,29 @@ class DefaultSessionRepository @Inject()(
   private def collection: Future[JSONCollection] =
     mongo.database.map(_.collection[JSONCollection](collectionName))
 
-  private val lastUpdatedIndex = Index(
-    key     = Seq(lastUpdatedIndexKey -> IndexType.Ascending),
-    name    = Some(lastUpdatedIndexName),
-    options = BSONDocument("expireAfterSeconds" -> cacheTtl)
+  private val lastUpdatedIndex = Index.apply(BSONSerializationPack)(
+    key = Seq(lastUpdatedIndexKey -> IndexType.Ascending),
+    name = Some(lastUpdatedIndexName),
+    expireAfterSeconds = Some(cacheTtl),
+    options = BSONDocument.empty,
+    unique = true,
+    background = false,
+    dropDups = false,
+    sparse = false,
+    version = None,
+    partialFilter = None,
+    storageEngine = None,
+    weights = None,
+    defaultLanguage = None,
+    languageOverride = None,
+    textIndexVersion = None,
+    sphereIndexVersion = None,
+    bits = None,
+    min = None,
+    max = None,
+    bucketSize = None,
+    collation = None,
+    wildcardProjection = None
   )
 
   def ensureTtlIndex(collection: JSONCollection): Future[Unit] = {
