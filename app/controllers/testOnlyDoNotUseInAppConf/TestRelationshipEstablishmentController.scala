@@ -55,10 +55,10 @@ class TestRelationshipEstablishmentController @Inject()(
             Future.successful(Redirect(controllers.routes.FallbackFailureController.onPageLoad()))
           }
         case Regex.UrnRegex(urn) =>
-          if (urn.head.toLower == "a".head) {
+          if (urn.toLowerCase.startsWith("nt")) {
             createRelationship(urn)
           } else {
-            logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] URN did not start with 'A', failing IV")
+            logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] URN did not start with 'NT', failing IV")
             Future.successful(Redirect(controllers.routes.FallbackFailureController.onPageLoad()))
           }
         case _ =>
