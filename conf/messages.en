@@ -22,6 +22,9 @@ error.required = Please enter a value
 error.summary.title = There is a problem
 site.error = Error:
 
+utr.subheading = The trust’s UTR: {0}
+urn.subheading = The trust’s URN: {0}
+
 session_expired.title = For your security, we signed you out
 session_expired.heading = For your security, we signed you out
 session_expired.guidance = This is because you have been inactive on the service for 15 minutes.
@@ -50,31 +53,32 @@ timeout.keep-alive-button=Continue application
 
 isAgentManagingTrust.title = Is an agent managing the trust’s online register for the trustees?
 isAgentManagingTrust.heading = Is an agent managing the trust’s online register for the trustees?
-isAgentManagingTrust.subheading = This trust’s UTR: {0}
 isAgentManagingTrust.checkYourAnswersLabel = Is an agent managing the trust’s online register for the trustees?
 isAgentManagingTrust.error.required = Select yes if an agent is managing the trust’s online register for the trustees
 
-ivSuccess.subheading = The trust’s UTR: {0}
 ivSuccess.contactLink =  contact the trusts helpline (opens in a new window or tab)
 
 ivSuccess.agent.title = You have successfully claimed the trust
 ivSuccess.agent.heading = You have successfully claimed the trust
-ivSuccess.agent.paragraph1 = You need to tell your agent you have claimed the trust and passed the security questions
-ivSuccess.agent.paragraph2 = Your agent then needs to send you an authorisation link to approve so they can maintain the trust online.
-ivSuccess.agent.paragraph3 = The Government Gateway organisation account used to claim this trust must be used to log in and approve this link. An agent cannot access the trust’s register until you complete this step.
-ivSuccess.agent.paragraph4 = If you want to view the register,
-ivSuccess.agent.continueLink =  you can continue into the service
-ivSuccess.agent.paragraph5 = If you need help using the service
+ivSuccess.agent.paragraph1 = You need to tell your agent you have claimed the trust and passed the security questions.
+ivSuccess.agent.paragraph2 = Your agent will then need to send you an authorisation link that you need to approve.
+ivSuccess.agent.paragraph3 = To approve the authorisation link, you must login with the Government Gateway organisation account used to claim this trust.
+ivSuccess.agent.paragraph4 = Your agent cannot access this trust’s register, or manage the trust online until you approve the authorisation link.
+ivSuccess.agent.paragraph5 = You can continue into the service if you want to
+ivSuccess.agent.continueLink = view the register
+ivSuccess.agent.paragraph6 = If you need help using the service
 
 ivSuccess.no.agent.title = You have successfully claimed the trust
 ivSuccess.no.agent.heading = You have successfully claimed the trust
-ivSuccess.no.agent.paragraph1 = You are now able to change the information HMRC holds about the settlors, trustees and beneficiaries.
+ivSuccess.no.agent.paragraph1 = You are now able to change the information HMRC holds about:
+ivSuccess.no.agent.li.1 = settlors
+ivSuccess.no.agent.li.2 = trustees
+ivSuccess.no.agent.li.3 = beneficiaries
 ivSuccess.no.agent.paragraph2 = If the trust has a tax liability, you need to declare every year through this service and Self Assessment for Trusts that the information we have is up to date.
 ivSuccess.no.agent.paragraph3 = If you need help using the service
 
 beforeYouContinue.title = Before you continue
 beforeYouContinue.heading = Before you continue
-beforeYouContinue.subheading = This trust’s UTR: {0}
 beforeYouContinue.p1 = You will be asked to answer several questions about the trust. This is so you can claim the trust (which links your Government Gateway account to your registered trust).
 beforeYouContinue.p2 = Your answers must match the details provided to HMRC when the trust was registered or most recently updated online.
 beforeYouContinue.p3 = Do not enter any other details when answering these questions, even if someone from the trust wrote to HMRC to change them.
@@ -88,19 +92,20 @@ locked.p2 = You need to answer the security questions correctly so you can claim
 locked.p3 = Your answers must match the details provided to HMRC when the trust was registered or most recently updated online.
 locked.p4 = If you need help using the service,
 locked.link1 = contact the trusts helpline (opens in a new window or tab)
-locked.subheading = This trust’s UTR: {0}
 
 stillProcessing.title = We are processing the latest changes made to this trust
 stillProcessing.heading = We are processing the latest changes made to this trust
 stillProcessing.p2 = Try again later.
 stillProcessing.p3 = If you need help with the service
 stillProcessing.link1 = contact the trusts helpline (opens in a new window or tab)
-stillProcessing.subheading = This trust’s UTR: {0}
 
-notFound.title = The Unique Taxpayer Reference (UTR) you gave for the trust does not match our records
-notFound.heading = The Unique Taxpayer Reference (UTR) you gave for the trust does not match our records
-notFound.p1 = Check you have entered the trust’s UTR correctly.
-notFound.p2 = If you do not have a UTR for the trust you will need to register the trust first.
-notFound.p3 = If you need help with this service
+notFound.title = The unique identifier you gave for the trust does not match our records
+notFound.heading = The unique identifier you gave for the trust does not match our records
+notFound.p1 = Check you have entered the trust’s unique identifier correctly.
+notFound.p2 = The unique identifier will be one of the following:
+notFound.li.1 = a Unique Taxpayer Reference (UTR) which is ten numbers long, for example 76543 21234
+notFound.li.2 = a Unique Reference Number (URN) which has 15 numbers and characters, for example ABTRUST7654321234
+notFound.p3 = If you do not have a unique identifier for the trust, you will need to
+notFound.register.link = register the trust
+notFound.p4 = If you need help with this service
 notFound.link1 = contact the trusts helpline (opens in a new window or tab)
-notFound.button=Try again

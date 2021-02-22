@@ -21,7 +21,7 @@
   config: FrontendAppConfig
 )
 
-@(utr: String)(implicit request: Request[_], messages: Messages)
+@(identifier: String)(implicit request: Request[_], messages: Messages)
 
 @main_template(
 title = messages("notFound.title")
@@ -30,7 +30,13 @@ title = messages("notFound.title")
 @components.heading("notFound.heading", headingSize = "heading-large")
 
 <p>@messages("notFound.p1")</p>
+
 <p>@messages("notFound.p2")</p>
-<p>@messages("notFound.p3") <a target="_blank" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts">@messages("notFound.link1")</a>.</p>
-@components.button_link("notFound.button", config.trustsRegistration)
+<ul class="govuk-list govuk-list--bullet">
+ <li>@messages("notFound.li.1")</li>
+ <li>@messages("notFound.li.2")</li>
+</ul>
+
+<p>@messages("notFound.p3") <a href="@{config.trustsRegistration}">@messages("notFound.register.link")</a>.</p>
+<p>@messages("notFound.p4") <a target="_blank" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts">@messages("notFound.link1")</a>.</p>
 }

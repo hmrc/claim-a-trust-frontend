@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,24 +12,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-main_template: MainTemplate
-)
+package models
 
-@(identifier: String)(implicit request: Request[_], messages: Messages)
-
-@main_template(
-title = messages("stillProcessing.title")
-) {
-
-@components.heading(
- headingKey = "stillProcessing.heading",
- headingSize = "heading-large govuk-fieldset__heading",
- subheading = Some(subheading(identifier))
-)
-
-<p>@messages("stillProcessing.p2")</p>
-<p>@messages("stillProcessing.p3") <a target="_blank" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts">@messages("stillProcessing.link1")</a>.</p>
+case object IsUTR {
+  def apply(identifier: String): Boolean = identifier.length == 10
 }

@@ -18,15 +18,14 @@ package controllers
 
 import base.SpecBase
 import connectors.{RelationshipEstablishmentConnector, TrustsStoreConnector}
-import models.{RelationshipEstablishmentStatus, TrustsStoreRequest}
+import models.{RelationshipEstablishmentStatus, StatusStored, TrustsStoreRequest}
 import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.{verify, when}
 import org.scalatestplus.mockito.MockitoSugar.mock
-import pages.{IsAgentManagingTrustPage, UtrPage}
+import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 
@@ -41,7 +40,7 @@ class IvFailureControllerSpec extends SpecBase {
       "redirect to IV FallbackFailure when no journeyId is provided" in {
 
         val answers = emptyUserAnswers
-          .set(UtrPage, "1234567890").success.value
+          .set(IdentifierPage, "1234567890").success.value
           .set(IsAgentManagingTrustPage, true).success.value
 
         val application = applicationBuilder(userAnswers = Some(answers))
@@ -63,7 +62,7 @@ class IvFailureControllerSpec extends SpecBase {
       "redirect to trust locked page when user fails Trusts IV after multiple attempts" in {
 
         val answers = emptyUserAnswers
-          .set(UtrPage, "1234567890").success.value
+          .set(IdentifierPage, "1234567890").success.value
           .set(IsAgentManagingTrustPage, true).success.value
 
         val onIvFailureRoute = routes.IvFailureController.onTrustIvFailure().url
@@ -89,7 +88,7 @@ class IvFailureControllerSpec extends SpecBase {
       "redirect to trust utr not found page when the utr isn't found" in {
 
         val answers = emptyUserAnswers
-          .set(UtrPage, "1234567890").success.value
+          .set(IdentifierPage, "1234567890").success.value
           .set(IsAgentManagingTrustPage, true).success.value
 
         val application = applicationBuilder(userAnswers = Some(answers))
@@ -115,7 +114,7 @@ class IvFailureControllerSpec extends SpecBase {
       "redirect to trust utr in processing page when the utr is processing" in {
 
         val answers = emptyUserAnswers
-          .set(UtrPage, "1234567890").success.value
+          .set(IdentifierPage, "1234567890").success.value
           .set(IsAgentManagingTrustPage, true).success.value
 
         val application = applicationBuilder(userAnswers = Some(answers))
@@ -141,7 +140,7 @@ class IvFailureControllerSpec extends SpecBase {
       "redirect to IV FallbackFailure when no error key found in response" in {
 
         val answers = emptyUserAnswers
-          .set(UtrPage, "1234567890").success.value
+          .set(IdentifierPage, "1234567890").success.value
           .set(IsAgentManagingTrustPage, true).success.value
 
         val application = applicationBuilder(userAnswers = Some(answers))
@@ -177,10 +176,10 @@ class IvFailureControllerSpec extends SpecBase {
         val connector = mock[TrustsStoreConnector]
 
         when(connector.claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any()))
-          .thenReturn(Future.successful(HttpResponse(CREATED, "")))
+          .thenReturn(Future.successful(StatusStored))
 
         val answers = emptyUserAnswers
-          .set(UtrPage, utr).success.value
+          .set(IdentifierPage, utr).success.value
           .set(IsAgentManagingTrustPage, true).success.value
 
         val application = applicationBuilder(userAnswers = Some(answers))
@@ -205,7 +204,7 @@ class IvFailureControllerSpec extends SpecBase {
         val onLockedRoute = routes.IvFailureController.trustNotFound().url
 
         val answers = emptyUserAnswers
-          .set(UtrPage, "1234567890").success.value
+          .set(IdentifierPage, "1234567890").success.value
 
         val application = applicationBuilder(userAnswers = Some(answers))
           .build()
@@ -216,7 +215,7 @@ class IvFailureControllerSpec extends SpecBase {
 
         status(result) mustEqual OK
 
-        contentAsString(result) must include("The Unique Taxpayer Reference (UTR) you gave for the trust does not match our records")
+        contentAsString(result) must include("The unique identifier you gave for the trust does not match our records")
 
         application.stop()
       }
@@ -226,7 +225,7 @@ class IvFailureControllerSpec extends SpecBase {
         val onLockedRoute = routes.IvFailureController.trustStillProcessing().url
 
         val answers = emptyUserAnswers
-          .set(UtrPage, "1234567891").success.value
+          .set(IdentifierPage, "1234567891").success.value
 
         val application = applicationBuilder(userAnswers = Some(answers))
           .build()

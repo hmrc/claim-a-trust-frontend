@@ -30,7 +30,8 @@ class FrontendAppConfig @Inject() (val configuration: Configuration, servicesCon
   private val contactHost = configuration.get[String]("contact-frontend.host")
   private val contactFormServiceIdentifier = "trusts"
 
-  lazy val serviceName: String = configuration.get[String]("serviceName")
+  lazy val taxableEnrolmentServiceName: String = configuration.get[String]("microservice.services.tax-enrolments.taxable.serviceName")
+  lazy val nonTaxableEnrolmentServiceName: String = configuration.get[String]("microservice.services.tax-enrolments.non-taxable.serviceName")
 
   val analyticsToken: String = configuration.get[String](s"google-analytics.token")
 
@@ -52,8 +53,6 @@ class FrontendAppConfig @Inject() (val configuration: Configuration, servicesCon
   lazy val languageTranslationEnabled: Boolean =
     configuration.get[Boolean]("microservice.services.features.welsh-translation")
 
-  lazy val playbackEnabled: Boolean = configuration.get[Boolean]("microservice.services.features.playback.enabled")
-
   lazy val trustsStoreUrl: String = configuration.get[Service]("microservice.services.trusts-store").baseUrl + "/trusts-store"
 
   lazy val taxEnrolmentsUrl: String = configuration.get[Service]("microservice.services.tax-enrolments").baseUrl + "/tax-enrolments"
@@ -64,11 +63,17 @@ class FrontendAppConfig @Inject() (val configuration: Configuration, servicesCon
   lazy val relationshipName : String =
     configuration.get[String]("microservice.services.self.relationship-establishment.name")
 
-  lazy val relationshipIdentifier : String =
-    configuration.get[String]("microservice.services.self.relationship-establishment.identifier")
+  lazy val relationshipTaxableIdentifier : String =
+    configuration.get[String]("microservice.services.self.relationship-establishment.taxable.identifier")
 
-  private def relationshipEstablishmentFrontendPath(utr: String) : String =
-    s"${configuration.get[String]("microservice.services.relationship-establishment-frontend.path")}/$utr"
+  lazy val relationshipNonTaxableIdentifier : String =
+    configuration.get[String]("microservice.services.self.relationship-establishment.nonTaxable.identifier")
+
+  lazy val relationshipTTL: Int =
+    configuration.get[Int]("microservice.services.test.relationship-establishment-frontend.mongo.ttl")
+
+  private def relationshipEstablishmentFrontendPath(identifier: String) : String =
+    s"${configuration.get[String]("microservice.services.relationship-establishment-frontend.path")}/$identifier"
 
   private def relationshipEstablishmentFrontendHost : String =
     configuration.get[String]("microservice.services.relationship-establishment-frontend.host")
@@ -82,11 +87,11 @@ class FrontendAppConfig @Inject() (val configuration: Configuration, servicesCon
   lazy val relationshipEstablishmentStubbed: Boolean =
     configuration.get[Boolean]("microservice.services.features.stubRelationshipEstablishment")
 
-  def relationshipEstablishmentFrontendtUrl(utr: String) : String = {
+  def relationshipEstablishmentFrontendtUrl(identifier: String) : String = {
     if(relationshipEstablishmentStubbed) {
-      s"${stubbedRelationshipEstablishmentFrontendHost}/${stubbedRelationshipEstablishmentFrontendPath(utr)}"
+      s"${stubbedRelationshipEstablishmentFrontendHost}/${stubbedRelationshipEstablishmentFrontendPath(identifier)}"
     } else {
-      s"${relationshipEstablishmentFrontendHost}/${relationshipEstablishmentFrontendPath(utr)}"
+      s"${relationshipEstablishmentFrontendHost}/${relationshipEstablishmentFrontendPath(identifier)}"
     }
   }
 
@@ -100,9 +105,6 @@ class FrontendAppConfig @Inject() (val configuration: Configuration, servicesCon
 
   lazy val countdownLength: String = configuration.get[String]("timeout.countdown")
   lazy val timeoutLength: String = configuration.get[String]("timeout.length")
-
-  lazy val logoutAudit: Boolean =
-    configuration.get[Boolean]("microservice.services.features.auditing.logout")
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),

@@ -22,18 +22,24 @@ import views.html.TrustLocked
 class TrustLockedViewSpec extends ViewBehaviours {
 
   val utr = "0987654321"
+  val urn = "ABTRUST12345678"
 
   "TrustLocked view" must {
 
     val view = viewFor[TrustLocked](Some(emptyUserAnswers))
 
-    val applyView = view.apply(utr)(fakeRequest, messages)
+    def applyView(id: String) = view.apply(id)(fakeRequest, messages)
 
-    behave like normalPage(applyView, "locked","p1", "p2", "p3", "p4", "link1")
+    behave like normalPage(applyView(utr), "locked","p1", "p2", "p3", "p4", "link1")
 
-    "display the correct subheading" in {
-      val doc = asDocument(applyView)
-      assertContainsText(doc, messages("locked.subheading", utr))
+    "display the correct subheading for a utr" in {
+      val doc = asDocument(applyView(utr))
+      assertContainsText(doc, messages("utr.subheading", utr))
+    }
+
+    "display the correct subheading for a urn" in {
+      val doc = asDocument(applyView(urn))
+      assertContainsText(doc, messages("urn.subheading", urn))
     }
 
   }

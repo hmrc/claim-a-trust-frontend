@@ -40,11 +40,13 @@ class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
     )
     .build()
 
-  lazy val url: String = s"/tax-enrolments/service/${config.serviceName}/enrolment"
+  lazy val taxableEnrolmentUrl: String = s"/tax-enrolments/service/HMRC-TERS-ORG/enrolment"
+  lazy val nonTaxableEnrolmentUrl: String = s"/tax-enrolments/service/HMRC-TERSNT-ORG/enrolment"
 
   val utr = "1234567890"
+  val urn = "ABTRUST12345678"
 
-  val request = Json.stringify(Json.obj(
+  val taxableRequest: String = Json.stringify(Json.obj(
     "identifiers" -> Json.arr(
       Json.obj(
         "key" -> "SAUTR",
@@ -58,8 +60,22 @@ class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
     )
   ))
 
+  val nonTaxableRequest: String = Json.stringify(Json.obj(
+    "identifiers" -> Json.arr(
+      Json.obj(
+        "key" -> "URN",
+        "value" -> urn
+      )),
+    "verifiers" -> Json.arr(
+      Json.obj(
+        "key" -> "URN1",
+        "value" -> urn
+      )
+    )
+  ))
 
-  private def wiremock(payload: String, expectedStatus: Int, expectedResponse: String) =
+
+  private def wiremock(payload: String, expectedStatus: Int, url: String) =
     server.stubFor(
       put(urlEqualTo(url))
         .withHeader(CONTENT_TYPE, containing("application/json"))
@@ -67,20 +83,19 @@ class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
         .willReturn(
           aResponse()
             .withStatus(expectedStatus)
-            .withBody(expectedResponse)
         )
     )
 
-  "TaxEnrolmentsConnector" must {
+  "TaxEnrolmentsConnector" when {
 
-    "call PUT /" which {
+    "taxable" must {
 
       "returns 204 NO_CONTENT" in {
 
         wiremock(
-          payload = request,
+          payload = taxableRequest,
           expectedStatus = NO_CONTENT,
-          expectedResponse = ""
+          url = taxableEnrolmentUrl
         )
 
         connector.enrol(TaxEnrolmentsRequest(utr)) map { response =>
@@ -92,9 +107,9 @@ class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
       "returns 400 BAD_REQUEST" in {
 
         wiremock(
-          payload = request,
+          payload = taxableRequest,
           expectedStatus = BAD_REQUEST,
-          expectedResponse = ""
+          url = taxableEnrolmentUrl
         )
 
         recoverToSucceededIf[UpstreamTaxEnrolmentsError](connector.enrol(TaxEnrolmentsRequest(utr)))
@@ -103,12 +118,53 @@ class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with Wi
       "returns 401 UNAUTHORIZED" in {
 
         wiremock(
-          payload = request,
+          payload = taxableRequest,
           expectedStatus = UNAUTHORIZED,
-          expectedResponse = ""
+          url = taxableEnrolmentUrl
         )
 
         recoverToSucceededIf[UpstreamTaxEnrolmentsError](connector.enrol(TaxEnrolmentsRequest(utr)))
+
+      }
+
+    }
+
+    "non-taxable" must {
+
+      "returns 204 NO_CONTENT" in {
+
+        wiremock(
+          payload = nonTaxableRequest,
+          expectedStatus = NO_CONTENT,
+          url = nonTaxableEnrolmentUrl
+        )
+
+        connector.enrol(TaxEnrolmentsRequest(urn)) map { response =>
+          response mustBe EnrolmentCreated
+        }
+
+      }
+
+      "returns 400 BAD_REQUEST" in {
+
+        wiremock(
+          payload = nonTaxableRequest,
+          expectedStatus = BAD_REQUEST,
+          url = nonTaxableEnrolmentUrl
+        )
+
+        recoverToSucceededIf[UpstreamTaxEnrolmentsError](connector.enrol(TaxEnrolmentsRequest(urn)))
+
+      }
+      "returns 401 UNAUTHORIZED" in {
+
+        wiremock(
+          payload = nonTaxableRequest,
+          expectedStatus = UNAUTHORIZED,
+          url = nonTaxableEnrolmentUrl
+        )
+
+        recoverToSucceededIf[UpstreamTaxEnrolmentsError](connector.enrol(TaxEnrolmentsRequest(urn)))
 
       }
 

@@ -22,7 +22,7 @@ import controllers.actions._
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.{NormalMode, TaxEnrolmentsRequest}
-import pages.{IsAgentManagingTrustPage, UtrPage}
+import pages.{IsAgentManagingTrustPage, IdentifierPage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -51,32 +51,32 @@ class IvSuccessController @Inject()(
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
-      request.userAnswers.get(UtrPage).map { utr =>
+      request.userAnswers.get(IdentifierPage).map { identifier =>
 
         def onRelationshipFound: Future[Result] = {
-          taxEnrolmentsConnector.enrol(TaxEnrolmentsRequest(utr)) map { _ =>
+          taxEnrolmentsConnector.enrol(TaxEnrolmentsRequest(identifier)) map { _ =>
 
             val isAgentManagingTrust = request.userAnswers.get(IsAgentManagingTrustPage) match {
               case None => false
               case Some(value) => value
             }
 
-            logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] successfully enrolled utr $utr to users" +
+            logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] successfully enrolled $identifier to users" +
               s"credential after passing Trust IV, user can now maintain the trust")
 
-            Ok(view(isAgentManagingTrust, utr))
+            Ok(view(isAgentManagingTrust, identifier))
 
           } recover {
             case _ =>
-              logger.error(s"[Claiming][Session ID: ${Session.id(hc)}] failed to create enrolment for utr" +
-                s"$utr with tax-enrolments, users credential has not been updated, user needs to claim again")
+              logger.error(s"[Claiming][Session ID: ${Session.id(hc)}] failed to create enrolment for " +
+                s"$identifier with tax-enrolments, users credential has not been updated, user needs to claim again")
               InternalServerError(errorHandler.internalServerErrorTemplate)
           }
         }
 
         lazy val onRelationshipNotFound = Future.successful(Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode)))
 
-        relationshipEstablishment.check(request.internalId, utr) flatMap {
+        relationshipEstablishment.check(request.internalId, identifier) flatMap {
           case RelationshipFound =>
             onRelationshipFound
           case RelationshipNotFound =>
@@ -86,7 +86,7 @@ class IvSuccessController @Inject()(
         }
         
       } getOrElse {
-        logger.warn(s"[Claiming][Session ID: ${Session.id(hc)}] no utr found in user answers, unable to" +
+        logger.warn(s"[Claiming][Session ID: ${Session.id(hc)}] no identifier found in user answers, unable to" +
           s"continue with enrolling credential and claiming the trust on behalf of the user")
         Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
       }

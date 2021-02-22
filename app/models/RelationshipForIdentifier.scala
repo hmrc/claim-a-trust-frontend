@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package connectors
+package models
 
+import com.google.inject.Inject
 import config.FrontendAppConfig
-import models.{TrustStoreResponse, TrustsStoreRequest}
-import play.api.libs.json.{JsValue, Json, Writes}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.auth.core.{BusinessKey, Relationship}
 
-import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+class RelationshipForIdentifier @Inject()(config: FrontendAppConfig) {
 
-class TrustsStoreConnector @Inject()(http: HttpClient, config: FrontendAppConfig) {
+  def apply(identifier: String): Relationship = {
+    val businessKey = if (IsUTR(identifier)) {
+      config.relationshipTaxableIdentifier
+    } else {
+      config.relationshipNonTaxableIdentifier
+    }
 
-  val url: String = config.trustsStoreUrl + "/claim"
-
-  def claim(request: TrustsStoreRequest)
-           (implicit hc: HeaderCarrier, ec: ExecutionContext, writes: Writes[TrustsStoreRequest]): Future[TrustStoreResponse] = {
-    http.POST[JsValue, TrustStoreResponse](url, Json.toJson(request))
+    Relationship(config.relationshipName, Set(BusinessKey(businessKey, identifier)))
   }
 
 }

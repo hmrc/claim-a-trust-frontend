@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package pages
+package utils
 
-import play.api.libs.json.JsPath
+import scala.util.matching.Regex
 
-case object UtrPage extends QuestionPage[String] {
+object IdentifierRegex {
 
-  override def path: JsPath = JsPath \ toString
-
-  override def toString: String = "utr"
+  val UtrRegex: Regex = "^([0-9]{10})$".r
+  val UrnRegex: Regex = "^((?i)[a-z]{2}trust[0-9]{8})$".r
 
 }
