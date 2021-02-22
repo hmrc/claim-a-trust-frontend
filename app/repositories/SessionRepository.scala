@@ -50,7 +50,7 @@ class DefaultSessionRepository @Inject()(
     name = Some(lastUpdatedIndexName),
     expireAfterSeconds = Some(cacheTtl),
     options = BSONDocument.empty,
-    unique = true,
+    unique = false,
     background = false,
     dropDups = false,
     sparse = false,
