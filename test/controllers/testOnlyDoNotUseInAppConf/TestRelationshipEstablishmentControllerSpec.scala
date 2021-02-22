@@ -75,7 +75,7 @@ class TestRelationshipEstablishmentControllerSpec extends SpecBase {
       application.stop()
     }
 
-    "stub IV relationship for a URN starting with A" in {
+    "stub IV relationship for a URN starting with NT" in {
 
       val mockConnector = mock[RelationshipEstablishmentConnector]
 
@@ -86,7 +86,7 @@ class TestRelationshipEstablishmentControllerSpec extends SpecBase {
         )
         .build()
 
-      val identifier = "ABTRUST12345678"
+      val identifier = "NTTRUST12345678"
 
       when(mockConnector.createRelationship(any(), any())(any())).thenReturn(Future.successful(HttpResponse.apply(OK, "")))
 
@@ -101,7 +101,7 @@ class TestRelationshipEstablishmentControllerSpec extends SpecBase {
       application.stop()
     }
 
-    "not stub IV relationship for a URN starting with anything but A" in {
+    "not stub IV relationship for a URN starting with anything but NT" in {
       val application = applicationBuilder(
         userAnswers = Some(emptyUserAnswers))
         .build()

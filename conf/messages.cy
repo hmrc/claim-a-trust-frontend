@@ -52,14 +52,17 @@ isAgentManagingTrust.error.required=Dewiswch ‘Iawn’ os oes asiant yn rheoli 
 
 ivSuccess.subheading=Cyfeirnod Unigryw y Trethdalwr yr ymddiriedolaeth: {0}
 ivSuccess.contactLink=cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd)
+
 ivSuccess.agent.title=Rydych wedi hawlio’r ymddiriedolaeth yn llwyddiannus
 ivSuccess.agent.heading=Rydych wedi hawlio’r ymddiriedolaeth yn llwyddiannus
+
 ivSuccess.agent.paragraph1=Mae angen i chi roi gwybod i’ch asiant eich bod wedi hawlio’r ymddiriedolaeth a phasio’r cwestiynau diogelwch
 ivSuccess.agent.paragraph2=Yna, mae angen i’ch asiant anfon cysylltiad awdurdodi atoch i’w gymeradwyo er mwyn iddo allu cynnal yr ymddiriedolaeth ar-lein.
 ivSuccess.agent.paragraph3=Rhaid i’r cyfrif sefydliad ar gyfer Porth y Llywodraeth a ddefnyddiwyd i hawlio’r ymddiriedolaeth hon gael ei ddefnyddio i fewngofnodi a chymeradwyo’r cysylltiad hwn. Ni all asiant gael at gofrestr yr ymddiriedolaeth hyd nes i chi gwblhau’r cam hwn.
 ivSuccess.agent.paragraph4=Os ydych am fwrw golwg dros y gofrestr
 ivSuccess.agent.continueLink=gallwch fynd yn eich blaen i’r gwasanaeth
 ivSuccess.agent.paragraph5=Os oes angen help arnoch i ddefnyddio’r gwasanaeth
+
 ivSuccess.no.agent.title=Rydych wedi hawlio’r ymddiriedolaeth yn llwyddiannus
 ivSuccess.no.agent.heading=Rydych wedi hawlio’r ymddiriedolaeth yn llwyddiannus
 ivSuccess.no.agent.paragraph1=Rydych bellach yn gallu newid yr wybodaeth sydd gan CThEM am y setlwyr, yr ymddiriedolwyr a’r buddiolwyr.

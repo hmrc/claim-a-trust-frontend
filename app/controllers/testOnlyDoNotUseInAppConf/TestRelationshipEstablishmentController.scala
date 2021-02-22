@@ -26,7 +26,6 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.{IdentifierRegex, Session}
 
 import scala.concurrent.{ExecutionContext, Future}
-
 /**
  * Test controller and connector to relationship-establishment to set a relationship for a given UTR.
  * This will then enable the service to "succeed" and "fail" an IV check without having to go into TrustIV.
@@ -53,10 +52,10 @@ class TestRelationshipEstablishmentController @Inject()(
             Future.successful(Redirect(controllers.routes.FallbackFailureController.onPageLoad()))
           }
         case IdentifierRegex.UrnRegex(urn) =>
-          if (urn.head.toLower == "a".head) {
+          if (urn.toLowerCase.startsWith("nt")) {
             createRelationship(urn)
           } else {
-            logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] URN did not start with 'A', failing IV")
+            logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] URN did not start with 'NT', failing IV")
             Future.successful(Redirect(controllers.routes.FallbackFailureController.onPageLoad()))
           }
         case _ =>
