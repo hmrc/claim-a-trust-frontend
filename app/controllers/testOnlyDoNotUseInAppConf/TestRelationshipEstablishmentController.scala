@@ -37,8 +37,7 @@ class TestRelationshipEstablishmentController @Inject()(
                                                          val controllerComponents: MessagesControllerComponents,
                                                          relationshipEstablishmentConnector: RelationshipEstablishmentConnector,
                                                          identify: IdentifierAction
-                                                       )
-                                                       (implicit ec : ExecutionContext)
+                                                       )(implicit ec: ExecutionContext)
   extends FrontendBaseController with Logging {
 
   def check(identifier: String) = identify.async {
