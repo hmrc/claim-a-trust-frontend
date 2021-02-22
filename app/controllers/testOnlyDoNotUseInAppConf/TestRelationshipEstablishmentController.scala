@@ -21,13 +21,11 @@ import controllers.actions.IdentifierAction
 import models.requests.IdentifierRequest
 import play.api.Logging
 import play.api.i18n.MessagesApi
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.{Regex, Session}
+import utils.{IdentifierRegex, Session}
 
 import scala.concurrent.{ExecutionContext, Future}
-
-
 /**
  * Test controller and connector to relationship-establishment to set a relationship for a given UTR.
  * This will then enable the service to "succeed" and "fail" an IV check without having to go into TrustIV.
@@ -40,20 +38,20 @@ class TestRelationshipEstablishmentController @Inject()(
                                                        )(implicit ec: ExecutionContext)
   extends FrontendBaseController with Logging {
 
-  def check(identifier: String) = identify.async {
+  def check(identifier: String): Action[AnyContent] = identify.async {
     implicit request =>
 
       logger.info("[Claiming] TrustIV is using a test route, you don't want this in production.")
 
       identifier match {
-        case Regex.UtrRegex(utr) =>
+        case IdentifierRegex.UtrRegex(utr) =>
           if (utr.startsWith("1")) {
             createRelationship(utr)
           } else {
             logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] UTR did not start with '1', failing IV")
             Future.successful(Redirect(controllers.routes.FallbackFailureController.onPageLoad()))
           }
-        case Regex.UrnRegex(urn) =>
+        case IdentifierRegex.UrnRegex(urn) =>
           if (urn.toLowerCase.startsWith("nt")) {
             createRelationship(urn)
           } else {

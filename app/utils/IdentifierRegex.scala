@@ -18,7 +18,7 @@ package utils
 
 import scala.util.matching.Regex
 
-object Regex {
+object IdentifierRegex {
 
   val UtrRegex: Regex = "^([0-9]{10})$".r
   val UrnRegex: Regex = "^((?i)[a-z]{2}trust[0-9]{8})$".r
