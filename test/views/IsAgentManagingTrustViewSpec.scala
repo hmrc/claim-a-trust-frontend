@@ -39,7 +39,7 @@ class IsAgentManagingTrustViewSpec extends YesNoViewBehaviours {
     def applyView(form: Form[_]): HtmlFormat.Appendable =
       view.apply(form, NormalMode, utr)(fakeRequest, messages)
 
-    behave like normalPage(applyView(form), messageKeyPrefix)
+    behave like normalPageWithCaption(applyView(form), messageKeyPrefix, "utr", utr)
 
     behave like pageWithBackLink(applyView(form))
 

@@ -18,8 +18,10 @@
 
     @if(subheading.isDefined) {
         <header class="hmrc-page-heading">
-            <p class="govuk-caption-xl" id="caption" aria-hidden="true">@subheading</p>
-            <h1 class="@headingSize" aria-describedby="caption">@messages(headingKey)</h1>
+            <h1 class="@headingSize">
+                <span class="govuk-caption-xl" id="caption">@subheading</span>
+                @messages(headingKey)
+            </h1>
         </header>
     } else {
         <h1 class="@headingSize">@messages(headingKey)</h1>

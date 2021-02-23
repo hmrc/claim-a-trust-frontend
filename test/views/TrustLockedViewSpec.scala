@@ -30,7 +30,7 @@ class TrustLockedViewSpec extends ViewBehaviours {
 
     def applyView(id: String) = view.apply(id)(fakeRequest, messages)
 
-    behave like normalPage(applyView(utr), "locked","p1", "p2", "p3", "p4", "link1")
+    behave like normalPageWithCaption(applyView(utr), "locked", "utr", utr,"p1", "p2", "p3", "p4", "link1")
 
     "display the correct subheading for a utr" in {
       val doc = asDocument(applyView(utr))
