@@ -30,7 +30,7 @@
     @if(isAgent) {
         @components.heading(
             headingKey = "ivSuccess.agent.heading",
-            headingSize = "heading-large govuk-fieldset__heading",
+            headingSize = "heading-large",
             subheading = Some(subheading(identifier))
         )
         <p>@messages("ivSuccess.agent.paragraph1")</p>
@@ -45,7 +45,7 @@
     } else {
         @components.heading(
             headingKey = "ivSuccess.no.agent.heading",
-            headingSize = "heading-large govuk-fieldset__heading",
+            headingSize = "heading-large",
             subheading = Some(subheading(identifier))
         )
         <p>@messages("ivSuccess.no.agent.paragraph1")</p>

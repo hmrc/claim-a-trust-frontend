@@ -32,10 +32,10 @@
     <fieldset class="inline" id="@{field.id}">
 
         <legend id="@{field.id}-legend" class="hmrc-page-heading">
-            @if(legendAsHeading){@if(caption.isDefined){
-                <span id="caption" class="govuk-caption-xl" aria-hidden="true">@caption.get</span>}
-                <h1 id="@{field.id}-id" class="legend-as-heading heading-large" aria-describedby="caption">
-                }
+            @if(legendAsHeading){
+                <h1 id="@{field.id}-id" class="legend-as-heading heading-large">
+                @if(caption.isDefined){<span id="caption" class="govuk-caption-xl">@caption.get</span>}
+            }
             @label
             @if(legendAsHeading){</h1>}
         </legend>

@@ -56,6 +56,47 @@ trait ViewBehaviours extends ViewSpecBase {
     }
   }
 
+  def normalPageWithCaption(view: HtmlFormat.Appendable,
+                            messageKeyPrefix: String,
+                            captionKey: String,
+                            captionParam: String,
+                            expectedGuidanceKeys: String*): Unit = {
+
+    "behave like a normal page" when {
+
+      "rendered" must {
+
+        "display the correct browser title" in {
+
+          val doc = asDocument(view)
+          assertEqualsMessage(doc, "title", s"$messageKeyPrefix.title")
+        }
+
+        "display the correct page title" in {
+
+          val doc = asDocument(view)
+          assertPageTitleWithCaptionEqualsMessages(doc,
+            expectedCaptionMessageKey = s"$captionKey.subheading",
+            captionParam = captionParam,
+            expectedMessageKey = s"$messageKeyPrefix.heading"
+          )
+        }
+
+        "display the correct guidance" in {
+
+          val doc = asDocument(view)
+          for (key <- expectedGuidanceKeys) assertContainsText(doc, messages(s"$messageKeyPrefix.$key"))
+        }
+
+        "display language toggles" in {
+
+          val doc = asDocument(view)
+          assertRenderedById(doc, "cymraeg-switch")
+        }
+      }
+    }
+  }
+
   def pageWithBackLink(view: HtmlFormat.Appendable): Unit = {
 
     "behave like a page with a back link" must {
