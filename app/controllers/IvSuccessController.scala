@@ -22,7 +22,7 @@ import controllers.actions._
 import handlers.ErrorHandler
 import javax.inject.Inject
 import models.{NormalMode, TaxEnrolmentsRequest}
-import pages.{IsAgentManagingTrustPage, IdentifierPage}
+import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -61,10 +61,7 @@ class IvSuccessController @Inject()(
             // request.userAnswers.set(HasEnrolled, true)
             // Save this to mongo // write it out
 
-            val isAgentManagingTrust = request.userAnswers.get(IsAgentManagingTrustPage) match {
-              case None => false
-              case Some(value) => value
-            }
+            val isAgentManagingTrust: Boolean = request.userAnswers.get(IsAgentManagingTrustPage).getOrElse(false)
 
             logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] successfully enrolled $identifier to users" +
               s"credential after passing Trust IV, user can now maintain the trust")
