@@ -51,10 +51,15 @@ class IvSuccessController @Inject()(
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
+      // get has enrolled already and handle first time None?
+
       request.userAnswers.get(IdentifierPage).map { identifier =>
 
         def onRelationshipFound: Future[Result] = {
           taxEnrolmentsConnector.enrol(TaxEnrolmentsRequest(identifier)) map { _ =>
+
+            // request.userAnswers.set(HasEnrolled, true)
+            // Save this to mongo // write it out
 
             val isAgentManagingTrust = request.userAnswers.get(IsAgentManagingTrustPage) match {
               case None => false
@@ -68,6 +73,10 @@ class IvSuccessController @Inject()(
 
           } recover {
             case _ =>
+
+              // request.userAnswers.set(HasEnrolled, false)
+              // Save this to mongo // write it out
+
               logger.error(s"[Claiming][Session ID: ${Session.id(hc)}] failed to create enrolment for " +
                 s"$identifier with tax-enrolments, users credential has not been updated, user needs to claim again")
               InternalServerError(errorHandler.internalServerErrorTemplate)
