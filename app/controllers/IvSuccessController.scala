@@ -20,9 +20,10 @@ import config.FrontendAppConfig
 import connectors.TaxEnrolmentsConnector
 import controllers.actions._
 import handlers.ErrorHandler
+
 import javax.inject.Inject
 import models.{NormalMode, TaxEnrolmentsRequest}
-import pages.{IdentifierPage, IsAgentManagingTrustPage}
+import pages.{HasEnrolled, IdentifierPage, IsAgentManagingTrustPage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
@@ -51,32 +52,49 @@ class IvSuccessController @Inject()(
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
 
+      val hasEnrolled: Boolean = request.userAnswers.get(HasEnrolled).getOrElse(false)
       // get has enrolled already and handle first time None?
 
       request.userAnswers.get(IdentifierPage).map { identifier =>
 
         def onRelationshipFound: Future[Result] = {
-          taxEnrolmentsConnector.enrol(TaxEnrolmentsRequest(identifier)) map { _ =>
 
-            // request.userAnswers.set(HasEnrolled, true)
-            // Save this to mongo // write it out
+          /*
+          * if hasEnrolled
+          * then you only display view
+          * else enroll + display view
+          * */
 
+          if(hasEnrolled) {
             val isAgentManagingTrust: Boolean = request.userAnswers.get(IsAgentManagingTrustPage).getOrElse(false)
 
             logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] successfully enrolled $identifier to users" +
               s"credential after passing Trust IV, user can now maintain the trust")
 
-            Ok(view(isAgentManagingTrust, identifier))
+            Future.successful(Ok(view(isAgentManagingTrust, identifier)))
+          } else {
+            taxEnrolmentsConnector.enrol(TaxEnrolmentsRequest(identifier)) map { _ =>
 
-          } recover {
-            case _ =>
-
-              // request.userAnswers.set(HasEnrolled, false)
+              // request.userAnswers.set(HasEnrolled, true)
               // Save this to mongo // write it out
 
-              logger.error(s"[Claiming][Session ID: ${Session.id(hc)}] failed to create enrolment for " +
-                s"$identifier with tax-enrolments, users credential has not been updated, user needs to claim again")
-              InternalServerError(errorHandler.internalServerErrorTemplate)
+              val isAgentManagingTrust: Boolean = request.userAnswers.get(IsAgentManagingTrustPage).getOrElse(false)
+
+              logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] successfully enrolled $identifier to users" +
+                s"credential after passing Trust IV, user can now maintain the trust")
+
+              Ok(view(isAgentManagingTrust, identifier))
+
+            } recover {
+              case _ =>
+
+                // request.userAnswers.set(HasEnrolled, false)
+                // Save this to mongo // write it out
+
+                logger.error(s"[Claiming][Session ID: ${Session.id(hc)}] failed to create enrolment for " +
+                  s"$identifier with tax-enrolments, users credential has not been updated, user needs to claim again")
+                InternalServerError(errorHandler.internalServerErrorTemplate)
+            }
           }
         }
 

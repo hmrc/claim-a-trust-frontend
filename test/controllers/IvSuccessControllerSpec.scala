@@ -20,6 +20,7 @@ import base.SpecBase
 import connectors.TaxEnrolmentsConnector
 import models.{EnrolmentCreated, TaxEnrolmentsRequest, UpstreamTaxEnrolmentsError, UserAnswers}
 import org.mockito.Matchers.{eq => eqTo, _}
+import org.mockito.Mockito
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterAll
 import org.scalatestplus.mockito.MockitoSugar.mock
@@ -42,13 +43,14 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
   private val connector = mock[TaxEnrolmentsConnector]
   private val mockRelationshipEstablishment = mock[RelationshipEstablishment]
 
+  // Mock mongo repository
   private val mockRepository = mock[SessionRepository]
 
   "IvSuccess Controller" when {
 
-    "claiming a UTR" must {
+    "claiming on first attempt" must {
 
-      "return OK and the correct view for a GET with no Agent" in {
+      "return OK and the correct view for a GET with no Agent and set hasEnrolled true" in {
 
         val userAnswers = UserAnswers(userAnswersId)
           .set(IsAgentManagingTrustPage, false).success.value
@@ -56,9 +58,13 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
         val application = applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockRelationshipEstablishment)
           .overrides(
-            bind(classOf[TaxEnrolmentsConnector]).toInstance(connector)
+            bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
+            bind(classOf[SessionRepository]).toInstance(mockRepository) // instantiate the mock repository to be used in the application
           )
           .build()
+
+        // Stub a mongo connection
+        when(mockRepository.set(any())).thenReturn(Future.successful(true))
 
         val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
 
@@ -78,17 +84,22 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
         contentAsString(result) mustEqual viewAsString
 
-        verify(connector).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
+        // Verify if the HasEnrolled value is being set in mongo
+        val userAnswersWithHasEnrolled = userAnswers.set(HasEnrolled, true).success.value
+        verify(mockRepository, times(1)).set(eqTo(userAnswersWithHasEnrolled))
+
+        verify(connector, atLeastOnce()).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
         verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
 
         reset(connector)
         reset(mockRelationshipEstablishment)
+        reset(mockRepository)
 
         application.stop()
 
       }
 
-      "return OK and the correct view for a GET with Agent" in {
+      "return OK and the correct view for a GET with Agent and set hasEnrolled true" in {
 
         val userAnswers = UserAnswers(userAnswersId)
           .set(IsAgentManagingTrustPage, true).success.value
@@ -118,11 +129,12 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
         contentAsString(result) mustEqual viewAsString
 
-        verify(connector).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
+        verify(connector, atLeastOnce()).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
         verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
 
         reset(connector)
         reset(mockRelationshipEstablishment)
+        reset(mockRepository)
 
         application.stop()
 
@@ -155,8 +167,8 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
         when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
           .thenReturn(Future.successful(RelationshipFound))
 
-        when(connector.enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any()))
-          .thenReturn(Future.successful(EnrolmentCreated))
+//        when(connector.enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any()))
+//          .thenReturn(Future.successful(EnrolmentCreated))
 
         val result = route(application, request).value
 
@@ -172,6 +184,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
 
         reset(connector)
         reset(mockRelationshipEstablishment)
+        reset(mockRepository)
 
         application.stop()
 
@@ -212,8 +225,6 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterAll {
         verify(mockRepository, never()).set(any())
 
         verify(connector, never()).enrol(any[TaxEnrolmentsRequest]())(any(), any(), any())
-
-        verify(connector).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
         verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
 
         reset(connector)
