@@ -20,9 +20,8 @@ import base.SpecBase
 import connectors.TaxEnrolmentsConnector
 import models.{EnrolmentCreated, TaxEnrolmentsRequest, UpstreamTaxEnrolmentsError, UserAnswers}
 import org.mockito.Matchers.{eq => eqTo, _}
-import org.mockito.Mockito
 import org.mockito.Mockito._
-import org.scalatest.{BeforeAndAfterAll, BeforeAndAfterEach}
+import org.scalatest.BeforeAndAfterEach
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.{HasEnrolled, IdentifierPage, IsAgentManagingTrustPage}
 import play.api.inject.bind
@@ -115,8 +114,11 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
           userAnswers = Some(userAnswers),
           relationshipEstablishment = mockRelationshipEstablishment
         ).overrides(
-          bind(classOf[TaxEnrolmentsConnector]).toInstance(connector)
+          bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
+          bind(classOf[SessionRepository]).toInstance(mockRepository)
         ).build()
+
+        when(mockRepository.set(any())).thenReturn(Future.successful(true))
 
         val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
 
@@ -135,6 +137,9 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
         status(result) mustEqual OK
 
         contentAsString(result) mustEqual viewAsString
+
+        val userAnswersWithHasEnrolled = userAnswers.set(HasEnrolled, true).success.value
+        verify(mockRepository, times(1)).set(eqTo(userAnswersWithHasEnrolled))
 
         verify(connector, atLeastOnce()).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
 
