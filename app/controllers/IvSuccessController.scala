@@ -76,22 +76,11 @@ class IvSuccessController @Inject()(
   private def onRelationshipFound(identifier: String)(implicit request: DataRequest[_]): Future[Result] = {
 
     val hasEnrolled: Boolean = request.userAnswers.get(HasEnrolled).getOrElse(false)
-    /*
-    * if hasEnrolled
-    * then you only display view
-    * else enroll + display view
-    * */
 
     if (hasEnrolled) {
       val isAgentManagingTrust: Boolean = request.userAnswers.get(IsAgentManagingTrustPage).getOrElse(false)
-
-      logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] successfully enrolled $identifier to users" +
-        s"credential after passing Trust IV, user can now maintain the trust")
-
       Future.successful(Ok(view(isAgentManagingTrust, identifier)))
     } else {
-      // request.userAnswers.set(HasEnrolled, true)
-      // Save this to mongo // write it out
       (for {
         _ <- taxEnrolmentsConnector.enrol(TaxEnrolmentsRequest(identifier))
         ua <- Future.fromTry(request.userAnswers.set(HasEnrolled, true))
