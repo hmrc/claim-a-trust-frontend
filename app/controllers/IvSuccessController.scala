@@ -103,15 +103,15 @@ class IvSuccessController @Inject()(
           s"credential after passing Trust IV, user can now maintain the trust")
 
         Ok(view(isAgentManagingTrust, identifier))
-      }) recover {
+      }) recoverWith {
         case _ =>
-
-          // request.userAnswers.set(HasEnrolled, false)
-          // Save this to mongo // write it out
-
-          logger.error(s"[Claiming][Session ID: ${Session.id(hc)}] failed to create enrolment for " +
-            s"$identifier with tax-enrolments, users credential has not been updated, user needs to claim again")
-          InternalServerError(errorHandler.internalServerErrorTemplate)
+          Future.fromTry(request.userAnswers.set(HasEnrolled, false)).flatMap { ua =>
+            sessionRepository.set(ua).map { _ =>
+              logger.error(s"[Claiming][Session ID: ${Session.id(hc)}] failed to create enrolment for " +
+                s"$identifier with tax-enrolments, users credential has not been updated, user needs to claim again")
+              InternalServerError(errorHandler.internalServerErrorTemplate)
+            }
+          }
       }
     }
   }
