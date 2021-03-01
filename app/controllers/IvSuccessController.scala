@@ -21,11 +21,13 @@ import connectors.TaxEnrolmentsConnector
 import controllers.actions._
 import handlers.ErrorHandler
 import javax.inject.Inject
+import models.requests.DataRequest
 import models.{NormalMode, TaxEnrolmentsRequest}
-import pages.{IsAgentManagingTrustPage, IdentifierPage}
+import pages.{HasEnrolled, IdentifierPage, IsAgentManagingTrustPage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import repositories.SessionRepository
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
@@ -42,49 +44,27 @@ class IvSuccessController @Inject()(
                                      relationshipEstablishment: RelationshipEstablishment,
                                      taxEnrolmentsConnector: TaxEnrolmentsConnector,
                                      view: IvSuccessView,
-                                     errorHandler: ErrorHandler
+                                     errorHandler: ErrorHandler,
+                                     sessionRepository: SessionRepository
                                    )(implicit ec: ExecutionContext,
                                      val config: FrontendAppConfig)
   extends FrontendBaseController with I18nSupport
-                                    with AuthPartialFunctions with Logging {
+    with AuthPartialFunctions with Logging {
 
   def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
-
       request.userAnswers.get(IdentifierPage).map { identifier =>
-
-        def onRelationshipFound: Future[Result] = {
-          taxEnrolmentsConnector.enrol(TaxEnrolmentsRequest(identifier)) map { _ =>
-
-            val isAgentManagingTrust = request.userAnswers.get(IsAgentManagingTrustPage) match {
-              case None => false
-              case Some(value) => value
-            }
-
-            logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] successfully enrolled $identifier to users" +
-              s"credential after passing Trust IV, user can now maintain the trust")
-
-            Ok(view(isAgentManagingTrust, identifier))
-
-          } recover {
-            case _ =>
-              logger.error(s"[Claiming][Session ID: ${Session.id(hc)}] failed to create enrolment for " +
-                s"$identifier with tax-enrolments, users credential has not been updated, user needs to claim again")
-              InternalServerError(errorHandler.internalServerErrorTemplate)
-          }
-        }
-
-        lazy val onRelationshipNotFound = Future.successful(Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode)))
 
         relationshipEstablishment.check(request.internalId, identifier) flatMap {
           case RelationshipFound =>
-            onRelationshipFound
+            onRelationshipFound(identifier)
           case RelationshipNotFound =>
             logger.warn(s"[Claiming][Session ID: ${Session.id(hc)}] no relationship found in Trust IV," +
               s"cannot continue with enrolling the credential, sending the user back to the start of Trust IV")
-            onRelationshipNotFound
+
+            Future.successful(Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode)))
         }
-        
+
       } getOrElse {
         logger.warn(s"[Claiming][Session ID: ${Session.id(hc)}] no identifier found in user answers, unable to" +
           s"continue with enrolling credential and claiming the trust on behalf of the user")
@@ -92,4 +72,37 @@ class IvSuccessController @Inject()(
       }
 
   }
+
+  private def onRelationshipFound(identifier: String)(implicit request: DataRequest[_]): Future[Result] = {
+
+    val hasEnrolled: Boolean = request.userAnswers.get(HasEnrolled).getOrElse(false)
+
+    if (hasEnrolled) {
+      val isAgentManagingTrust: Boolean = request.userAnswers.get(IsAgentManagingTrustPage).getOrElse(false)
+      Future.successful(Ok(view(isAgentManagingTrust, identifier)))
+    } else {
+      (for {
+        _ <- taxEnrolmentsConnector.enrol(TaxEnrolmentsRequest(identifier))
+        ua <- Future.fromTry(request.userAnswers.set(HasEnrolled, true))
+        _ <- sessionRepository.set(ua)
+      } yield {
+        val isAgentManagingTrust: Boolean = request.userAnswers.get(IsAgentManagingTrustPage).getOrElse(false)
+
+        logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] successfully enrolled $identifier to users" +
+          s"credential after passing Trust IV, user can now maintain the trust")
+
+        Ok(view(isAgentManagingTrust, identifier))
+      }) recoverWith {
+        case _ =>
+          Future.fromTry(request.userAnswers.set(HasEnrolled, false)).flatMap { ua =>
+            sessionRepository.set(ua).map { _ =>
+              logger.error(s"[Claiming][Session ID: ${Session.id(hc)}] failed to create enrolment for " +
+                s"$identifier with tax-enrolments, users credential has not been updated, user needs to claim again")
+              InternalServerError(errorHandler.internalServerErrorTemplate)
+            }
+          }
+      }
+    }
+  }
+
 }
