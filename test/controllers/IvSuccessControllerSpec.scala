@@ -55,9 +55,9 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
   "IvSuccess Controller" when {
 
-    "claiming on first attempt" must {
+    "claiming a trust" must {
 
-      "return OK and the correct view for a GET with no Agent and set hasEnrolled true" in {
+      "return OK with the correct view for a GET with no Agent and set hasEnrolled true" in {
 
         val userAnswers = UserAnswers(userAnswersId)
           .set(IsAgentManagingTrustPage, false).success.value
@@ -104,7 +104,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       }
 
-      "return OK and the correct view for a GET with Agent and set hasEnrolled true" in {
+      "return OK with the correct view for a GET with Agent and set hasEnrolled true" in {
 
         val userAnswers = UserAnswers(userAnswersId)
           .set(IsAgentManagingTrustPage, true).success.value
@@ -151,9 +151,9 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     }
 
-    "claiming on the second attempt because the first attempt failed" must {
+    "claiming a trust again after a failure" must {
 
-      "return OK and the correct view for a GET with no Agent and set hasEnrolled true" in {
+      "return OK with the correct view for a GET with no Agent and set hasEnrolled true" in {
 
         val userAnswers = UserAnswers(userAnswersId)
           .set(IsAgentManagingTrustPage, false).success.value
@@ -201,7 +201,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
       }
 
-      "return OK and the correct view for a GET with Agent and set hasEnrolled true" in {
+      "return OK with the correct view for a GET with Agent and set hasEnrolled true" in {
 
         val userAnswers = UserAnswers(userAnswersId)
           .set(IsAgentManagingTrustPage, true).success.value
