@@ -348,8 +348,11 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
           userAnswers = Some(userAnswers),
           relationshipEstablishment = mockRelationshipEstablishment
         ).overrides(
-          bind(classOf[TaxEnrolmentsConnector]).toInstance(connector)
+          bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
+          bind(classOf[SessionRepository]).toInstance(mockRepository)
         ).build()
+
+        when(mockRepository.set(any())).thenReturn(Future.successful(true))
 
         val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
 
@@ -386,8 +389,11 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
           userAnswers = Some(userAnswers),
           relationshipEstablishment = mockRelationshipEstablishment
         ).overrides(
-          bind(classOf[TaxEnrolmentsConnector]).toInstance(connector)
+          bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
+          bind(classOf[SessionRepository]).toInstance(mockRepository)
         ).build()
+
+        when(mockRepository.set(any())).thenReturn(Future.successful(true))
 
         val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
 
