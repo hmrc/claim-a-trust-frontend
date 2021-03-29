@@ -23,7 +23,7 @@ import play.api.Logging
 import play.api.mvc._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.HeaderCarrierConverter
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.Session
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -45,7 +45,7 @@ class RelationshipEstablishmentService @Inject()(
 
   def check(internalId: String, identifier: String)(implicit request: Request[AnyContent]): Future[RelationEstablishmentStatus] = {
 
-    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
     def failedRelationshipPF: PartialFunction[Throwable, Future[RelationEstablishmentStatus]] = {
       case FailedRelationship(msg) =>
