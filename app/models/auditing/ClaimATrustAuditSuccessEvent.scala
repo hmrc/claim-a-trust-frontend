@@ -21,7 +21,6 @@ import play.api.libs.json.{Format, Json}
 case class ClaimATrustAuditSuccessEvent(credentialsId: String,
                                         credentialsType: String,
                                         internalAuthId: String,
-                                        identifier: String,
                                         enrolmentName: String,
                                         enrolmentIdentifier: String,
                                         isManagedByAgent: Boolean)

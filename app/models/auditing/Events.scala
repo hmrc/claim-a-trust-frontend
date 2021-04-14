@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package models.requests
+package models.auditing
 
-import play.api.mvc.{Request, WrappedRequest}
-import uk.gov.hmrc.auth.core.AffinityGroup
-import uk.gov.hmrc.auth.core.retrieve.Credentials
+object Events {
 
-case class IdentifierRequest[A] ( request: Request[A],
-                                  identifier: String,
-                                  credentials: Credentials,
-                                  affinityGroup: AffinityGroup) extends WrappedRequest[A](request)
+  val CLAIM_A_TRUST_SUCCESS = "ClaimNonTaxableTrustSuccess"
+  val CLAIM_A_TRUST_FAILURE = "ClaimNonTaxableTrustFailure"
+
+}

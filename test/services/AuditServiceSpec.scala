@@ -17,8 +17,10 @@
 package services
 
 import base.SpecBase
+import config.FrontendAppConfig
+import models.UserAnswers
 import models.auditing.{ClaimATrustAuditFailureEvent, ClaimATrustAuditSuccessEvent}
-import models.requests.IdentifierRequest
+import models.requests.DataRequest
 import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify}
 import org.scalatestplus.mockito.MockitoSugar
@@ -32,68 +34,66 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 class AuditServiceSpec extends SpecBase with MockitoSugar {
 
   private val auditConnector: AuditConnector = mock[AuditConnector]
-  private val auditService: AuditService = new AuditService(auditConnector)
+  lazy val config: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  private val auditService: AuditService = new AuditService(auditConnector, config)
 
   private val event: String = "event"
-  private val identifier: String = "utr"
+  private val utr: String = "1234567890"
+  private val urn: String = "NTTRUST0000001"
   private val ggCredId = "ggCredId"
   private val ggCredType = "GG"
   private val internalAuthId = "internalAuthId"
-  private val enrolmentName = "enrolmentName"
-  private val enrolmentId = "enrolmentId"
+
+  lazy val taxableEnrolmentServiceName: String = s"HMRC-TERS-ORG"
+  lazy val nonTaxableEnrolmentServiceName: String = "HMRC-TERSNT-ORG"
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
   "Audit service" must {
 
-    "build audit success payload from request values" when {
+    "build audit success payload from request values for Taxable" when {
 
-      "agent affinity; utr identifier" in {
+      reset(auditConnector)
 
-        reset(auditConnector)
+      val affinity: AffinityGroup = Agent
 
-        val affinity: AffinityGroup = Agent
+      val request: DataRequest[AnyContent] = DataRequest(fakeRequest, internalAuthId, Credentials(ggCredId, ggCredType), affinity, UserAnswers(""))
 
+      auditService.audit(event, utr, true)(request, hc)
 
-        val request: IdentifierRequest[AnyContent] = IdentifierRequest(fakeRequest, identifier, Credentials(ggCredId, ggCredType), affinity)
+      val expectedPayload = ClaimATrustAuditSuccessEvent(
+        credentialsId = ggCredId,
+        credentialsType = ggCredType,
+        internalAuthId = internalAuthId,
+        enrolmentName = taxableEnrolmentServiceName,
+        enrolmentIdentifier = utr,
+        isManagedByAgent = true
+      )
 
-        auditService.audit(event, internalAuthId, enrolmentName, enrolmentId)(request, hc)
+      verify(auditConnector).sendExplicitAudit(eqTo(event), eqTo(expectedPayload))(any(), any(), any())
+    }
 
-        val expectedPayload = ClaimATrustAuditSuccessEvent(
-          credentialsId = ggCredId,
-          credentialsType = ggCredType,
-          internalAuthId = internalAuthId,
-          identifier = identifier,
-          enrolmentName = enrolmentName,
-          enrolmentIdentifier = enrolmentId,
-          isManagedByAgent = true
-        )
+    "build audit success payload from request values for NonTaxable" when {
 
-        verify(auditConnector).sendExplicitAudit(eqTo(event), eqTo(expectedPayload))(any(), any(), any())
-      }
+      reset(auditConnector)
 
-      "org affinity; urn identifier" in {
+      val affinity: AffinityGroup = Agent
 
-        reset(auditConnector)
+      val request: DataRequest[AnyContent] = DataRequest(fakeRequest, internalAuthId, Credentials(ggCredId, ggCredType), affinity, UserAnswers(""))
 
-        val affinity: AffinityGroup = Organisation
+      auditService.audit(event, urn, true)(request, hc)
 
-        val request: IdentifierRequest[AnyContent] = IdentifierRequest(fakeRequest, identifier, Credentials(ggCredId, ggCredType), affinity)
+      val expectedPayload = ClaimATrustAuditSuccessEvent(
+        credentialsId = ggCredId,
+        credentialsType = ggCredType,
+        internalAuthId = internalAuthId,
+        enrolmentName = nonTaxableEnrolmentServiceName,
+        enrolmentIdentifier = urn,
+        isManagedByAgent = true
+      )
 
-        auditService.audit(event, internalAuthId, enrolmentName, enrolmentId)(request, hc)
+      verify(auditConnector).sendExplicitAudit(eqTo(event), eqTo(expectedPayload))(any(), any(), any())
 
-        val expectedPayload = ClaimATrustAuditSuccessEvent(
-          credentialsId = ggCredId,
-          credentialsType = ggCredType,
-          internalAuthId = internalAuthId,
-          identifier = identifier,
-          enrolmentName = enrolmentName,
-          enrolmentIdentifier = enrolmentId,
-          isManagedByAgent = false
-        )
-
-        verify(auditConnector).sendExplicitAudit(eqTo(event), eqTo(expectedPayload))(any(), any(), any())
-      }
     }
 
     "build audit failure payload from request values" in {
@@ -103,15 +103,15 @@ class AuditServiceSpec extends SpecBase with MockitoSugar {
       val affinity: AffinityGroup = Agent
 
       val failureReason = "Error message"
-      val request: IdentifierRequest[AnyContent] = IdentifierRequest(fakeRequest, identifier, Credentials(ggCredId, ggCredType), affinity)
+      val request: DataRequest[AnyContent] = DataRequest(fakeRequest, internalAuthId, Credentials(ggCredId, ggCredType), affinity, UserAnswers(""))
 
-      auditService.auditFailure(event, internalAuthId, failureReason)(request, hc)
+      auditService.auditFailure(event, utr, failureReason)(request, hc)
 
       val expectedPayload = ClaimATrustAuditFailureEvent(
         credentialsId = ggCredId,
         credentialsType = ggCredType,
         internalAuthId = internalAuthId,
-        identifier = identifier,
+        identifier = utr,
         failureReason = failureReason
       )
 

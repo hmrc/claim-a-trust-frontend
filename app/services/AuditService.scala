@@ -16,47 +16,46 @@
 
 package services
 
+import config.FrontendAppConfig
 import models.auditing._
-import models.requests.IdentifierRequest
-import play.api.mvc.AnyContent
+import models.requests.DataRequest
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import javax.inject.Inject
-import uk.gov.hmrc.auth.core.AffinityGroup.Agent
+import models.IsUTR
 
 import scala.concurrent.ExecutionContext.Implicits._
 
-class AuditService @Inject()(auditConnector: AuditConnector) {
+class AuditService @Inject()(auditConnector: AuditConnector,  config : FrontendAppConfig) {
 
-  def audit(event: String,
-            internalAuthId: String,
-            enrolmentName: String,
-            enrolmentIdentifier: String)
-           (implicit request: IdentifierRequest[AnyContent], hc: HeaderCarrier): Unit = {
+  def audit(event: String, identifier: String, isManagedByAgent: Boolean)
+           (implicit request: DataRequest[_], hc: HeaderCarrier): Unit = {
 
+    val enrolmentName: String = if (IsUTR(identifier)) {
+      config.taxableEnrolmentServiceName
+    } else {
+      config.nonTaxableEnrolmentServiceName
+    }
     val payload = ClaimATrustAuditSuccessEvent(
       credentialsId = request.credentials.providerId,
       credentialsType = request.credentials.providerType,
-      internalAuthId = internalAuthId,
-      identifier = request.identifier,
+      internalAuthId = request.internalId,
       enrolmentName = enrolmentName,
-      enrolmentIdentifier = enrolmentIdentifier,
-      isManagedByAgent = request.affinityGroup == Agent
+      enrolmentIdentifier = identifier,
+      isManagedByAgent = isManagedByAgent
     )
 
     auditConnector.sendExplicitAudit(event, payload)
   }
 
-  def auditFailure(event: String,
-            internalAuthId: String,
-            failureReason: String)
-           (implicit request: IdentifierRequest[AnyContent], hc: HeaderCarrier): Unit = {
+  def auditFailure(event: String, identifier: String, failureReason: String)
+           (implicit request: DataRequest[_], hc: HeaderCarrier): Unit = {
 
     val payload = ClaimATrustAuditFailureEvent(
       credentialsId = request.credentials.providerId,
       credentialsType = request.credentials.providerType,
-      internalAuthId = internalAuthId,
-      identifier = request.identifier,
+      internalAuthId = request.internalId,
+      identifier = identifier,
       failureReason = failureReason
     )
 
