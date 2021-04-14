@@ -18,6 +18,7 @@ package controllers
 
 import base.SpecBase
 import connectors.TaxEnrolmentsConnector
+import models.auditing.Events.CLAIM_A_TRUST_SUCCESS
 import models.{EnrolmentCreated, TaxEnrolmentsRequest, UpstreamTaxEnrolmentsError, UserAnswers}
 import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito._
@@ -102,6 +103,8 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
 
+        verify(mockAuditService).audit(eqTo(CLAIM_A_TRUST_SUCCESS), eqTo(utr), eqTo(false))(any(), any())
+
         application.stop()
 
       }
@@ -147,6 +150,8 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
         verify(connector, atLeastOnce()).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
 
         verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
+
+        verify(mockAuditService).audit(eqTo(CLAIM_A_TRUST_SUCCESS), eqTo(utr), eqTo(true))(any(), any())
 
         application.stop()
 
@@ -201,6 +206,8 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
 
+        verify(mockAuditService).audit(eqTo(CLAIM_A_TRUST_SUCCESS), eqTo(utr), eqTo(false))(any(), any())
+
         application.stop()
 
       }
@@ -248,6 +255,8 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
 
+        verify(mockAuditService).audit(eqTo(CLAIM_A_TRUST_SUCCESS), eqTo(utr), eqTo(true))(any(), any())
+
         application.stop()
 
       }
@@ -293,6 +302,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
         verify(connector, never()).enrol(any[TaxEnrolmentsRequest]())(any(), any(), any())
 
         verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
+        verify(mockAuditService, never()).audit(any(), any(), any())(any(), any())
 
         application.stop()
 
@@ -336,6 +346,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         verify(connector, never()).enrol(any[TaxEnrolmentsRequest]())(any(), any(), any())
         verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
+        verify(mockAuditService, never()).audit(any(), any(), any())(any(), any())
 
         application.stop()
 
@@ -382,6 +393,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         verify(connector).enrol(eqTo(TaxEnrolmentsRequest(urn)))(any(), any(), any())
         verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(urn))(any())
+        verify(mockAuditService).audit(eqTo(CLAIM_A_TRUST_SUCCESS), eqTo(urn), eqTo(false))(any(), any())
 
         application.stop()
 
@@ -424,6 +436,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         verify(connector).enrol(eqTo(TaxEnrolmentsRequest(urn)))(any(), any(), any())
         verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(urn))(any())
+        verify(mockAuditService).audit(eqTo(CLAIM_A_TRUST_SUCCESS), eqTo(urn), eqTo(true))(any(), any())
 
         application.stop()
 

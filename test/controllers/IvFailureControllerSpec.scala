@@ -26,12 +26,14 @@ import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.AuditService
 
 import scala.concurrent.Future
 
 class IvFailureControllerSpec extends SpecBase {
 
   lazy val connector: RelationshipEstablishmentConnector = mock[RelationshipEstablishmentConnector]
+  private val mockAuditService: AuditService = mock[AuditService]
 
   "IvFailure Controller" must {
 
@@ -44,6 +46,7 @@ class IvFailureControllerSpec extends SpecBase {
           .set(IsAgentManagingTrustPage, true).success.value
 
         val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[AuditService].toInstance(mockAuditService))
           .build()
 
         val onIvFailureRoute = routes.IvFailureController.onTrustIvFailure().url
@@ -68,7 +71,10 @@ class IvFailureControllerSpec extends SpecBase {
         val onIvFailureRoute = routes.IvFailureController.onTrustIvFailure().url
 
         val application = applicationBuilder(userAnswers = Some(answers))
-          .overrides(bind[RelationshipEstablishmentConnector].toInstance(connector))
+          .overrides(
+            bind[RelationshipEstablishmentConnector].toInstance(connector),
+            bind[AuditService].toInstance(mockAuditService)
+          )
           .build()
 
         when(connector.journeyId(any[String])(any(), any()))
@@ -92,7 +98,9 @@ class IvFailureControllerSpec extends SpecBase {
           .set(IsAgentManagingTrustPage, true).success.value
 
         val application = applicationBuilder(userAnswers = Some(answers))
-          .overrides(bind[RelationshipEstablishmentConnector].toInstance(connector))
+          .overrides(
+            bind[RelationshipEstablishmentConnector].toInstance(connector),
+            bind[AuditService].toInstance(mockAuditService))
           .build()
 
         when(connector.journeyId(any[String])(any(), any()))
@@ -118,7 +126,9 @@ class IvFailureControllerSpec extends SpecBase {
           .set(IsAgentManagingTrustPage, true).success.value
 
         val application = applicationBuilder(userAnswers = Some(answers))
-          .overrides(bind[RelationshipEstablishmentConnector].toInstance(connector))
+          .overrides(
+            bind[RelationshipEstablishmentConnector].toInstance(connector),
+            bind[AuditService].toInstance(mockAuditService))
           .build()
 
         when(connector.journeyId(any[String])(any(), any()))
@@ -144,7 +154,9 @@ class IvFailureControllerSpec extends SpecBase {
           .set(IsAgentManagingTrustPage, true).success.value
 
         val application = applicationBuilder(userAnswers = Some(answers))
-          .overrides(bind[RelationshipEstablishmentConnector].toInstance(connector))
+          .overrides(
+            bind[RelationshipEstablishmentConnector].toInstance(connector),
+            bind[AuditService].toInstance(mockAuditService))
           .build()
 
         when(connector.journeyId(any[String])(any(), any()))
@@ -183,7 +195,9 @@ class IvFailureControllerSpec extends SpecBase {
           .set(IsAgentManagingTrustPage, true).success.value
 
         val application = applicationBuilder(userAnswers = Some(answers))
-          .overrides(bind[TrustsStoreConnector].toInstance(connector))
+          .overrides(
+            bind[TrustsStoreConnector].toInstance(connector),
+            bind[AuditService].toInstance(mockAuditService))
           .build()
 
         val request = FakeRequest(GET, onLockedRoute)
@@ -207,6 +221,7 @@ class IvFailureControllerSpec extends SpecBase {
           .set(IdentifierPage, "1234567890").success.value
 
         val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[AuditService].toInstance(mockAuditService))
           .build()
 
         val request = FakeRequest(GET, onLockedRoute)
@@ -228,6 +243,7 @@ class IvFailureControllerSpec extends SpecBase {
           .set(IdentifierPage, "1234567891").success.value
 
         val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[AuditService].toInstance(mockAuditService))
           .build()
 
         val request = FakeRequest(GET, onLockedRoute)
@@ -242,6 +258,7 @@ class IvFailureControllerSpec extends SpecBase {
       "redirect to Session Expired for a GET if no existing data is found" in {
 
         val application = applicationBuilder(userAnswers = None)
+          .overrides(bind[AuditService].toInstance(mockAuditService))
           .build()
 
         val onLockedRoute = routes.IvFailureController.trustLocked().url
