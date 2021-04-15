@@ -20,5 +20,5 @@ object Events {
 
   val CLAIM_A_TRUST_SUCCESS = "ClaimNonTaxableTrustSuccess"
   val CLAIM_A_TRUST_FAILURE = "ClaimNonTaxableTrustFailure"
-
+  val CLAIM_A_TRUST_EXCEPTION = "ClaimNonTaxableTrustException"
 }

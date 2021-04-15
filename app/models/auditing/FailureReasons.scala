@@ -22,7 +22,8 @@ object FailureReasons {
   val SERVICE_UNAVAILABLE = "Service Unavailable (Trust IV)"
   val IDENTIFIER_NOT_FOUND = "Identifier not found"
   val TRUST_STILL_PROCESSING = "Trust is still processing"
-  val IV_TECHNICAL_PROBLEM = "IV technical problem"
+  val IV_TECHNICAL_PROBLEM_NO_ERROR_KEY = "IV technical problem: No error key"
+  val IV_TECHNICAL_PROBLEM_NO_JOURNEY_ID = "IV technical problem: No journeyId"
   val UNSUPPORTED_RELATIONSHIP_STATUS = "Unsupported relationship status"
   val UPSTREAM_RELATIONSHIP_ERROR = "Upstream relationship error"
 }

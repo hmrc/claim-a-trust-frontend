@@ -73,7 +73,7 @@ class IvFailureController @Inject()(
         Redirect(routes.FallbackFailureController.onPageLoad())
       case _ =>
         logger.warn(s"[Claiming][Trust IV][status][Session ID: ${Session.id(hc)}] No errorKey in HTTP response")
-        auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.IV_TECHNICAL_PROBLEM)
+        auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.IV_TECHNICAL_PROBLEM_NO_ERROR_KEY)
         Redirect(routes.FallbackFailureController.onPageLoad())
     }
   }
@@ -87,6 +87,7 @@ class IvFailureController @Inject()(
 
           queryString.fold{
             logger.warn(s"[Claiming][Trust IV][Session ID: ${Session.id(hc)}] unable to retrieve a journeyId to determine the reason")
+            auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.IV_TECHNICAL_PROBLEM_NO_JOURNEY_ID)
             Future.successful(Redirect(routes.FallbackFailureController.onPageLoad()))
           }{
             journeyId =>
