@@ -20,17 +20,21 @@ import connectors.{RelationshipEstablishmentConnector, TrustsStoreConnector}
 import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
 import javax.inject.Inject
 import models.RelationshipEstablishmentStatus.{UnsupportedRelationshipStatus, UpstreamRelationshipError}
+import models.requests.DataRequest
 import models.{RelationshipEstablishmentStatus, TrustsStoreRequest}
-import pages.{IsAgentManagingTrustPage, IdentifierPage}
+import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import services.AuditService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
 import views.html.{TrustLocked, TrustNotFound, TrustStillProcessing}
 
 import scala.concurrent.{ExecutionContext, Future}
+import models.auditing.Events._
+import models.auditing.FailureReasons
 
 class IvFailureController @Inject()(
                                      val controllerComponents: MessagesControllerComponents,
@@ -41,28 +45,35 @@ class IvFailureController @Inject()(
                                      getData: DataRetrievalAction,
                                      requireData: DataRequiredAction,
                                      relationshipEstablishmentConnector: RelationshipEstablishmentConnector,
-                                     connector: TrustsStoreConnector
+                                     connector: TrustsStoreConnector,
+                                     auditService: AuditService
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
-  private def renderFailureReason(identifier: String, journeyId: String)(implicit hc : HeaderCarrier): Future[Result] = {
+  private def renderFailureReason(identifier: String, journeyId: String)(implicit hc : HeaderCarrier, request: DataRequest[_]): Future[Result] = {
     relationshipEstablishmentConnector.journeyId(journeyId) map {
       case RelationshipEstablishmentStatus.Locked =>
         logger.info(s"[Claiming][Trust IV][status][Session ID: ${Session.id(hc)}] $identifier is locked")
+        auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.LOCKED)
         Redirect(routes.IvFailureController.trustLocked())
       case RelationshipEstablishmentStatus.NotFound =>
         logger.info(s"[Claiming][Trust IV][status][Session ID: ${Session.id(hc)}] $identifier was not found")
+        auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.IDENTIFIER_NOT_FOUND)
         Redirect(routes.IvFailureController.trustNotFound())
       case RelationshipEstablishmentStatus.InProcessing =>
         logger.info(s"[Claiming][Trust IV][status][Session ID: ${Session.id(hc)}] $identifier is processing")
+        auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.TRUST_STILL_PROCESSING)
         Redirect(routes.IvFailureController.trustStillProcessing())
       case UnsupportedRelationshipStatus(reason) =>
         logger.warn(s"[Claiming][Trust IV][status][Session ID: ${Session.id(hc)}] Unsupported IV failure reason: $reason")
+        auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.UNSUPPORTED_RELATIONSHIP_STATUS)
         Redirect(routes.FallbackFailureController.onPageLoad())
       case UpstreamRelationshipError(response) =>
         logger.warn(s"[Claiming][Trust IV][status][Session ID: ${Session.id(hc)}] HTTP response: $response")
+        auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.UPSTREAM_RELATIONSHIP_ERROR)
         Redirect(routes.FallbackFailureController.onPageLoad())
       case _ =>
         logger.warn(s"[Claiming][Trust IV][status][Session ID: ${Session.id(hc)}] No errorKey in HTTP response")
+        auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.IV_TECHNICAL_PROBLEM_NO_ERROR_KEY)
         Redirect(routes.FallbackFailureController.onPageLoad())
     }
   }
@@ -76,6 +87,7 @@ class IvFailureController @Inject()(
 
           queryString.fold{
             logger.warn(s"[Claiming][Trust IV][Session ID: ${Session.id(hc)}] unable to retrieve a journeyId to determine the reason")
+            auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.IV_TECHNICAL_PROBLEM_NO_JOURNEY_ID)
             Future.successful(Redirect(routes.FallbackFailureController.onPageLoad()))
           }{
             journeyId =>

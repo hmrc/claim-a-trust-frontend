@@ -18,6 +18,7 @@ package controllers
 
 import base.SpecBase
 import connectors.TaxEnrolmentsConnector
+import models.auditing.Events.{CLAIM_A_TRUST_FAILURE, CLAIM_A_TRUST_SUCCESS}
 import models.{EnrolmentCreated, TaxEnrolmentsRequest, UpstreamTaxEnrolmentsError, UserAnswers}
 import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito._
@@ -28,7 +29,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.{RelationshipEstablishment, RelationshipFound}
+import services.{AuditService, RelationshipEstablishment, RelationshipFound}
 import uk.gov.hmrc.http.BadRequestException
 import views.html.IvSuccessView
 
@@ -40,8 +41,8 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
   private val urn = "ABTRUST12345678"
 
   private val connector = mock[TaxEnrolmentsConnector]
-
   private val mockRelationshipEstablishment = mock[RelationshipEstablishment]
+  private val mockAuditService: AuditService = mock[AuditService]
 
   // Mock mongo repository
   private val mockRepository = mock[SessionRepository]
@@ -50,6 +51,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
     reset(connector)
     reset(mockRelationshipEstablishment)
     reset(mockRepository)
+    reset(mockAuditService)
     super.beforeEach()
   }
 
@@ -68,7 +70,8 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
           relationshipEstablishment = mockRelationshipEstablishment
         ).overrides(
           bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
-          bind(classOf[SessionRepository]).toInstance(mockRepository) // instantiate the mock repository to be used in the application
+          bind(classOf[SessionRepository]).toInstance(mockRepository),
+          bind(classOf[AuditService]).toInstance(mockAuditService)
         ).build()
 
         // Stub a mongo connection
@@ -100,6 +103,8 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
 
+        verify(mockAuditService).audit(eqTo(CLAIM_A_TRUST_SUCCESS), eqTo(utr), eqTo(false))(any(), any())
+
         application.stop()
 
       }
@@ -115,7 +120,8 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
           relationshipEstablishment = mockRelationshipEstablishment
         ).overrides(
           bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
-          bind(classOf[SessionRepository]).toInstance(mockRepository)
+          bind(classOf[SessionRepository]).toInstance(mockRepository),
+          bind(classOf[AuditService]).toInstance(mockAuditService)
         ).build()
 
         when(mockRepository.set(any())).thenReturn(Future.successful(true))
@@ -144,6 +150,8 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
         verify(connector, atLeastOnce()).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
 
         verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
+
+        verify(mockAuditService).audit(eqTo(CLAIM_A_TRUST_SUCCESS), eqTo(utr), eqTo(true))(any(), any())
 
         application.stop()
 
@@ -165,7 +173,8 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
           relationshipEstablishment = mockRelationshipEstablishment
         ).overrides(
           bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
-          bind(classOf[SessionRepository]).toInstance(mockRepository) // instantiate the mock repository to be used in the application
+          bind(classOf[SessionRepository]).toInstance(mockRepository),
+          bind(classOf[AuditService]).toInstance(mockAuditService)
         ).build()
 
         // Stub a mongo connection
@@ -197,6 +206,8 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
 
+        verify(mockAuditService).audit(eqTo(CLAIM_A_TRUST_SUCCESS), eqTo(utr), eqTo(false))(any(), any())
+
         application.stop()
 
       }
@@ -213,7 +224,8 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
           relationshipEstablishment = mockRelationshipEstablishment
         ).overrides(
           bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
-          bind(classOf[SessionRepository]).toInstance(mockRepository)
+          bind(classOf[SessionRepository]).toInstance(mockRepository),
+          bind(classOf[AuditService]).toInstance(mockAuditService)
         ).build()
 
         when(mockRepository.set(any())).thenReturn(Future.successful(true))
@@ -243,6 +255,8 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
 
+        verify(mockAuditService).audit(eqTo(CLAIM_A_TRUST_SUCCESS), eqTo(utr), eqTo(true))(any(), any())
+
         application.stop()
 
       }
@@ -262,10 +276,11 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
           userAnswers = Some(userAnswers),
           relationshipEstablishment = mockRelationshipEstablishment
         )
-        .overrides(
-          bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
-          bind(classOf[SessionRepository]).toInstance(mockRepository)
-        ).build()
+          .overrides(
+            bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
+            bind(classOf[SessionRepository]).toInstance(mockRepository),
+            bind(classOf[AuditService]).toInstance(mockAuditService)
+          ).build()
 
         val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
 
@@ -287,6 +302,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
         verify(connector, never()).enrol(any[TaxEnrolmentsRequest]())(any(), any(), any())
 
         verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
+        verify(mockAuditService, never()).audit(any(), any(), any())(any(), any())
 
         application.stop()
 
@@ -304,7 +320,8 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
           relationshipEstablishment = mockRelationshipEstablishment
         ).overrides(
           bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
-          bind(classOf[SessionRepository]).toInstance(mockRepository)
+          bind(classOf[SessionRepository]).toInstance(mockRepository),
+          bind(classOf[AuditService]).toInstance(mockAuditService)
         ).build()
 
         val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
@@ -329,6 +346,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         verify(connector, never()).enrol(any[TaxEnrolmentsRequest]())(any(), any(), any())
         verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
+        verify(mockAuditService, never()).audit(any(), any(), any())(any(), any())
 
         application.stop()
 
@@ -349,7 +367,8 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
           relationshipEstablishment = mockRelationshipEstablishment
         ).overrides(
           bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
-          bind(classOf[SessionRepository]).toInstance(mockRepository)
+          bind(classOf[SessionRepository]).toInstance(mockRepository),
+          bind(classOf[AuditService]).toInstance(mockAuditService)
         ).build()
 
         when(mockRepository.set(any())).thenReturn(Future.successful(true))
@@ -374,6 +393,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         verify(connector).enrol(eqTo(TaxEnrolmentsRequest(urn)))(any(), any(), any())
         verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(urn))(any())
+        verify(mockAuditService).audit(eqTo(CLAIM_A_TRUST_SUCCESS), eqTo(urn), eqTo(false))(any(), any())
 
         application.stop()
 
@@ -390,7 +410,8 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
           relationshipEstablishment = mockRelationshipEstablishment
         ).overrides(
           bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
-          bind(classOf[SessionRepository]).toInstance(mockRepository)
+          bind(classOf[SessionRepository]).toInstance(mockRepository),
+          bind(classOf[AuditService]).toInstance(mockAuditService)
         ).build()
 
         when(mockRepository.set(any())).thenReturn(Future.successful(true))
@@ -415,6 +436,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         verify(connector).enrol(eqTo(TaxEnrolmentsRequest(urn)))(any(), any(), any())
         verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(urn))(any())
+        verify(mockAuditService).audit(eqTo(CLAIM_A_TRUST_SUCCESS), eqTo(urn), eqTo(true))(any(), any())
 
         application.stop()
 
@@ -456,10 +478,11 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
               userAnswers = Some(userAnswers),
               relationshipEstablishment = mockRelationshipEstablishment
             )
-            .overrides(
-              bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
-              bind(classOf[SessionRepository]).toInstance(mockRepository)
-            ).build()
+              .overrides(
+                bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
+                bind(classOf[SessionRepository]).toInstance(mockRepository),
+                bind(classOf[AuditService]).toInstance(mockAuditService)
+              ).build()
 
             val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
 
@@ -482,6 +505,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
             verify(connector).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
             verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
+            verify(mockAuditService).auditFailure(eqTo(CLAIM_A_TRUST_FAILURE), eqTo(utr), eqTo("Unauthorized"))(any(), any())
 
             application.stop()
 
@@ -499,10 +523,11 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
               userAnswers = Some(userAnswers),
               relationshipEstablishment = mockRelationshipEstablishment
             )
-            .overrides(
-              bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
-              bind(classOf[SessionRepository]).toInstance(mockRepository)
-            ).build()
+              .overrides(
+                bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
+                bind(classOf[SessionRepository]).toInstance(mockRepository),
+                bind(classOf[AuditService]).toInstance(mockAuditService)
+              ).build()
 
             val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
 
@@ -525,6 +550,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
             verify(connector).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
             verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
+            verify(mockAuditService).auditFailure(eqTo(CLAIM_A_TRUST_FAILURE), eqTo(utr), eqTo("BadRequest"))(any(), any())
 
             application.stop()
 

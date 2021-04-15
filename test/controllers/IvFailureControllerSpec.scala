@@ -18,6 +18,8 @@ package controllers
 
 import base.SpecBase
 import connectors.{RelationshipEstablishmentConnector, TrustsStoreConnector}
+import models.auditing.Events.CLAIM_A_TRUST_FAILURE
+import models.auditing.FailureReasons
 import models.{RelationshipEstablishmentStatus, StatusStored, TrustsStoreRequest}
 import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.{verify, when}
@@ -26,12 +28,14 @@ import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import services.AuditService
 
 import scala.concurrent.Future
 
 class IvFailureControllerSpec extends SpecBase {
 
   lazy val connector: RelationshipEstablishmentConnector = mock[RelationshipEstablishmentConnector]
+  private val mockAuditService: AuditService = mock[AuditService]
 
   "IvFailure Controller" must {
 
@@ -44,6 +48,7 @@ class IvFailureControllerSpec extends SpecBase {
           .set(IsAgentManagingTrustPage, true).success.value
 
         val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[AuditService].toInstance(mockAuditService))
           .build()
 
         val onIvFailureRoute = routes.IvFailureController.onTrustIvFailure().url
@@ -55,6 +60,8 @@ class IvFailureControllerSpec extends SpecBase {
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual routes.FallbackFailureController.onPageLoad().url
+        verify(mockAuditService).auditFailure(eqTo(CLAIM_A_TRUST_FAILURE), eqTo("1234567890"),
+          eqTo(FailureReasons.IV_TECHNICAL_PROBLEM_NO_JOURNEY_ID))(any(), any())
 
         application.stop()
       }
@@ -68,7 +75,10 @@ class IvFailureControllerSpec extends SpecBase {
         val onIvFailureRoute = routes.IvFailureController.onTrustIvFailure().url
 
         val application = applicationBuilder(userAnswers = Some(answers))
-          .overrides(bind[RelationshipEstablishmentConnector].toInstance(connector))
+          .overrides(
+            bind[RelationshipEstablishmentConnector].toInstance(connector),
+            bind[AuditService].toInstance(mockAuditService)
+          )
           .build()
 
         when(connector.journeyId(any[String])(any(), any()))
@@ -81,7 +91,7 @@ class IvFailureControllerSpec extends SpecBase {
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual routes.IvFailureController.trustLocked().url
-
+        verify(mockAuditService).auditFailure(eqTo(CLAIM_A_TRUST_FAILURE), eqTo("1234567890"), eqTo(FailureReasons.LOCKED))(any(), any())
         application.stop()
       }
 
@@ -92,7 +102,9 @@ class IvFailureControllerSpec extends SpecBase {
           .set(IsAgentManagingTrustPage, true).success.value
 
         val application = applicationBuilder(userAnswers = Some(answers))
-          .overrides(bind[RelationshipEstablishmentConnector].toInstance(connector))
+          .overrides(
+            bind[RelationshipEstablishmentConnector].toInstance(connector),
+            bind[AuditService].toInstance(mockAuditService))
           .build()
 
         when(connector.journeyId(any[String])(any(), any()))
@@ -107,6 +119,7 @@ class IvFailureControllerSpec extends SpecBase {
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual routes.IvFailureController.trustNotFound().url
+        verify(mockAuditService).auditFailure(eqTo(CLAIM_A_TRUST_FAILURE), eqTo("1234567890"), eqTo(FailureReasons.IDENTIFIER_NOT_FOUND))(any(), any())
 
         application.stop()
       }
@@ -118,7 +131,9 @@ class IvFailureControllerSpec extends SpecBase {
           .set(IsAgentManagingTrustPage, true).success.value
 
         val application = applicationBuilder(userAnswers = Some(answers))
-          .overrides(bind[RelationshipEstablishmentConnector].toInstance(connector))
+          .overrides(
+            bind[RelationshipEstablishmentConnector].toInstance(connector),
+            bind[AuditService].toInstance(mockAuditService))
           .build()
 
         when(connector.journeyId(any[String])(any(), any()))
@@ -133,6 +148,66 @@ class IvFailureControllerSpec extends SpecBase {
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual routes.IvFailureController.trustStillProcessing().url
+        verify(mockAuditService).auditFailure(eqTo(CLAIM_A_TRUST_FAILURE), eqTo("1234567890"), eqTo(FailureReasons.TRUST_STILL_PROCESSING))(any(), any())
+        application.stop()
+      }
+
+      "redirect to trust utr Unsupported Relationship status page when the utr is processing" in {
+
+        val answers = emptyUserAnswers
+          .set(IdentifierPage, "1234567890").success.value
+          .set(IsAgentManagingTrustPage, true).success.value
+
+        val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(
+            bind[RelationshipEstablishmentConnector].toInstance(connector),
+            bind[AuditService].toInstance(mockAuditService))
+          .build()
+
+        when(connector.journeyId(any[String])(any(), any()))
+          .thenReturn(Future.successful(RelationshipEstablishmentStatus.UnsupportedRelationshipStatus("")))
+
+        val onIvFailureRoute = routes.IvFailureController.onTrustIvFailure().url
+
+        val request = FakeRequest(GET, s"$onIvFailureRoute?journeyId=47a8a543-6961-4221-86e8-d22e2c3c91de")
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual routes.FallbackFailureController.onPageLoad().url
+        verify(mockAuditService).auditFailure(eqTo(CLAIM_A_TRUST_FAILURE), eqTo("1234567890"),
+          eqTo(FailureReasons.UNSUPPORTED_RELATIONSHIP_STATUS))(any(), any())
+
+        application.stop()
+      }
+
+      "redirect to trust utr Upstream Relationship error page when the utr is processing" in {
+
+        val answers = emptyUserAnswers
+          .set(IdentifierPage, "1234567890").success.value
+          .set(IsAgentManagingTrustPage, true).success.value
+
+        val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(
+            bind[RelationshipEstablishmentConnector].toInstance(connector),
+            bind[AuditService].toInstance(mockAuditService))
+          .build()
+
+        when(connector.journeyId(any[String])(any(), any()))
+          .thenReturn(Future.successful(RelationshipEstablishmentStatus.UpstreamRelationshipError("")))
+
+        val onIvFailureRoute = routes.IvFailureController.onTrustIvFailure().url
+
+        val request = FakeRequest(GET, s"$onIvFailureRoute?journeyId=47a8a543-6961-4221-86e8-d22e2c3c91de")
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual routes.FallbackFailureController.onPageLoad().url
+        verify(mockAuditService).auditFailure(eqTo(CLAIM_A_TRUST_FAILURE), eqTo("1234567890"),
+          eqTo(FailureReasons.UPSTREAM_RELATIONSHIP_ERROR))(any(), any())
 
         application.stop()
       }
@@ -144,7 +219,9 @@ class IvFailureControllerSpec extends SpecBase {
           .set(IsAgentManagingTrustPage, true).success.value
 
         val application = applicationBuilder(userAnswers = Some(answers))
-          .overrides(bind[RelationshipEstablishmentConnector].toInstance(connector))
+          .overrides(
+            bind[RelationshipEstablishmentConnector].toInstance(connector),
+            bind[AuditService].toInstance(mockAuditService))
           .build()
 
         when(connector.journeyId(any[String])(any(), any()))
@@ -152,13 +229,15 @@ class IvFailureControllerSpec extends SpecBase {
 
         val onIvFailureRoute = routes.IvFailureController.onTrustIvFailure().url
 
-        val request = FakeRequest(GET, s"$onIvFailureRoute")
+        val request = FakeRequest(GET, s"$onIvFailureRoute?journeyId=47a8a543-6961-4221-86e8-d22e2c3c91de")
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
 
         redirectLocation(result).value mustEqual routes.FallbackFailureController.onPageLoad().url
+        verify(mockAuditService).auditFailure(eqTo(CLAIM_A_TRUST_FAILURE), eqTo("1234567890"),
+          eqTo(FailureReasons.IV_TECHNICAL_PROBLEM_NO_ERROR_KEY))(any(), any())
 
         application.stop()
       }
@@ -183,7 +262,9 @@ class IvFailureControllerSpec extends SpecBase {
           .set(IsAgentManagingTrustPage, true).success.value
 
         val application = applicationBuilder(userAnswers = Some(answers))
-          .overrides(bind[TrustsStoreConnector].toInstance(connector))
+          .overrides(
+            bind[TrustsStoreConnector].toInstance(connector),
+            bind[AuditService].toInstance(mockAuditService))
           .build()
 
         val request = FakeRequest(GET, onLockedRoute)
@@ -207,6 +288,7 @@ class IvFailureControllerSpec extends SpecBase {
           .set(IdentifierPage, "1234567890").success.value
 
         val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[AuditService].toInstance(mockAuditService))
           .build()
 
         val request = FakeRequest(GET, onLockedRoute)
@@ -228,6 +310,7 @@ class IvFailureControllerSpec extends SpecBase {
           .set(IdentifierPage, "1234567891").success.value
 
         val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[AuditService].toInstance(mockAuditService))
           .build()
 
         val request = FakeRequest(GET, onLockedRoute)
@@ -242,6 +325,7 @@ class IvFailureControllerSpec extends SpecBase {
       "redirect to Session Expired for a GET if no existing data is found" in {
 
         val application = applicationBuilder(userAnswers = None)
+          .overrides(bind[AuditService].toInstance(mockAuditService))
           .build()
 
         val onLockedRoute = routes.IvFailureController.trustLocked().url

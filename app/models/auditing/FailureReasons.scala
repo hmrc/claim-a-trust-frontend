@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package models.requests
+package models.auditing
 
-import play.api.mvc.{Request, WrappedRequest}
-import uk.gov.hmrc.auth.core.AffinityGroup
-import uk.gov.hmrc.auth.core.retrieve.Credentials
+object FailureReasons {
 
-case class IdentifierRequest[A] ( request: Request[A],
-                                  identifier: String,
-                                  credentials: Credentials,
-                                  affinityGroup: AffinityGroup) extends WrappedRequest[A](request)
+  val LOCKED = "Failed 3 times, cred locked for 30 minutes"
+  val SERVICE_UNAVAILABLE = "Service Unavailable (Trust IV)"
+  val IDENTIFIER_NOT_FOUND = "Identifier not found"
+  val TRUST_STILL_PROCESSING = "Trust is still processing"
+  val IV_TECHNICAL_PROBLEM_NO_ERROR_KEY = "IV technical problem: No error key"
+  val IV_TECHNICAL_PROBLEM_NO_JOURNEY_ID = "IV technical problem: No journeyId"
+  val UNSUPPORTED_RELATIONSHIP_STATUS = "Unsupported relationship status"
+  val UPSTREAM_RELATIONSHIP_ERROR = "Upstream relationship error"
+}

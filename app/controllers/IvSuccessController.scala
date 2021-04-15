@@ -28,8 +28,9 @@ import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
-import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
+import services.{AuditService, RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import models.auditing.Events._
 import utils.Session
 import views.html.IvSuccessView
 
@@ -45,7 +46,8 @@ class IvSuccessController @Inject()(
                                      taxEnrolmentsConnector: TaxEnrolmentsConnector,
                                      view: IvSuccessView,
                                      errorHandler: ErrorHandler,
-                                     sessionRepository: SessionRepository
+                                     sessionRepository: SessionRepository,
+                                     auditService: AuditService
                                    )(implicit ec: ExecutionContext,
                                      val config: FrontendAppConfig)
   extends FrontendBaseController with I18nSupport
@@ -87,13 +89,15 @@ class IvSuccessController @Inject()(
         _ <- sessionRepository.set(ua)
       } yield {
         val isAgentManagingTrust: Boolean = request.userAnswers.get(IsAgentManagingTrustPage).getOrElse(false)
+        auditService.audit(CLAIM_A_TRUST_SUCCESS, identifier, isAgentManagingTrust)
 
         logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] successfully enrolled $identifier to users" +
           s"credential after passing Trust IV, user can now maintain the trust")
 
         Ok(view(isAgentManagingTrust, identifier))
       }) recoverWith {
-        case _ =>
+        case exc =>
+          auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, exc.getMessage)
           Future.fromTry(request.userAnswers.set(HasEnrolled, false)).flatMap { ua =>
             sessionRepository.set(ua).map { _ =>
               logger.error(s"[Claiming][Session ID: ${Session.id(hc)}] failed to create enrolment for " +
