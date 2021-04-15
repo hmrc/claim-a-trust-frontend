@@ -97,7 +97,7 @@ class IvSuccessController @Inject()(
         Ok(view(isAgentManagingTrust, identifier))
       }) recoverWith {
         case exc =>
-          auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, exc.getMessage)
+          auditService.auditError(CLAIM_A_TRUST_ERROR, identifier)
           Future.fromTry(request.userAnswers.set(HasEnrolled, false)).flatMap { ua =>
             sessionRepository.set(ua).map { _ =>
               logger.error(s"[Claiming][Session ID: ${Session.id(hc)}] failed to create enrolment for " +

@@ -16,9 +16,14 @@
 
 package models.auditing
 
-object Events {
+import play.api.libs.json.{Format, Json}
 
-  val CLAIM_A_TRUST_SUCCESS = "ClaimATrustSuccess"
-  val CLAIM_A_TRUST_FAILURE = "ClaimATrustFailure"
-  val CLAIM_A_TRUST_ERROR = "ClaimATrustError"
+case class ClaimATrustAuditErrorEvent(credentialsId: String,
+                                      credentialsType: String,
+                                      internalAuthId: String,
+                                      identifier: String)
+
+object ClaimATrustAuditErrorEvent {
+  implicit val formats: Format[ClaimATrustAuditErrorEvent] = Json.format[ClaimATrustAuditErrorEvent]
 }
+

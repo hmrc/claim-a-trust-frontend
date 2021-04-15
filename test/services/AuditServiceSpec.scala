@@ -19,7 +19,7 @@ package services
 import base.SpecBase
 import config.FrontendAppConfig
 import models.UserAnswers
-import models.auditing.{ClaimATrustAuditFailureEvent, ClaimATrustAuditSuccessEvent}
+import models.auditing.{ClaimATrustAuditErrorEvent, ClaimATrustAuditFailureEvent, ClaimATrustAuditSuccessEvent}
 import models.requests.DataRequest
 import org.mockito.Matchers.{any, eq => eqTo}
 import org.mockito.Mockito.{reset, verify}
@@ -113,6 +113,26 @@ class AuditServiceSpec extends SpecBase with MockitoSugar {
         internalAuthId = internalAuthId,
         identifier = utr,
         failureReason = failureReason
+      )
+
+      verify(auditConnector).sendExplicitAudit(eqTo(event), eqTo(expectedPayload))(any(), any(), any())
+    }
+
+    "build audit error payload from request values" in {
+
+      reset(auditConnector)
+
+      val affinity: AffinityGroup = Agent
+
+      val request: DataRequest[AnyContent] = DataRequest(fakeRequest, internalAuthId, Credentials(ggCredId, ggCredType), affinity, UserAnswers(""))
+
+      auditService.auditError(event, utr)(request, hc)
+
+      val expectedPayload = ClaimATrustAuditErrorEvent(
+        credentialsId = ggCredId,
+        credentialsType = ggCredType,
+        internalAuthId = internalAuthId,
+        identifier = utr
       )
 
       verify(auditConnector).sendExplicitAudit(eqTo(event), eqTo(expectedPayload))(any(), any(), any())

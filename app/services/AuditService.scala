@@ -61,4 +61,17 @@ class AuditService @Inject()(auditConnector: AuditConnector,  config : FrontendA
 
     auditConnector.sendExplicitAudit(event, payload)
   }
+
+  def auditError(event: String, identifier: String)
+                  (implicit request: DataRequest[_], hc: HeaderCarrier): Unit = {
+
+    val payload = ClaimATrustAuditErrorEvent(
+      credentialsId = request.credentials.providerId,
+      credentialsType = request.credentials.providerType,
+      internalAuthId = request.internalId,
+      identifier = identifier
+    )
+
+    auditConnector.sendExplicitAudit(event, payload)
+  }
 }
