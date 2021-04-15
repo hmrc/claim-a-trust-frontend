@@ -124,7 +124,6 @@ class AuditServiceSpec extends SpecBase with MockitoSugar {
 
       val affinity: AffinityGroup = Agent
 
-      val failureReason = "Error message"
       val request: DataRequest[AnyContent] = DataRequest(fakeRequest, internalAuthId, Credentials(ggCredId, ggCredType), affinity, UserAnswers(""))
 
       auditService.auditError(event, utr)(request, hc)
