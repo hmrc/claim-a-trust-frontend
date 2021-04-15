@@ -18,7 +18,7 @@ package controllers
 
 import base.SpecBase
 import connectors.TaxEnrolmentsConnector
-import models.auditing.Events.{CLAIM_A_TRUST_EXCEPTION, CLAIM_A_TRUST_SUCCESS}
+import models.auditing.Events.{CLAIM_A_TRUST_FAILURE, CLAIM_A_TRUST_SUCCESS}
 import models.{EnrolmentCreated, TaxEnrolmentsRequest, UpstreamTaxEnrolmentsError, UserAnswers}
 import org.mockito.Matchers.{eq => eqTo, _}
 import org.mockito.Mockito._
@@ -505,7 +505,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
             verify(connector).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
             verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
-            verify(mockAuditService).auditFailure(eqTo(CLAIM_A_TRUST_EXCEPTION), eqTo(utr), eqTo("Unauthorized"))(any(), any())
+            verify(mockAuditService).auditFailure(eqTo(CLAIM_A_TRUST_FAILURE), eqTo(utr), eqTo("Unauthorized"))(any(), any())
 
             application.stop()
 
@@ -550,7 +550,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
             verify(connector).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
             verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
-            verify(mockAuditService).auditFailure(eqTo(CLAIM_A_TRUST_EXCEPTION), eqTo(utr), eqTo("BadRequest"))(any(), any())
+            verify(mockAuditService).auditFailure(eqTo(CLAIM_A_TRUST_FAILURE), eqTo(utr), eqTo("BadRequest"))(any(), any())
 
             application.stop()
 
