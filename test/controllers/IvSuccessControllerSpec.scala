@@ -505,7 +505,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
             verify(connector).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
             verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
-            verify(mockAuditService).auditError(eqTo(CLAIM_A_TRUST_ERROR), eqTo(utr))(any(), any())
+            verify(mockAuditService).auditFailure(eqTo(CLAIM_A_TRUST_ERROR), eqTo(utr), eqTo("Unauthorized"))(any(), any())
 
             application.stop()
 
@@ -550,7 +550,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
             verify(connector).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
             verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
-            verify(mockAuditService).auditError(eqTo(CLAIM_A_TRUST_ERROR), eqTo(utr))(any(), any())
+            verify(mockAuditService).auditFailure(eqTo(CLAIM_A_TRUST_ERROR), eqTo(utr), eqTo("BadRequest"))(any(), any())
 
             application.stop()
 
