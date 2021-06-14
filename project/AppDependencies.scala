@@ -10,7 +10,7 @@ object AppDependencies {
     "uk.gov.hmrc"       %% "play-health"                    % "3.16.0-play-27",
     "uk.gov.hmrc"       %% "play-ui"                        % "9.0.0-play-27",
     "uk.gov.hmrc"       %% "play-conditional-form-mapping"  % "1.6.0-play-27",
-    "uk.gov.hmrc"       %% "bootstrap-frontend-play-27"     % "4.1.0",
+    "uk.gov.hmrc"       %% "bootstrap-frontend-play-27"     % "5.3.0",
     "uk.gov.hmrc"       %% "play-language"                  % "4.10.0-play-27"
   )
 
@@ -22,7 +22,7 @@ object AppDependencies {
     "com.typesafe.play"           %% "play-test"          % PlayVersion.current,
     "org.mockito"                 %  "mockito-all"        % "1.10.19",
     "org.scalacheck"              %% "scalacheck"         % "1.14.0",
-    "com.github.tomakehurst"      % "wiremock-standalone" % "2.25.1"
+    "com.github.tomakehurst"      % "wiremock-standalone" % "2.27.2"
   ).map(_ % Test)
 
   val akkaVersion = "2.6.7"
