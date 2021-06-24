@@ -18,14 +18,14 @@
 @import views.html.components.Heading
 
 @this(
-  main_template: MainTemplate,
+  mainTemplate: MainTemplate,
   config: FrontendAppConfig,
         heading: Heading
 )
 
 @(identifier: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
+@mainTemplate(
 title = messages("notFound.title"),
  showBackLink = true
 ) {

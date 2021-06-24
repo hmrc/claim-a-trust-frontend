@@ -21,6 +21,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.twirl.api.Html
 import base.SpecBase
+import org.scalatest.Assertion
 
 import scala.reflect.ClassTag
 
@@ -80,6 +81,13 @@ trait ViewSpecBase extends SpecBase {
 
   def assertNotRenderedById(doc: Document, id: String) = {
     assert(doc.getElementById(id) == null, "\n\nElement " + id + " was rendered on the page.\n")
+  }
+
+  def assertRenderedByClass(doc: Document, cssClass: String) =
+    assert(doc.getElementsByClass(cssClass) != null, "\n\nElement " + cssClass + " was not rendered on the page.\n")
+
+  def assertNotRenderedByClass(doc: Document, className: String): Assertion = {
+    assert(doc.getElementsByClass(className).isEmpty, "\n\nElement " + className + " was rendered on the page.\n")
   }
 
   def assertRenderedByCssSelector(doc: Document, cssSelector: String) = {

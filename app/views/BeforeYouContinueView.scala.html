@@ -17,7 +17,7 @@
 @import views.html.components.{HeadingWithIdentifierCaption, SubmitButton}
 
 @this(
-    main_template: MainTemplate,
+    mainTemplate: MainTemplate,
     formHelper: FormWithCSRF,
     heading: HeadingWithIdentifierCaption,
     submitButton: SubmitButton
@@ -25,7 +25,7 @@
 
 @(identifier: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
+@mainTemplate(
     title = messages("beforeYouContinue.title"),
     showBackLink = true
     ) {
