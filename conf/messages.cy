@@ -1,3 +1,5 @@
+service.name = Cofrestru Ymddiriedolaeth a’i Chynnal
+
 checkYourAnswers.title = Gwirio’ch Atebion
 checkYourAnswers.heading = Gwirio’ch Atebion
 checkYourAnswers.guidance = Arweiniad ar gyfer gwirio’ch atebion
@@ -50,10 +52,10 @@ timeout.title = Bydd eich cais yn dod i ben cyn hir
 timeout.message = Byddwn yn eich allgofnodi os na fyddwch yn ymateb cyn pen
 timeout.keep-alive-button = Mynd yn eich blaen â’r cais
 
-isAgentManagingTrust.title = A oes asiant yn rheoli cofrestr ar-lein yr ymddiriedolaeth ar ran yr ymddiriedolwyr?
-isAgentManagingTrust.heading = A oes asiant yn rheoli cofrestr ar-lein yr ymddiriedolaeth ar ran yr ymddiriedolwyr?
-isAgentManagingTrust.checkYourAnswersLabel = A oes asiant yn rheoli cofrestr ar-lein yr ymddiriedolaeth ar ran yr ymddiriedolwyr?
-isAgentManagingTrust.error.required = Dewiswch ‘Iawn’ os oes asiant yn rheoli cofrestr ar-lein yr ymddiriedolaeth ar ran yr ymddiriedolwyr
+isAgentManagingTrustYesNo.title = A oes asiant yn rheoli cofrestr ar-lein yr ymddiriedolaeth ar ran yr ymddiriedolwyr?
+isAgentManagingTrustYesNo.heading = A oes asiant yn rheoli cofrestr ar-lein yr ymddiriedolaeth ar ran yr ymddiriedolwyr?
+isAgentManagingTrustYesNo.checkYourAnswersLabel = A oes asiant yn rheoli cofrestr ar-lein yr ymddiriedolaeth ar ran yr ymddiriedolwyr?
+isAgentManagingTrustYesNo.error.required = Dewiswch ‘Iawn’ os oes asiant yn rheoli cofrestr ar-lein yr ymddiriedolaeth ar ran yr ymddiriedolwyr
 
 ivSuccess.contactLink = cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd)
 ivSuccess.agent.title = Rydych wedi hawlio’r ymddiriedolaeth yn llwyddiannus

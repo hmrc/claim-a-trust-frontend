@@ -14,27 +14,8 @@
  * limitations under the License.
  *@
 
-@import viewmodels.Section
-@import utils.SectionFormatter.formatSections
-@import views.html.components.Heading
+@this()
 
-@this(
-    main_template: MainTemplate,
-    heading: Heading,
-    govukSummaryList: GovukSummaryList
-)
+@(href : String, id : String = "", key : String, openInNewWindow: Boolean = false)(implicit messages: Messages)
 
-@(answerSections: Seq[Section])(implicit request: Request[_], messages: Messages)
-
-@main_template(
-    title = messages("checkYourAnswers.title"),
-    showBackLink = true
-    ) {
-
-    @heading("checkYourAnswers.heading")
-
-    <p>@messages("checkYourAnswers.guidance")</p>
-
-    @govukSummaryList(SummaryList(rows = formatSections(answerSections)))
-
-}
+<a id="@id" href="@href" @if(openInNewWindow) {target="_blank"}>@messages(key)</a>

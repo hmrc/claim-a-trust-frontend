@@ -14,27 +14,23 @@
  * limitations under the License.
  *@
 
-@import viewmodels.Section
-@import utils.SectionFormatter.formatSections
-@import views.html.components.Heading
+@import viewmodels.AddRow
+@import views.html.components.AddToRow
 
 @this(
-    main_template: MainTemplate,
-    heading: Heading,
-    govukSummaryList: GovukSummaryList
+ addToRow: AddToRow
 )
 
-@(answerSections: Seq[Section])(implicit request: Request[_], messages: Messages)
+@(data: Seq[AddRow], id: String, entity : String)(implicit messages: Messages)
 
-@main_template(
-    title = messages("checkYourAnswers.title"),
-    showBackLink = true
-    ) {
+@if(data.nonEmpty){
+<h2 class="govuk-heading-m" id="data-list-heading--@id">@messages(s"site.$id")</h2>
 
-    @heading("checkYourAnswers.heading")
-
-    <p>@messages("checkYourAnswers.guidance")</p>
-
-    @govukSummaryList(SummaryList(rows = formatSections(answerSections)))
-
+<div class="govuk-form-group">
+ <dl id="data-list--@id" class="hmrc-add-to-a-list hmrc-add-to-a-list--short">
+  @for(item <- data) {
+   @addToRow(item)
+  }
+ </dl>
+</div>
 }

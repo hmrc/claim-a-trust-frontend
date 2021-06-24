@@ -14,27 +14,13 @@
  * limitations under the License.
  *@
 
-@import viewmodels.Section
-@import utils.SectionFormatter.formatSections
-@import views.html.components.Heading
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 
-@this(
-    main_template: MainTemplate,
-    heading: Heading,
-    govukSummaryList: GovukSummaryList
-)
+@this(govukInsetText : GovukInsetText)
 
-@(answerSections: Seq[Section])(implicit request: Request[_], messages: Messages)
+@(messageKey: String, id: String)(implicit messages: Messages)
 
-@main_template(
-    title = messages("checkYourAnswers.title"),
-    showBackLink = true
-    ) {
-
-    @heading("checkYourAnswers.heading")
-
-    <p>@messages("checkYourAnswers.guidance")</p>
-
-    @govukSummaryList(SummaryList(rows = formatSections(answerSections)))
-
-}
+@govukInsetText(InsetText(
+ id = Some(s"inset-text--$id"),
+ content = Text(messages(messageKey))
+))

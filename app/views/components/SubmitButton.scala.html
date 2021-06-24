@@ -14,27 +14,18 @@
  * limitations under the License.
  *@
 
-@import viewmodels.Section
-@import utils.SectionFormatter.formatSections
-@import views.html.components.Heading
-
 @this(
-    main_template: MainTemplate,
-    heading: Heading,
-    govukSummaryList: GovukSummaryList
+    button: GovukButton,
 )
 
-@(answerSections: Seq[Section])(implicit request: Request[_], messages: Messages)
+@(overrideMessage: Option[String] = None, submitClass: Option[String] = None)(implicit messages: Messages)
 
-@main_template(
-    title = messages("checkYourAnswers.title"),
-    showBackLink = true
-    ) {
-
-    @heading("checkYourAnswers.heading")
-
-    <p>@messages("checkYourAnswers.guidance")</p>
-
-    @govukSummaryList(SummaryList(rows = formatSections(answerSections)))
-
-}
+@button(Button(
+    attributes = Map("id"->"submit"),
+    classes = s"button ${submitClass.getOrElse("")}",
+    content = if(overrideMessage.isEmpty) {
+        Text(messages("site.continue"))
+    } else {
+        Text(messages(overrideMessage.get))
+    }
+))

@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,29 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import viewmodels.Section
-@import utils.SectionFormatter.formatSections
-@import views.html.components.Heading
+package viewmodels
 
-@this(
-    main_template: MainTemplate,
-    heading: Heading,
-    govukSummaryList: GovukSummaryList
-)
+case class AddToRows(inProgress : List[AddRow], complete: List[AddRow]) {
 
-@(answerSections: Seq[Section])(implicit request: Request[_], messages: Messages)
-
-@main_template(
-    title = messages("checkYourAnswers.title"),
-    showBackLink = true
-    ) {
-
-    @heading("checkYourAnswers.heading")
-
-    <p>@messages("checkYourAnswers.guidance")</p>
-
-    @govukSummaryList(SummaryList(rows = formatSections(answerSections)))
+  def count : Int = inProgress.size + complete.size
 
 }

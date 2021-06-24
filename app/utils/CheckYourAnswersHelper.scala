@@ -28,9 +28,9 @@ class CheckYourAnswersHelper(userAnswers: UserAnswers)(implicit messages: Messag
   def isAgentManagingTrust: Option[AnswerRow] = userAnswers.get(IsAgentManagingTrustPage) map {
     x =>
       AnswerRow(
-        HtmlFormat.escape(messages("isAgentManagingTrust.checkYourAnswersLabel")),
-        yesOrNo(x),
-        routes.IsAgentManagingTrustController.onPageLoad(CheckMode).url
+        label = "isAgentManagingTrust.checkYourAnswersLabel",
+        answer = yesOrNo(x),
+        changeUrl = Some(routes.IsAgentManagingTrustController.onPageLoad(CheckMode).url)
       )
   }
 

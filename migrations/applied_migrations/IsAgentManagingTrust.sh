@@ -17,7 +17,7 @@ echo "" >> ../conf/messages.en
 echo "isAgentManagingTrust.title = isAgentManagingTrust" >> ../conf/messages.en
 echo "isAgentManagingTrust.heading = isAgentManagingTrust" >> ../conf/messages.en
 echo "isAgentManagingTrust.checkYourAnswersLabel = isAgentManagingTrust" >> ../conf/messages.en
-echo "isAgentManagingTrust.error.required = Select yes if isAgentManagingTrust" >> ../conf/messages.en
+echo "isAgentManagingTrustYesNo.error.required = Select yes if isAgentManagingTrust" >> ../conf/messages.en
 
 echo "Adding to UserAnswersEntryGenerators"
 awk '/trait UserAnswersEntryGenerators/ {\

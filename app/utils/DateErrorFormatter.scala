@@ -14,8 +14,28 @@
  * limitations under the License.
  */
 
-package viewmodels
+package utils
 
-import play.twirl.api.Html
+import play.api.data.FormError
+import play.api.i18n.Messages
 
-case class AnswerRow(label: String, answer: Html, changeUrl: Option[String], labelArg: String = "", canEdit: Boolean = true)
+object DateErrorFormatter {
+
+  def formatArgs(args: Seq[Any])(implicit messages: Messages): Seq[String] = {
+    val dateArgs = Seq("day", "month", "year")
+    args.map(arg => if (dateArgs.contains(arg)) messages(s"date.$arg").toLowerCase else arg.toString)
+  }
+
+  def addErrorClass(error: Option[FormError], dateArg: String): String = {
+    if(error.isDefined){
+      if(error.get.args.contains(dateArg) || error.get.args.isEmpty) {
+        s"govuk-input--error"
+      } else {
+        ""
+      }
+    } else {
+      ""
+    }
+  }
+
+}

@@ -14,27 +14,13 @@
  * limitations under the License.
  *@
 
-@import viewmodels.Section
-@import utils.SectionFormatter.formatSections
-@import views.html.components.Heading
-
 @this(
-    main_template: MainTemplate,
-    heading: Heading,
-    govukSummaryList: GovukSummaryList
+ subHeading: SubHeading
 )
 
-@(answerSections: Seq[Section])(implicit request: Request[_], messages: Messages)
+@(messagePrefix: String, optionalParam: Option[String] = None, captionParam: Option[String] = None)(implicit messages: Messages)
 
-@main_template(
-    title = messages("checkYourAnswers.title"),
-    showBackLink = true
-    ) {
-
-    @heading("checkYourAnswers.heading")
-
-    <p>@messages("checkYourAnswers.guidance")</p>
-
-    @govukSummaryList(SummaryList(rows = formatSections(answerSections)))
-
-}
+<h1 class="govuk-heading-l">
+ @subHeading(s"$messagePrefix.caption", captionParam.getOrElse(""))
+ @messages(s"$messagePrefix.heading", optionalParam.getOrElse(""))
+</h1>
