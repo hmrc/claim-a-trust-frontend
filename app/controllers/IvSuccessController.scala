@@ -109,4 +109,8 @@ class IvSuccessController @Inject()(
     }
   }
 
+  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData) {
+    implicit request =>
+      Redirect(config.trustsContinueUrl)
+  }
 }

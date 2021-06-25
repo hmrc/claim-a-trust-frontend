@@ -26,7 +26,7 @@ import views.html.IsAgentManagingTrustView
 
 class IsAgentManagingTrustViewSpec extends YesNoViewBehaviours {
 
-  val messageKeyPrefix = "isAgentManagingTrust"
+  val messageKeyPrefix = "isAgentManagingTrustYesNo"
 
   val form = new IsAgentManagingTrustFormProvider()()
 

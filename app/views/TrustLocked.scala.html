@@ -14,20 +14,23 @@
  * limitations under the License.
  *@
 
+@import views.html.components.HeadingWithIdentifierCaption
+
 @this(
-main_template: MainTemplate
+mainTemplate: MainTemplate,
+heading: HeadingWithIdentifierCaption
 )
 
 @(identifier: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = messages("locked.title")
+@mainTemplate(
+    title = messages("locked.title"),
+    showBackLink = true
 ) {
 
-    @components.heading(
-        headingKey = "locked.heading",
-        headingSize = "heading-large",
-        subheading = Some(subheading(identifier))
+    @heading(
+        messagePrefix = "locked",
+        caption = subheading(identifier)
     )
 
     <p>@messages("locked.p1")</p>

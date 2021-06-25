@@ -16,32 +16,34 @@
 
 @import controllers.routes._
 @import models.Mode
+@import views.html.components.{ErrorSummary, InputYesNo, SubmitButton}
 
 @this(
-    main_template: MainTemplate,
-    formHelper: FormWithCSRF
+    mainTemplate: MainTemplate,
+    formHelper: FormWithCSRF,
+    errorSummary: ErrorSummary,
+    inputYesNo: InputYesNo,
+    submitButton: SubmitButton
 )
 
 @(form: Form[_], mode: Mode, identifier: String)(implicit request: Request[_], messages: Messages)
 
-@main_template(
-    title = s"${errorPrefix(form)}${messages("isAgentManagingTrust.title")}"
+@mainTemplate(
+    title = s"${errorPrefix(form)}${messages("isAgentManagingTrustYesNo.title")}",
+    showBackLink = true
     ) {
 
     @formHelper(action = IsAgentManagingTrustController.onSubmit(mode), 'autoComplete -> "off") {
 
-        @components.back_link()
+        @errorSummary(form.errors)
 
-        @components.error_summary(form.errors)
-
-        @components.input_yes_no(
+        @inputYesNo(
             field = form("value"),
-            label = messages("isAgentManagingTrust.heading"),
-            labelClass = Some("heading-large"),
+            label = messages("isAgentManagingTrustYesNo.heading"),
             caption = Some(subheading(identifier)),
             legendAsHeading = true
         )
 
-        @components.submit_button()
+        @submitButton()
     }
 }

@@ -1,10 +1,10 @@
 @this(
-    main_template: MainTemplate
+    mainTemplate: MainTemplate
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@main_template(
+@mainTemplate(
     title = messages("$className;format="decap"$.title")
     ) {
 

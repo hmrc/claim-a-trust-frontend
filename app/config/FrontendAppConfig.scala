@@ -22,22 +22,17 @@ import play.api.Configuration
 import play.api.i18n.Lang
 import play.api.mvc.Call
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 
 @Singleton
-class FrontendAppConfig @Inject() (val configuration: Configuration, servicesConfig: ServicesConfig) {
-
-  private val contactHost = configuration.get[String]("contact-frontend.host")
-  private val contactFormServiceIdentifier = "trusts"
+class FrontendAppConfig @Inject() (val configuration: Configuration,
+                                   contactFrontendConfig: ContactFrontendConfig,
+                                   servicesConfig: ServicesConfig) {
 
   lazy val taxableEnrolmentServiceName: String = configuration.get[String]("microservice.services.tax-enrolments.taxable.serviceName")
   lazy val nonTaxableEnrolmentServiceName: String = configuration.get[String]("microservice.services.tax-enrolments.non-taxable.serviceName")
 
-  val analyticsToken: String = configuration.get[String](s"google-analytics.token")
-
-  val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
-  val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
-  val betaFeedbackUrl = s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier"
-  val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated?service=$contactFormServiceIdentifier"
+  val betaFeedbackUrl = s"${contactFrontendConfig.baseUrl.get}/contact/beta-feedback?service=${contactFrontendConfig.serviceId.get}"
 
   lazy val trustsRegistration: String = configuration.get[String]("urls.trustsRegistration")
   lazy val authUrl: String = configuration.get[Service]("auth").baseUrl
@@ -102,8 +97,8 @@ class FrontendAppConfig @Inject() (val configuration: Configuration, servicesCon
   lazy val failureUrl : String =
     configuration.get[String]("microservice.services.self.relationship-establishment.failureUrl")
 
-  lazy val countdownLength: String = configuration.get[String]("timeout.countdown")
-  lazy val timeoutLength: String = configuration.get[String]("timeout.length")
+  lazy val countdownLength: Int = configuration.get[Int]("timeout.countdown")
+  lazy val timeoutLength: Int = configuration.get[Int]("timeout.length")
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),

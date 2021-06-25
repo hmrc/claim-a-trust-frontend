@@ -49,7 +49,7 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
         "not render an error summary" in {
 
           val doc = asDocument(createView(form))
-          assertNotRenderedById(doc, "error-summary-heading")
+          assertNotRenderedById(doc, "govuk-error-summary")
         }
       }
 
@@ -69,13 +69,13 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
           "show an error summary" in {
 
             val doc = asDocument(createView(form.withError(FormError(field, "error"))))
-            assertRenderedById(doc, "error-summary-heading")
+            assertRenderedByClass(doc, "govuk-error-summary")
           }
 
           s"show an error in the label for field '$field'" in {
 
             val doc = asDocument(createView(form.withError(FormError(field, "error"))))
-            val errorSpan = doc.getElementsByClass("error-message").first
+            val errorSpan = doc.getElementsByClass("govuk-error-message").first
             errorSpan.parent.attr("for") mustBe field
           }
 
@@ -89,7 +89,7 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
 
             val doc = asDocument(createView(form.withError(FormError(fieldId, "error"))))
 
-            val errorSpan = doc.getElementsByClass("error-message").first
+            val errorSpan = doc.getElementsByClass("govuk-error-message").first
 
             // error id is that of the input field
             errorSpan.attr("id") must include(field)
