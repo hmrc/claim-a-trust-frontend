@@ -16,12 +16,11 @@
 
 package config
 
-import java.net.{URI, URLEncoder}
 import com.google.inject.{Inject, Singleton}
 import controllers.routes
 import play.api.Configuration
 import play.api.i18n.Lang
-import play.api.mvc.{Call, Request}
+import play.api.mvc.Call
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 
@@ -82,7 +81,7 @@ class FrontendAppConfig @Inject() (val configuration: Configuration,
   lazy val relationshipEstablishmentStubbed: Boolean =
     configuration.get[Boolean]("microservice.services.features.stubRelationshipEstablishment")
 
-  def relationshipEstablishmentFrontendtUrl(identifier: String) : String = {
+  def relationshipEstablishmentFrontendUrl(identifier: String) : String = {
     if(relationshipEstablishmentStubbed) {
       s"${stubbedRelationshipEstablishmentFrontendHost}/${stubbedRelationshipEstablishmentFrontendPath(identifier)}"
     } else {
@@ -108,11 +107,4 @@ class FrontendAppConfig @Inject() (val configuration: Configuration,
 
   def routeToSwitchLanguage: String => Call =
     (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
-
-  private lazy val accessibilityBaseLinkUrl: String = configuration.get[String]("urls.accessibility")
-
-  def accessibilityLinkUrl(implicit request: Request[_]): String = {
-    val userAction = URLEncoder.encode(new URI(request.uri).getPath, "UTF-8")
-    s"$accessibilityBaseLinkUrl?userAction=$userAction"
-  }
 }
