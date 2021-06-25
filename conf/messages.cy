@@ -1,9 +1,5 @@
 service.name = Cofrestru Ymddiriedolaeth a’i Chynnal
 
-checkYourAnswers.title = Gwirio’ch Atebion
-checkYourAnswers.heading = Gwirio’ch Atebion
-checkYourAnswers.guidance = Arweiniad ar gyfer gwirio’ch atebion
-
 date.day = Diwrnod
 date.month = Mis
 date.year = Blwyddyn
@@ -54,7 +50,6 @@ timeout.keep-alive-button = Mynd yn eich blaen â’r cais
 
 isAgentManagingTrustYesNo.title = A oes asiant yn rheoli cofrestr ar-lein yr ymddiriedolaeth ar ran yr ymddiriedolwyr?
 isAgentManagingTrustYesNo.heading = A oes asiant yn rheoli cofrestr ar-lein yr ymddiriedolaeth ar ran yr ymddiriedolwyr?
-isAgentManagingTrustYesNo.checkYourAnswersLabel = A oes asiant yn rheoli cofrestr ar-lein yr ymddiriedolaeth ar ran yr ymddiriedolwyr?
 isAgentManagingTrustYesNo.error.required = Dewiswch ‘Iawn’ os oes asiant yn rheoli cofrestr ar-lein yr ymddiriedolaeth ar ran yr ymddiriedolwyr
 
 ivSuccess.contactLink = cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM (yn agor ffenestr neu dab newydd)

@@ -1,9 +1,5 @@
 service.name = Register and Maintain a Trust
 
-checkYourAnswers.title = Check Your Answers
-checkYourAnswers.heading = Check Your Answers
-checkYourAnswers.guidance = Guidance for check your answers
-
 date.day = Day
 date.month = Month
 date.year = Year
@@ -55,7 +51,6 @@ timeout.keep-alive-button=Continue application
 
 isAgentManagingTrustYesNo.title = Is an agent managing the trust’s online register for the trustees?
 isAgentManagingTrustYesNo.heading = Is an agent managing the trust’s online register for the trustees?
-isAgentManagingTrustYesNo.checkYourAnswersLabel = Is an agent managing the trust’s online register for the trustees?
 isAgentManagingTrustYesNo.error.required = Select yes if an agent is managing the trust’s online register for the trustees
 
 ivSuccess.contactLink =  contact the trusts helpline (opens in a new window or tab)

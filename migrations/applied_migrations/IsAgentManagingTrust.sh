@@ -16,7 +16,6 @@ echo "Adding messages to conf.messages"
 echo "" >> ../conf/messages.en
 echo "isAgentManagingTrustYesNo.title = isAgentManagingTrust" >> ../conf/messages.en
 echo "isAgentManagingTrustYesNo.heading = isAgentManagingTrust" >> ../conf/messages.en
-echo "isAgentManagingTrustYesNo.checkYourAnswersLabel = isAgentManagingTrust" >> ../conf/messages.en
 echo "isAgentManagingTrustYesNo.error.required = Select yes if isAgentManagingTrust" >> ../conf/messages.en
 
 echo "Adding to UserAnswersEntryGenerators"
