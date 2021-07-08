@@ -17,32 +17,26 @@
             
         ],
         "classpath": [
-            "/Users/mew/Library/Caches/Coursier/v1/https/dl.bintray.com/hmrc/sbt-plugin-releases/uk.gov.hmrc/sbt-auto-build/scala_2.12/sbt_1.0/2.13.0/jars/sbt-auto-build.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/dl.bintray.com/hmrc/sbt-plugin-releases/uk.gov.hmrc/sbt-git-versioning/scala_2.12/sbt_1.0/2.2.0/jars/sbt-git-versioning.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/dl.bintray.com/hmrc/sbt-plugin-releases/uk.gov.hmrc/sbt-distributables/scala_2.12/sbt_1.0/2.1.0/jars/sbt-distributables.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/dl.bintray.com/hmrc/sbt-plugin-releases/uk.gov.hmrc/sbt-artifactory/scala_2.12/sbt_1.0/1.13.0/jars/sbt-artifactory.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/open.artefacts.tax.service.gov.uk/ivy2/uk.gov.hmrc/sbt-auto-build/scala_2.12/sbt_1.0/3.0.0/jars/sbt-auto-build.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/open.artefacts.tax.service.gov.uk/ivy2/uk.gov.hmrc/sbt-distributables/scala_2.12/sbt_1.0/2.1.0/jars/sbt-distributables.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.play/sbt-plugin/scala_2.12/sbt_1.0/2.7.5/jars/sbt-plugin.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scalastyle/scalastyle-sbt-plugin_2.12_1.0/1.0.0/scalastyle-sbt-plugin-1.0.0.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scoverage/sbt-scoverage_2.12_1.0/1.6.0/sbt-scoverage-1.6.0.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/org.irundaia.sbt/sbt-sassify/scala_2.12/sbt_1.0/1.4.12/jars/sbt-sassify.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/org.irundaia.sbt/sbt-sassify/scala_2.12/sbt_1.0/1.5.1/jars/sbt-sassify.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/net.ground5hark.sbt/sbt-concat/scala_2.12/sbt_1.0/0.2.0/jars/sbt-concat.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.sbt/sbt-uglify/scala_2.12/sbt_1.0/2.0.0/jars/sbt-uglify.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.sbt/sbt-digest/scala_2.12/sbt_1.0/1.1.4/jars/sbt-digest.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/org.foundweekends.giter8/sbt-giter8-scaffold/scala_2.12/sbt_1.0/0.11.0/jars/sbt-giter8-scaffold.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/sbt/1.3.13/sbt-1.3.13.jar",
             "/Users/mew/.sbt/boot/scala-2.12.10/lib/scala-library.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/de.heikoseeberger/sbt-header/scala_2.12/sbt_1.0/4.1.0/jars/sbt-header.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/dl.bintray.com/hmrc/sbt-plugin-releases/uk.gov.hmrc/sbt-settings/scala_2.12/sbt_1.0/4.7.0/jars/sbt-settings.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/de.heikoseeberger/sbt-header/scala_2.12/sbt_1.0/5.0.0/jars/sbt-header.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/open.artefacts.tax.service.gov.uk/ivy2/uk.gov.hmrc/sbt-setting-keys/scala_2.12/sbt_1.0/0.3.0/jars/sbt-setting-keys.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/open.artefacts.tax.service.gov.uk/ivy2/uk.gov.hmrc/sbt-settings/scala_2.12/sbt_1.0/4.8.0/jars/sbt-settings.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/open.artefacts.tax.service.gov.uk/ivy2/uk.gov.hmrc/sbt-git-versioning/scala_2.12/sbt_1.0/2.2.0/jars/sbt-git-versioning.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/yaml/snakeyaml/1.25/snakeyaml-1.25.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/4.11.9.201909030838-r/org.eclipse.jgit-4.11.9.201909030838-r.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/dl.bintray.com/hmrc/releases/uk/gov/hmrc/release-versioning_2.12/0.16.0/release-versioning_2.12-0.16.0.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.sbt/sbt-git/scala_2.12/sbt_1.0/1.0.0/jars/sbt-git.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-compress/1.19/commons-compress-1.19.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.sbt/sbt-native-packager/scala_2.12/sbt_1.0/1.5.1/jars/sbt-native-packager.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/org.scala-js/sbt-scalajs/scala_2.12/sbt_1.0/0.6.31/jars/sbt-scalajs.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/org.foundweekends/sbt-bintray/scala_2.12/sbt_1.0/0.6.1/jars/sbt-bintray.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-json_2.12/2.6.14/play-json_2.12-2.6.14.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/joda/joda-convert/2.2.1/joda-convert-2.2.1.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/sbt-routes-compiler_2.12/2.7.5/sbt-routes-compiler_2.12-2.7.5.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/run-support_2.12/2.7.5/run-support_2.12-2.7.5.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/config/1.3.4/config-1.3.4.jar",
@@ -59,33 +53,19 @@
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/foundweekends/giter8/giter8-lib_2.12/0.11.0/giter8-lib_2.12-0.11.0.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/main_2.12/1.3.13/main_2.12-1.3.13.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/io_2.12/1.3.4/io_2.12-1.3.4.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/dl.bintray.com/hmrc/sbt-plugin-releases/uk.gov.hmrc/sbt-git-stamp/scala_2.12/sbt_1.0/6.0.0/jars/sbt-git-stamp.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/open.artefacts.tax.service.gov.uk/ivy2/uk.gov.hmrc/sbt-git-stamp/scala_2.12/sbt_1.0/6.0.0/jars/sbt-git-stamp.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.eed3si9n/sbt-buildinfo/scala_2.12/sbt_1.0/0.7.0/jars/sbt-buildinfo.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/open.artefacts.tax.service.gov.uk/maven2/uk/gov/hmrc/release-versioning_2.12/0.16.0/release-versioning_2.12-0.16.0.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.sbt/sbt-git/scala_2.12/sbt_1.0/1.0.0/jars/sbt-git.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/jcraft/jsch/0.1.54/jsch-0.1.54.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/jcraft/jzlib/1.1.1/jzlib-1.1.1.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/googlecode/javaewah/JavaEWAH/1.1.6/JavaEWAH-1.1.6.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.2/httpclient-4.5.2.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.29/slf4j-api-1.7.29.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/github/scopt/scopt_2.12/3.7.1/scopt_2.12-3.7.1.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/typelevel/cats-core_2.12/1.2.0/cats-core_2.12-1.2.0.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/ant/ant/1.10.5/ant-1.10.5.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/github/eldis/tool-launcher/0.2.2/tool-launcher-0.2.2.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-parser-combinators_2.12/1.1.2/scala-parser-combinators_2.12-1.1.2.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.12/1.3.0/scala-xml_2.12-1.3.0.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-js/scalajs-tools_2.12/0.6.31/scalajs-tools_2.12-0.6.31.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-js/scalajs-js-envs_2.12/0.6.31/scalajs-js-envs_2.12-0.6.31.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-js/scalajs-sbt-test-adapter_2.12/0.6.31/scalajs-sbt-test-adapter_2.12-0.6.31.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/org.portable-scala/sbt-platform-deps/scala_2.12/sbt_1.0/1.0.0/jars/sbt-platform-deps.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/org.foundweekends/sbt-bintray-core/scala_2.12/sbt_1.0/0.6.1/jars/sbt-bintray-core.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-functional_2.12/2.6.14/play-functional_2.12-2.6.14.jar",
-            "/Users/mew/.sbt/boot/scala-2.12.10/lib/scala-reflect.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/typelevel/macro-compat_2.12/1.1.1/macro-compat_2.12-1.1.1.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/joda-time/joda-time/2.10.1/joda-time-2.10.1.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.9.7/jackson-core-2.9.7.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.8.11/jackson-annotations-2.8.11.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.8.11/jackson-datatype-jdk8-2.8.11.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.8.11/jackson-datatype-jsr310-2.8.11.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.8.11.4/jackson-databind-2.8.11.4.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/twirl-api_2.12/1.4.2/twirl-api_2.12-1.4.2.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/build-link/2.7.5/build-link-2.7.5.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/methvin/directory-watcher/0.9.9/directory-watcher-0.9.9.jar",
@@ -130,26 +110,18 @@
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/swoval/file-tree-views/2.1.3/file-tree-views-2.1.3.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/java/dev/jna/jna-platform/5.5.0/jna-platform-5.5.0.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/github/nscala-time/nscala-time_2.12/2.22.0/nscala-time_2.12-2.22.0.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/github/scopt/scopt_2.12/3.7.1/scopt_2.12-3.7.1.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/typelevel/cats-core_2.12/1.2.0/cats-core_2.12-1.2.0.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/httpcomponents/httpcore/4.4.4/httpcore-4.4.4.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-codec/commons-codec/1.9/commons-codec-1.9.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/typelevel/cats-macros_2.12/1.2.0/cats-macros_2.12-1.2.0.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/typelevel/cats-kernel_2.12/1.2.0/cats-kernel_2.12-1.2.0.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/typelevel/machinist_2.12/0.6.4/machinist_2.12-0.6.4.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/ant/ant-launcher/1.10.5/ant-launcher-1.10.5.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-js/scalajs-ir_2.12/0.6.31/scalajs-ir_2.12-0.6.31.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/javascript/closure-compiler/v20190513/closure-compiler-v20190513.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/googlecode/json-simple/json-simple/1.1.1/json-simple-1.1.1.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/mozilla/rhino/1.7.10/rhino-1.7.10.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/webjars/envjs/1.2/envjs-1.2.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/foundweekends/bintry_2.12/0.6.0/bintry_2.12-0.6.0.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.7.28/slf4j-nop-1.7.28.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-exceptions/2.7.5/play-exceptions-2.7.5.jar",
             "/Users/mew/.sbt/boot/scala-2.12.10/lib/scala-compiler.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/twirl-parser_2.12/1.4.2/twirl-parser_2.12-1.4.2.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-java8-compat_2.12/0.8.0/scala-java8-compat_2.12-0.8.0.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.8.1/commons-lang3-3.8.1.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.9.7/jackson-core-2.9.7.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/apigee/trireme/trireme-core/0.9.4/trireme-core-0.9.4.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/apigee/trireme/trireme-node10src/0.9.4/trireme-node10src-0.9.4.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/spray/spray-json_2.12/1.3.5/spray-json_2.12-1.3.5.jar",
@@ -163,6 +135,7 @@
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/clapper/grizzled-scala_2.12/4.2.0/grizzled-scala_2.12-4.2.0.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/clapper/classutil_2.12/1.1.1/classutil_2.12-1.1.1.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/antlr/ST4/4.0.8/ST4-4.0.8.jar",
+            "/Users/mew/.sbt/boot/scala-2.12.10/lib/scala-reflect.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/args4j/args4j/2.33/args4j-2.33.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit.archive/4.9.0.201710071750-r/org.eclipse.jgit.archive-4.9.0.201710071750-r.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit.ui/4.9.0.201710071750-r/org.eclipse.jgit.ui-4.9.0.201710071750-r.jar",
@@ -203,14 +176,13 @@
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/squareup/okhttp3/okhttp-urlconnection/3.7.0/okhttp-urlconnection-3.7.0.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/ivy/ivy/2.3.0-sbt-839fad1cdc07cf6fc81364d74c323867230432ad/ivy-2.3.0-sbt-839fad1cdc07cf6fc81364d74c323867230432ad.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/protobuf/protobuf-java/3.7.0/protobuf-java-3.7.0.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20190513/closure-compiler-externs-v20190513.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.3.1/error_prone_annotations-2.3.1.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/guava/guava/25.1-jre/guava-25.1-jre.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/code/gson/gson/2.7/gson-2.7.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/jsinterop/jsinterop-annotations/1.0.0/jsinterop-annotations-1.0.0.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/dispatchhttp/dispatch-json4s-native_2.12/1.2.0/dispatch-json4s-native_2.12-1.2.0.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/joda-time/joda-time/2.10.1/joda-time-2.10.1.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/joda/joda-convert/2.2.0/joda-convert-2.2.0.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/typelevel/cats-macros_2.12/1.2.0/cats-macros_2.12-1.2.0.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/typelevel/cats-kernel_2.12/1.2.0/cats-kernel_2.12-1.2.0.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/typelevel/machinist_2.12/0.6.4/machinist_2.12-0.6.4.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/apigee/trireme/trireme-kernel/0.9.4/trireme-kernel-0.9.4.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/mozilla/rhino/1.7.10/rhino-1.7.10.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/webjars/npm/center-align/0.1.3/center-align-0.1.3.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/webjars/npm/right-align/0.1.3/right-align-0.1.3.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/webjars/npm/wordwrap/0.0.2/wordwrap-0.0.2.jar",
@@ -220,7 +192,9 @@
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/antlr/antlr-runtime/3.5.2/antlr-runtime-3.5.2.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/osgi/org.osgi.core/4.3.1/org.osgi.core-4.3.1.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-security/9.4.5.v20170502/jetty-security-9.4.5.v20170502.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/code/gson/gson/2.2.4/gson-2.2.4.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/test-agent/1.3.13/test-agent-1.3.13.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/eed3si9n/shaded-scalajson_2.12/1.0.0-M4/shaded-scalajson_2.12-1.0.0-M4.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/spire-math/jawn-parser_2.12/0.10.4/jawn-parser_2.12-0.10.4.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/compiler-bridge_2.12/1.3.5/compiler-bridge_2.12-1.3.5.jar",
@@ -231,12 +205,6 @@
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/ipcsocket/ipcsocket/1.0.1/ipcsocket-1.0.1.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/eed3si9n/gigahorse-core_2.12/0.5.0/gigahorse-core_2.12-0.5.0.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/squareup/okhttp3/okhttp/3.14.2/okhttp-3.14.2.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/checkerframework/checker-qual/2.0.0/checker-qual-2.0.0.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.1/j2objc-annotations-1.1.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.14/animal-sniffer-annotations-1.14.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/dispatchhttp/dispatch-core_2.12/1.2.0/dispatch-core_2.12-1.2.0.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-core_2.12/3.6.7/json4s-core_2.12-3.6.7.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-native_2.12/3.6.7/json4s-native_2.12-3.6.7.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/webjars/npm/align-text/0.1.4/align-text-0.1.4.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/webjars/npm/lazy-cache/1.0.4/lazy-cache-1.0.4.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/ow2/asm/asm-tree/5.1/asm-tree-5.1.jar",
@@ -245,10 +213,6 @@
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/sbinary_2.12/0.5.0/sbinary_2.12-0.5.0.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/ssl-config-core_2.12/0.4.0/ssl-config-core_2.12-0.4.0.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/squareup/okio/okio/1.17.2/okio-1.17.2.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/asynchttpclient/async-http-client/2.10.4/async-http-client-2.10.4.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-ast_2.12/3.6.7/json4s-ast_2.12-3.6.7.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-scalap_2.12/3.6.7/json4s-scalap_2.12-3.6.7.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.8/paranamer-2.8.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/webjars/npm/kind-of/3.2.2/kind-of-3.2.2.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/webjars/npm/longest/1.0.1/longest-1.0.1.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/webjars/npm/repeat-string/1.6.1/repeat-string-1.6.1.jar",
@@ -257,24 +221,10 @@
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-io/9.4.5.v20170502/jetty-io-9.4.5.v20170502.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/trueaccord/lenses/lenses_2.12/0.4.12/lenses_2.12-0.4.12.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/fastparse_2.12/0.4.2/fastparse_2.12-0.4.2.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/asynchttpclient/async-http-client-netty-utils/2.10.4/async-http-client-netty-utils-2.10.4.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-codec-http/4.1.42.Final/netty-codec-http-4.1.42.Final.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-handler/4.1.42.Final/netty-handler-4.1.42.Final.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-codec-socks/4.1.42.Final/netty-codec-socks-4.1.42.Final.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-handler-proxy/4.1.42.Final/netty-handler-proxy-4.1.42.Final.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-resolver-dns/4.1.42.Final/netty-resolver-dns-4.1.42.Final.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/netty/netty-reactive-streams/2.0.3/netty-reactive-streams-2.0.3.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/sun/activation/javax.activation/1.2.0/javax.activation-1.2.0.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/webjars/npm/is-buffer/1.1.6/is-buffer-1.1.6.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/9.4.5.v20170502/jetty-util-9.4.5.v20170502.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/fastparse-utils_2.12/0.4.2/fastparse-utils_2.12-0.4.2.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/sourcecode_2.12/0.1.3/sourcecode_2.12-0.1.3.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-buffer/4.1.42.Final/netty-buffer-4.1.42.Final.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-common/4.1.42.Final/netty-common-4.1.42.Final.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-transport/4.1.42.Final/netty-transport-4.1.42.Final.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-codec/4.1.42.Final/netty-codec-4.1.42.Final.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-resolver/4.1.42.Final/netty-resolver-4.1.42.Final.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-codec-dns/4.1.42.Final/netty-codec-dns-4.1.42.Final.jar"
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/lihaoyi/sourcecode_2.12/0.1.3/sourcecode_2.12-0.1.3.jar"
         ],
         "out": "/Users/mew/projects/hmrc/trusts/claim-a-trust-frontend/project/.bloop/claim-a-trust-frontend-build",
         "classesDir": "/Users/mew/projects/hmrc/trusts/claim-a-trust-frontend/project/.bloop/claim-a-trust-frontend-build/scala-2.12/sbt-1.0/classes",
@@ -319,8 +269,8 @@
                 "import _root_.sbt._",
                 "import _root_.sbt.Keys._",
                 "import _root_.sbt.nio.Keys._",
-                "import _root_.sbt.ScriptedPlugin.autoImport._, _root_.uk.gov.hmrc.versioning.SbtGitVersioning.autoImport._, _root_.uk.gov.hmrc.SbtArtifactory.autoImport._, _root_.play.sbt.Play.autoImport._, _root_.play.sbt.PlayService.autoImport._, _root_.play.sbt.routes.RoutesCompiler.autoImport._, _root_.org.scalastyle.sbt.ScalastylePlugin.autoImport._, _root_.scoverage.ScoverageSbtPlugin.autoImport._, _root_.org.irundaia.sbt.sass.SbtSassify.autoImport._, _root_.net.ground5hark.sbt.concat.SbtConcat.autoImport._, _root_.com.typesafe.sbt.uglify.SbtUglify.autoImport._, _root_.com.typesafe.sbt.digest.SbtDigest.autoImport._, _root_.giter8.ScaffoldPlugin.autoImport._, _root_.de.heikoseeberger.sbtheader.AutomateHeaderPlugin.autoImport._, _root_.de.heikoseeberger.sbtheader.HeaderPlugin.autoImport._, _root_.com.typesafe.sbt.GitPlugin.autoImport._, _root_.com.typesafe.sbt.SbtNativePackager.autoImport._, _root_.com.typesafe.sbt.packager.archetypes.JavaAppPackaging.autoImport._, _root_.com.typesafe.sbt.packager.archetypes.JavaServerAppPackaging.autoImport._, _root_.com.typesafe.sbt.packager.archetypes.jar.ClasspathJarPlugin.autoImport._, _root_.com.typesafe.sbt.packager.archetypes.jar.LauncherJarPlugin.autoImport._, _root_.com.typesafe.sbt.packager.archetypes.jlink.JlinkPlugin.autoImport._, _root_.com.typesafe.sbt.packager.archetypes.scripts.BashStartScriptPlugin.autoImport._, _root_.com.typesafe.sbt.packager.archetypes.scripts.BatStartScriptPlugin.autoImport._, _root_.com.typesafe.sbt.packager.archetypes.systemloader.SystemdPlugin.autoImport._, _root_.com.typesafe.sbt.packager.archetypes.systemloader.SystemloaderPlugin.autoImport._, _root_.com.typesafe.sbt.packager.debian.DebianPlugin.autoImport._, _root_.com.typesafe.sbt.packager.docker.DockerPlugin.autoImport._, _root_.com.typesafe.sbt.packager.graalvmnativeimage.GraalVMNativeImagePlugin.autoImport._, _root_.com.typesafe.sbt.packager.jdkpackager.JDKPackagerPlugin.autoImport._, _root_.com.typesafe.sbt.packager.linux.LinuxPlugin.autoImport._, _root_.com.typesafe.sbt.packager.rpm.RpmPlugin.autoImport._, _root_.com.typesafe.sbt.packager.universal.UniversalPlugin.autoImport._, _root_.com.typesafe.sbt.packager.windows.WindowsPlugin.autoImport._, _root_.org.scalajs.jsdependencies.sbtplugin.JSDependenciesPlugin.autoImport._, _root_.org.scalajs.sbtplugin.ScalaJSPlugin.autoImport._, _root_.bintray.BintrayPlugin.autoImport._, _root_.play.twirl.sbt.SbtTwirl.autoImport._, _root_.com.lightbend.sbt.javaagent.JavaAgent.autoImport._, _root_.com.typesafe.sbt.web.SbtWeb.autoImport._, _root_.com.typesafe.sbt.jse.SbtJsEngine.autoImport._, _root_.com.typesafe.sbt.jse.SbtJsTask.autoImport._, _root_.sbtbuildinfo.BuildInfoPlugin.autoImport._, _root_.org.portablescala.sbtplatformdeps.PlatformDepsPlugin.autoImport._",
-                "import _root_.sbt.plugins.IvyPlugin, _root_.sbt.plugins.JvmPlugin, _root_.sbt.plugins.CorePlugin, _root_.sbt.ScriptedPlugin, _root_.sbt.plugins.SbtPlugin, _root_.sbt.plugins.SemanticdbPlugin, _root_.sbt.plugins.JUnitXmlReportPlugin, _root_.sbt.plugins.Giter8TemplatePlugin, _root_.uk.gov.hmrc.SbtAutoBuildPlugin, _root_.uk.gov.hmrc.versioning.SbtGitVersioning, _root_.uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin, _root_.uk.gov.hmrc.SbtArtifactory, _root_.play.sbt.Play, _root_.play.sbt.PlayAkkaHttp2Support, _root_.play.sbt.PlayAkkaHttpServer, _root_.play.sbt.PlayFilters, _root_.play.sbt.PlayJava, _root_.play.sbt.PlayLayoutPlugin, _root_.play.sbt.PlayLogback, _root_.play.sbt.PlayMinimalJava, _root_.play.sbt.PlayNettyServer, _root_.play.sbt.PlayScala, _root_.play.sbt.PlayService, _root_.play.sbt.PlayWeb, _root_.play.sbt.routes.RoutesCompiler, _root_.play.sbt.test.MediatorWorkaroundPlugin, _root_.org.scalastyle.sbt.ScalastylePlugin, _root_.scoverage.ScoverageSbtPlugin, _root_.org.irundaia.sbt.sass.SbtSassify, _root_.net.ground5hark.sbt.concat.SbtConcat, _root_.com.typesafe.sbt.uglify.SbtUglify, _root_.com.typesafe.sbt.digest.SbtDigest, _root_.giter8.ScaffoldPlugin, _root_.de.heikoseeberger.sbtheader.AutomateHeaderPlugin, _root_.de.heikoseeberger.sbtheader.HeaderPlugin, _root_.com.typesafe.sbt.GitBranchPrompt, _root_.com.typesafe.sbt.GitPlugin, _root_.com.typesafe.sbt.GitVersioning, _root_.com.typesafe.sbt.SbtNativePackager, _root_.com.typesafe.sbt.packager.archetypes.JavaAppPackaging, _root_.com.typesafe.sbt.packager.archetypes.JavaServerAppPackaging, _root_.com.typesafe.sbt.packager.archetypes.jar.ClasspathJarPlugin, _root_.com.typesafe.sbt.packager.archetypes.jar.LauncherJarPlugin, _root_.com.typesafe.sbt.packager.archetypes.jlink.JlinkPlugin, _root_.com.typesafe.sbt.packager.archetypes.scripts.AshScriptPlugin, _root_.com.typesafe.sbt.packager.archetypes.scripts.BashStartScriptPlugin, _root_.com.typesafe.sbt.packager.archetypes.scripts.BatStartScriptPlugin, _root_.com.typesafe.sbt.packager.archetypes.systemloader.SystemVPlugin, _root_.com.typesafe.sbt.packager.archetypes.systemloader.SystemdPlugin, _root_.com.typesafe.sbt.packager.archetypes.systemloader.SystemloaderPlugin, _root_.com.typesafe.sbt.packager.archetypes.systemloader.UpstartPlugin, _root_.com.typesafe.sbt.packager.debian.DebianDeployPlugin, _root_.com.typesafe.sbt.packager.debian.DebianPlugin, _root_.com.typesafe.sbt.packager.debian.JDebPackaging, _root_.com.typesafe.sbt.packager.docker.DockerPlugin, _root_.com.typesafe.sbt.packager.docker.DockerSpotifyClientPlugin, _root_.com.typesafe.sbt.packager.graalvmnativeimage.GraalVMNativeImagePlugin, _root_.com.typesafe.sbt.packager.jdkpackager.JDKPackagerDeployPlugin, _root_.com.typesafe.sbt.packager.jdkpackager.JDKPackagerPlugin, _root_.com.typesafe.sbt.packager.linux.LinuxPlugin, _root_.com.typesafe.sbt.packager.rpm.RpmDeployPlugin, _root_.com.typesafe.sbt.packager.rpm.RpmPlugin, _root_.com.typesafe.sbt.packager.universal.UniversalDeployPlugin, _root_.com.typesafe.sbt.packager.universal.UniversalPlugin, _root_.com.typesafe.sbt.packager.windows.WindowsDeployPlugin, _root_.com.typesafe.sbt.packager.windows.WindowsPlugin, _root_.org.scalajs.jsdependencies.sbtplugin.JSDependenciesPlugin, _root_.org.scalajs.sbtplugin.ScalaJSJUnitPlugin, _root_.org.scalajs.sbtplugin.ScalaJSPlugin, _root_.org.scalajs.sbtplugin.internal.ScalaJSGlobalPlugin, _root_.bintray.BintrayPlugin, _root_.play.twirl.sbt.SbtTwirl, _root_.com.lightbend.sbt.javaagent.JavaAgent, _root_.com.lightbend.sbt.javaagent.JavaAgentPackaging, _root_.com.typesafe.sbt.web.SbtWeb, _root_.com.typesafe.sbt.jse.SbtJsEngine, _root_.com.typesafe.sbt.jse.SbtJsTask, _root_.uk.gov.hmrc.gitstamp.GitStampPlugin, _root_.sbtbuildinfo.BuildInfoPlugin, _root_.org.portablescala.sbtplatformdeps.PlatformDepsPlugin"
+                "import _root_.sbt.ScriptedPlugin.autoImport._, _root_.play.sbt.Play.autoImport._, _root_.play.sbt.PlayService.autoImport._, _root_.play.sbt.routes.RoutesCompiler.autoImport._, _root_.org.scalastyle.sbt.ScalastylePlugin.autoImport._, _root_.scoverage.ScoverageSbtPlugin.autoImport._, _root_.org.irundaia.sbt.sass.SbtSassify.autoImport._, _root_.net.ground5hark.sbt.concat.SbtConcat.autoImport._, _root_.com.typesafe.sbt.uglify.SbtUglify.autoImport._, _root_.com.typesafe.sbt.digest.SbtDigest.autoImport._, _root_.giter8.ScaffoldPlugin.autoImport._, _root_.de.heikoseeberger.sbtheader.AutomateHeaderPlugin.autoImport._, _root_.de.heikoseeberger.sbtheader.HeaderPlugin.autoImport._, _root_.uk.gov.hmrc.sbtsettingkeys.SbtSettingKeys.autoImport._, _root_.uk.gov.hmrc.versioning.SbtGitVersioning.autoImport._, _root_.com.typesafe.sbt.SbtNativePackager.autoImport._, _root_.com.typesafe.sbt.packager.archetypes.JavaAppPackaging.autoImport._, _root_.com.typesafe.sbt.packager.archetypes.JavaServerAppPackaging.autoImport._, _root_.com.typesafe.sbt.packager.archetypes.jar.ClasspathJarPlugin.autoImport._, _root_.com.typesafe.sbt.packager.archetypes.jar.LauncherJarPlugin.autoImport._, _root_.com.typesafe.sbt.packager.archetypes.jlink.JlinkPlugin.autoImport._, _root_.com.typesafe.sbt.packager.archetypes.scripts.BashStartScriptPlugin.autoImport._, _root_.com.typesafe.sbt.packager.archetypes.scripts.BatStartScriptPlugin.autoImport._, _root_.com.typesafe.sbt.packager.archetypes.systemloader.SystemdPlugin.autoImport._, _root_.com.typesafe.sbt.packager.archetypes.systemloader.SystemloaderPlugin.autoImport._, _root_.com.typesafe.sbt.packager.debian.DebianPlugin.autoImport._, _root_.com.typesafe.sbt.packager.docker.DockerPlugin.autoImport._, _root_.com.typesafe.sbt.packager.graalvmnativeimage.GraalVMNativeImagePlugin.autoImport._, _root_.com.typesafe.sbt.packager.jdkpackager.JDKPackagerPlugin.autoImport._, _root_.com.typesafe.sbt.packager.linux.LinuxPlugin.autoImport._, _root_.com.typesafe.sbt.packager.rpm.RpmPlugin.autoImport._, _root_.com.typesafe.sbt.packager.universal.UniversalPlugin.autoImport._, _root_.com.typesafe.sbt.packager.windows.WindowsPlugin.autoImport._, _root_.play.twirl.sbt.SbtTwirl.autoImport._, _root_.com.lightbend.sbt.javaagent.JavaAgent.autoImport._, _root_.com.typesafe.sbt.web.SbtWeb.autoImport._, _root_.com.typesafe.sbt.jse.SbtJsEngine.autoImport._, _root_.com.typesafe.sbt.jse.SbtJsTask.autoImport._, _root_.sbtbuildinfo.BuildInfoPlugin.autoImport._, _root_.com.typesafe.sbt.GitPlugin.autoImport._",
+                "import _root_.sbt.plugins.IvyPlugin, _root_.sbt.plugins.JvmPlugin, _root_.sbt.plugins.CorePlugin, _root_.sbt.ScriptedPlugin, _root_.sbt.plugins.SbtPlugin, _root_.sbt.plugins.SemanticdbPlugin, _root_.sbt.plugins.JUnitXmlReportPlugin, _root_.sbt.plugins.Giter8TemplatePlugin, _root_.uk.gov.hmrc.SbtAutoBuildPlugin, _root_.uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin, _root_.play.sbt.Play, _root_.play.sbt.PlayAkkaHttp2Support, _root_.play.sbt.PlayAkkaHttpServer, _root_.play.sbt.PlayFilters, _root_.play.sbt.PlayJava, _root_.play.sbt.PlayLayoutPlugin, _root_.play.sbt.PlayLogback, _root_.play.sbt.PlayMinimalJava, _root_.play.sbt.PlayNettyServer, _root_.play.sbt.PlayScala, _root_.play.sbt.PlayService, _root_.play.sbt.PlayWeb, _root_.play.sbt.routes.RoutesCompiler, _root_.play.sbt.test.MediatorWorkaroundPlugin, _root_.org.scalastyle.sbt.ScalastylePlugin, _root_.scoverage.ScoverageSbtPlugin, _root_.org.irundaia.sbt.sass.SbtSassify, _root_.net.ground5hark.sbt.concat.SbtConcat, _root_.com.typesafe.sbt.uglify.SbtUglify, _root_.com.typesafe.sbt.digest.SbtDigest, _root_.giter8.ScaffoldPlugin, _root_.de.heikoseeberger.sbtheader.AutomateHeaderPlugin, _root_.de.heikoseeberger.sbtheader.HeaderPlugin, _root_.uk.gov.hmrc.sbtsettingkeys.SbtSettingKeys, _root_.uk.gov.hmrc.versioning.SbtGitVersioning, _root_.com.typesafe.sbt.SbtNativePackager, _root_.com.typesafe.sbt.packager.archetypes.JavaAppPackaging, _root_.com.typesafe.sbt.packager.archetypes.JavaServerAppPackaging, _root_.com.typesafe.sbt.packager.archetypes.jar.ClasspathJarPlugin, _root_.com.typesafe.sbt.packager.archetypes.jar.LauncherJarPlugin, _root_.com.typesafe.sbt.packager.archetypes.jlink.JlinkPlugin, _root_.com.typesafe.sbt.packager.archetypes.scripts.AshScriptPlugin, _root_.com.typesafe.sbt.packager.archetypes.scripts.BashStartScriptPlugin, _root_.com.typesafe.sbt.packager.archetypes.scripts.BatStartScriptPlugin, _root_.com.typesafe.sbt.packager.archetypes.systemloader.SystemVPlugin, _root_.com.typesafe.sbt.packager.archetypes.systemloader.SystemdPlugin, _root_.com.typesafe.sbt.packager.archetypes.systemloader.SystemloaderPlugin, _root_.com.typesafe.sbt.packager.archetypes.systemloader.UpstartPlugin, _root_.com.typesafe.sbt.packager.debian.DebianDeployPlugin, _root_.com.typesafe.sbt.packager.debian.DebianPlugin, _root_.com.typesafe.sbt.packager.debian.JDebPackaging, _root_.com.typesafe.sbt.packager.docker.DockerPlugin, _root_.com.typesafe.sbt.packager.docker.DockerSpotifyClientPlugin, _root_.com.typesafe.sbt.packager.graalvmnativeimage.GraalVMNativeImagePlugin, _root_.com.typesafe.sbt.packager.jdkpackager.JDKPackagerDeployPlugin, _root_.com.typesafe.sbt.packager.jdkpackager.JDKPackagerPlugin, _root_.com.typesafe.sbt.packager.linux.LinuxPlugin, _root_.com.typesafe.sbt.packager.rpm.RpmDeployPlugin, _root_.com.typesafe.sbt.packager.rpm.RpmPlugin, _root_.com.typesafe.sbt.packager.universal.UniversalDeployPlugin, _root_.com.typesafe.sbt.packager.universal.UniversalPlugin, _root_.com.typesafe.sbt.packager.windows.WindowsDeployPlugin, _root_.com.typesafe.sbt.packager.windows.WindowsPlugin, _root_.play.twirl.sbt.SbtTwirl, _root_.com.lightbend.sbt.javaagent.JavaAgent, _root_.com.lightbend.sbt.javaagent.JavaAgentPackaging, _root_.com.typesafe.sbt.web.SbtWeb, _root_.com.typesafe.sbt.jse.SbtJsEngine, _root_.com.typesafe.sbt.jse.SbtJsTask, _root_.uk.gov.hmrc.gitstamp.GitStampPlugin, _root_.sbtbuildinfo.BuildInfoPlugin, _root_.com.typesafe.sbt.GitBranchPrompt, _root_.com.typesafe.sbt.GitPlugin, _root_.com.typesafe.sbt.GitVersioning"
             ]
         },
         "test": {
@@ -379,34 +329,12 @@
                 {
                     "organization": "uk.gov.hmrc",
                     "name": "sbt-auto-build",
-                    "version": "2.13.0",
+                    "version": "3.0.0",
                     "configurations": "compile",
                     "artifacts": [
                         {
                             "name": "sbt-auto-build",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/dl.bintray.com/hmrc/sbt-plugin-releases/uk.gov.hmrc/sbt-auto-build/scala_2.12/sbt_1.0/2.13.0/jars/sbt-auto-build.jar"
-                        },
-                        {
-                            "name": "sbt-auto-build",
-                            "classifier": "sources",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/dl.bintray.com/hmrc/sbt-plugin-releases/uk.gov.hmrc/sbt-auto-build/scala_2.12/sbt_1.0/2.13.0/srcs/sbt-auto-build-sources.jar"
-                        },
-                        {
-                            "name": "sbt-auto-build",
-                            "classifier": "javadoc",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/dl.bintray.com/hmrc/sbt-plugin-releases/uk.gov.hmrc/sbt-auto-build/scala_2.12/sbt_1.0/2.13.0/docs/sbt-auto-build-javadoc.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "uk.gov.hmrc",
-                    "name": "sbt-git-versioning",
-                    "version": "2.2.0",
-                    "configurations": "compile",
-                    "artifacts": [
-                        {
-                            "name": "sbt-git-versioning",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/dl.bintray.com/hmrc/sbt-plugin-releases/uk.gov.hmrc/sbt-git-versioning/scala_2.12/sbt_1.0/2.2.0/jars/sbt-git-versioning.jar"
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/open.artefacts.tax.service.gov.uk/ivy2/uk.gov.hmrc/sbt-auto-build/scala_2.12/sbt_1.0/3.0.0/jars/sbt-auto-build.jar"
                         }
                     ]
                 },
@@ -418,19 +346,7 @@
                     "artifacts": [
                         {
                             "name": "sbt-distributables",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/dl.bintray.com/hmrc/sbt-plugin-releases/uk.gov.hmrc/sbt-distributables/scala_2.12/sbt_1.0/2.1.0/jars/sbt-distributables.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "uk.gov.hmrc",
-                    "name": "sbt-artifactory",
-                    "version": "1.13.0",
-                    "configurations": "compile",
-                    "artifacts": [
-                        {
-                            "name": "sbt-artifactory",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/dl.bintray.com/hmrc/sbt-plugin-releases/uk.gov.hmrc/sbt-artifactory/scala_2.12/sbt_1.0/1.13.0/jars/sbt-artifactory.jar"
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/open.artefacts.tax.service.gov.uk/ivy2/uk.gov.hmrc/sbt-distributables/scala_2.12/sbt_1.0/2.1.0/jars/sbt-distributables.jar"
                         }
                     ]
                 },
@@ -473,22 +389,16 @@
                 {
                     "organization": "org.irundaia.sbt",
                     "name": "sbt-sassify",
-                    "version": "1.4.12",
+                    "version": "1.5.1",
                     "configurations": "compile",
                     "artifacts": [
                         {
                             "name": "sbt-sassify",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/org.irundaia.sbt/sbt-sassify/scala_2.12/sbt_1.0/1.4.12/jars/sbt-sassify.jar"
-                        },
-                        {
-                            "name": "sbt-sassify",
-                            "classifier": "sources",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/org.irundaia.sbt/sbt-sassify/scala_2.12/sbt_1.0/1.4.12/srcs/sbt-sassify-sources.jar"
-                        },
-                        {
-                            "name": "sbt-sassify",
-                            "classifier": "javadoc",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/org.irundaia.sbt/sbt-sassify/scala_2.12/sbt_1.0/1.4.12/docs/sbt-sassify-javadoc.jar"
+                            "checksum": {
+                                "type": "sha1",
+                                "digest": "930f797368a71ca25a0fc8536859f0c5f9e08d67"
+                            },
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/org.irundaia.sbt/sbt-sassify/scala_2.12/sbt_1.0/1.5.1/jars/sbt-sassify.jar"
                         }
                     ]
                 },
@@ -563,34 +473,62 @@
                 {
                     "organization": "de.heikoseeberger",
                     "name": "sbt-header",
-                    "version": "4.1.0",
+                    "version": "5.0.0",
                     "configurations": "compile",
                     "artifacts": [
                         {
                             "name": "sbt-header",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/de.heikoseeberger/sbt-header/scala_2.12/sbt_1.0/4.1.0/jars/sbt-header.jar"
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/de.heikoseeberger/sbt-header/scala_2.12/sbt_1.0/5.0.0/jars/sbt-header.jar"
                         },
                         {
                             "name": "sbt-header",
                             "classifier": "sources",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/de.heikoseeberger/sbt-header/scala_2.12/sbt_1.0/4.1.0/srcs/sbt-header-sources.jar"
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/de.heikoseeberger/sbt-header/scala_2.12/sbt_1.0/5.0.0/srcs/sbt-header-sources.jar"
                         },
                         {
                             "name": "sbt-header",
                             "classifier": "javadoc",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/de.heikoseeberger/sbt-header/scala_2.12/sbt_1.0/4.1.0/docs/sbt-header-javadoc.jar"
+                            "checksum": {
+                                "type": "sha1",
+                                "digest": "473a3581e92cec64908f0858dd1a17608ed077b4"
+                            },
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/de.heikoseeberger/sbt-header/scala_2.12/sbt_1.0/5.0.0/docs/sbt-header-javadoc.jar"
+                        }
+                    ]
+                },
+                {
+                    "organization": "uk.gov.hmrc",
+                    "name": "sbt-setting-keys",
+                    "version": "0.3.0",
+                    "configurations": "compile",
+                    "artifacts": [
+                        {
+                            "name": "sbt-setting-keys",
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/open.artefacts.tax.service.gov.uk/ivy2/uk.gov.hmrc/sbt-setting-keys/scala_2.12/sbt_1.0/0.3.0/jars/sbt-setting-keys.jar"
                         }
                     ]
                 },
                 {
                     "organization": "uk.gov.hmrc",
                     "name": "sbt-settings",
-                    "version": "4.7.0",
+                    "version": "4.8.0",
                     "configurations": "compile",
                     "artifacts": [
                         {
                             "name": "sbt-settings",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/dl.bintray.com/hmrc/sbt-plugin-releases/uk.gov.hmrc/sbt-settings/scala_2.12/sbt_1.0/4.7.0/jars/sbt-settings.jar"
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/open.artefacts.tax.service.gov.uk/ivy2/uk.gov.hmrc/sbt-settings/scala_2.12/sbt_1.0/4.8.0/jars/sbt-settings.jar"
+                        }
+                    ]
+                },
+                {
+                    "organization": "uk.gov.hmrc",
+                    "name": "sbt-git-versioning",
+                    "version": "2.2.0",
+                    "configurations": "compile",
+                    "artifacts": [
+                        {
+                            "name": "sbt-git-versioning",
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/open.artefacts.tax.service.gov.uk/ivy2/uk.gov.hmrc/sbt-git-versioning/scala_2.12/sbt_1.0/2.2.0/jars/sbt-git-versioning.jar"
                         }
                     ]
                 },
@@ -615,40 +553,6 @@
                         {
                             "name": "org.eclipse.jgit",
                             "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/4.11.9.201909030838-r/org.eclipse.jgit-4.11.9.201909030838-r.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "uk.gov.hmrc",
-                    "name": "release-versioning_2.12",
-                    "version": "0.16.0",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "release-versioning_2.12",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/dl.bintray.com/hmrc/releases/uk/gov/hmrc/release-versioning_2.12/0.16.0/release-versioning_2.12-0.16.0.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "com.typesafe.sbt",
-                    "name": "sbt-git",
-                    "version": "1.0.0",
-                    "configurations": "compile",
-                    "artifacts": [
-                        {
-                            "name": "sbt-git",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.sbt/sbt-git/scala_2.12/sbt_1.0/1.0.0/jars/sbt-git.jar"
-                        },
-                        {
-                            "name": "sbt-git",
-                            "classifier": "sources",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.sbt/sbt-git/scala_2.12/sbt_1.0/1.0.0/srcs/sbt-git-sources.jar"
-                        },
-                        {
-                            "name": "sbt-git",
-                            "classifier": "javadoc",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.sbt/sbt-git/scala_2.12/sbt_1.0/1.0.0/docs/sbt-git-javadoc.jar"
                         }
                     ]
                 },
@@ -683,54 +587,6 @@
                             "name": "sbt-native-packager",
                             "classifier": "javadoc",
                             "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.sbt/sbt-native-packager/scala_2.12/sbt_1.0/1.5.1/docs/sbt-native-packager-javadoc.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "org.scala-js",
-                    "name": "sbt-scalajs",
-                    "version": "0.6.31",
-                    "configurations": "compile",
-                    "artifacts": [
-                        {
-                            "name": "sbt-scalajs",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/org.scala-js/sbt-scalajs/scala_2.12/sbt_1.0/0.6.31/jars/sbt-scalajs.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "org.foundweekends",
-                    "name": "sbt-bintray",
-                    "version": "0.6.1",
-                    "configurations": "compile",
-                    "artifacts": [
-                        {
-                            "name": "sbt-bintray",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/org.foundweekends/sbt-bintray/scala_2.12/sbt_1.0/0.6.1/jars/sbt-bintray.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "com.typesafe.play",
-                    "name": "play-json_2.12",
-                    "version": "2.6.14",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "play-json_2.12",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-json_2.12/2.6.14/play-json_2.12-2.6.14.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "org.joda",
-                    "name": "joda-convert",
-                    "version": "2.2.1",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "joda-convert",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/joda/joda-convert/2.2.1/joda-convert-2.2.1.jar"
                         }
                     ]
                 },
@@ -940,7 +796,7 @@
                     "artifacts": [
                         {
                             "name": "sbt-git-stamp",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/dl.bintray.com/hmrc/sbt-plugin-releases/uk.gov.hmrc/sbt-git-stamp/scala_2.12/sbt_1.0/6.0.0/jars/sbt-git-stamp.jar"
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/open.artefacts.tax.service.gov.uk/ivy2/uk.gov.hmrc/sbt-git-stamp/scala_2.12/sbt_1.0/6.0.0/jars/sbt-git-stamp.jar"
                         }
                     ]
                 },
@@ -953,6 +809,40 @@
                         {
                             "name": "sbt-buildinfo",
                             "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.eed3si9n/sbt-buildinfo/scala_2.12/sbt_1.0/0.7.0/jars/sbt-buildinfo.jar"
+                        }
+                    ]
+                },
+                {
+                    "organization": "uk.gov.hmrc",
+                    "name": "release-versioning_2.12",
+                    "version": "0.16.0",
+                    "configurations": "default",
+                    "artifacts": [
+                        {
+                            "name": "release-versioning_2.12",
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/open.artefacts.tax.service.gov.uk/maven2/uk/gov/hmrc/release-versioning_2.12/0.16.0/release-versioning_2.12-0.16.0.jar"
+                        }
+                    ]
+                },
+                {
+                    "organization": "com.typesafe.sbt",
+                    "name": "sbt-git",
+                    "version": "1.0.0",
+                    "configurations": "compile",
+                    "artifacts": [
+                        {
+                            "name": "sbt-git",
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.sbt/sbt-git/scala_2.12/sbt_1.0/1.0.0/jars/sbt-git.jar"
+                        },
+                        {
+                            "name": "sbt-git",
+                            "classifier": "sources",
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.sbt/sbt-git/scala_2.12/sbt_1.0/1.0.0/srcs/sbt-git-sources.jar"
+                        },
+                        {
+                            "name": "sbt-git",
+                            "classifier": "javadoc",
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.sbt/sbt-git/scala_2.12/sbt_1.0/1.0.0/docs/sbt-git-javadoc.jar"
                         }
                     ]
                 },
@@ -1017,42 +907,6 @@
                     ]
                 },
                 {
-                    "organization": "org.scala-lang",
-                    "name": "scala-library",
-                    "version": "2.12.10",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "scala-library",
-                            "path": "/Users/mew/.sbt/boot/scala-2.12.10/lib/scala-library.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "com.github.scopt",
-                    "name": "scopt_2.12",
-                    "version": "3.7.1",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "scopt_2.12",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/github/scopt/scopt_2.12/3.7.1/scopt_2.12-3.7.1.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "org.typelevel",
-                    "name": "cats-core_2.12",
-                    "version": "1.2.0",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "cats-core_2.12",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/typelevel/cats-core_2.12/1.2.0/cats-core_2.12-1.2.0.jar"
-                        }
-                    ]
-                },
-                {
                     "organization": "org.apache.ant",
                     "name": "ant",
                     "version": "1.10.5",
@@ -1113,180 +967,14 @@
                     ]
                 },
                 {
-                    "organization": "org.scala-js",
-                    "name": "scalajs-tools_2.12",
-                    "version": "0.6.31",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "scalajs-tools_2.12",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-js/scalajs-tools_2.12/0.6.31/scalajs-tools_2.12-0.6.31.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "org.scala-js",
-                    "name": "scalajs-js-envs_2.12",
-                    "version": "0.6.31",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "scalajs-js-envs_2.12",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-js/scalajs-js-envs_2.12/0.6.31/scalajs-js-envs_2.12-0.6.31.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "org.scala-js",
-                    "name": "scalajs-sbt-test-adapter_2.12",
-                    "version": "0.6.31",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "scalajs-sbt-test-adapter_2.12",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-js/scalajs-sbt-test-adapter_2.12/0.6.31/scalajs-sbt-test-adapter_2.12-0.6.31.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "org.portable-scala",
-                    "name": "sbt-platform-deps",
-                    "version": "1.0.0",
-                    "configurations": "compile",
-                    "artifacts": [
-                        {
-                            "name": "sbt-platform-deps",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/org.portable-scala/sbt-platform-deps/scala_2.12/sbt_1.0/1.0.0/jars/sbt-platform-deps.jar"
-                        },
-                        {
-                            "name": "sbt-platform-deps",
-                            "classifier": "sources",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/org.portable-scala/sbt-platform-deps/scala_2.12/sbt_1.0/1.0.0/srcs/sbt-platform-deps-sources.jar"
-                        },
-                        {
-                            "name": "sbt-platform-deps",
-                            "classifier": "javadoc",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/org.portable-scala/sbt-platform-deps/scala_2.12/sbt_1.0/1.0.0/docs/sbt-platform-deps-javadoc.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "org.foundweekends",
-                    "name": "sbt-bintray-core",
-                    "version": "0.6.1",
-                    "configurations": "compile",
-                    "artifacts": [
-                        {
-                            "name": "sbt-bintray-core",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/org.foundweekends/sbt-bintray-core/scala_2.12/sbt_1.0/0.6.1/jars/sbt-bintray-core.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "com.typesafe.play",
-                    "name": "play-functional_2.12",
-                    "version": "2.6.14",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "play-functional_2.12",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-functional_2.12/2.6.14/play-functional_2.12-2.6.14.jar"
-                        }
-                    ]
-                },
-                {
                     "organization": "org.scala-lang",
-                    "name": "scala-reflect",
+                    "name": "scala-library",
                     "version": "2.12.10",
                     "configurations": "default",
                     "artifacts": [
                         {
-                            "name": "scala-reflect",
-                            "path": "/Users/mew/.sbt/boot/scala-2.12.10/lib/scala-reflect.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "org.typelevel",
-                    "name": "macro-compat_2.12",
-                    "version": "1.1.1",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "macro-compat_2.12",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/typelevel/macro-compat_2.12/1.1.1/macro-compat_2.12-1.1.1.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "joda-time",
-                    "name": "joda-time",
-                    "version": "2.10.1",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "joda-time",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/joda-time/joda-time/2.10.1/joda-time-2.10.1.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "com.fasterxml.jackson.core",
-                    "name": "jackson-core",
-                    "version": "2.9.7",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "jackson-core",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.9.7/jackson-core-2.9.7.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "com.fasterxml.jackson.core",
-                    "name": "jackson-annotations",
-                    "version": "2.8.11",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "jackson-annotations",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.8.11/jackson-annotations-2.8.11.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "com.fasterxml.jackson.datatype",
-                    "name": "jackson-datatype-jdk8",
-                    "version": "2.8.11",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "jackson-datatype-jdk8",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jdk8/2.8.11/jackson-datatype-jdk8-2.8.11.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "com.fasterxml.jackson.datatype",
-                    "name": "jackson-datatype-jsr310",
-                    "version": "2.8.11",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "jackson-datatype-jsr310",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.8.11/jackson-datatype-jsr310-2.8.11.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "com.fasterxml.jackson.core",
-                    "name": "jackson-databind",
-                    "version": "2.8.11.4",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "jackson-databind",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.8.11.4/jackson-databind-2.8.11.4.jar"
+                            "name": "scala-library",
+                            "path": "/Users/mew/.sbt/boot/scala-2.12.10/lib/scala-library.jar"
                         }
                     ]
                 },
@@ -1555,6 +1243,30 @@
                     ]
                 },
                 {
+                    "organization": "com.github.scopt",
+                    "name": "scopt_2.12",
+                    "version": "3.7.1",
+                    "configurations": "default",
+                    "artifacts": [
+                        {
+                            "name": "scopt_2.12",
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/github/scopt/scopt_2.12/3.7.1/scopt_2.12-3.7.1.jar"
+                        }
+                    ]
+                },
+                {
+                    "organization": "org.typelevel",
+                    "name": "cats-core_2.12",
+                    "version": "1.2.0",
+                    "configurations": "default",
+                    "artifacts": [
+                        {
+                            "name": "cats-core_2.12",
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/typelevel/cats-core_2.12/1.2.0/cats-core_2.12-1.2.0.jar"
+                        }
+                    ]
+                },
+                {
                     "organization": "org.apache.httpcomponents",
                     "name": "httpcore",
                     "version": "4.4.4",
@@ -1591,42 +1303,6 @@
                     ]
                 },
                 {
-                    "organization": "org.typelevel",
-                    "name": "cats-macros_2.12",
-                    "version": "1.2.0",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "cats-macros_2.12",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/typelevel/cats-macros_2.12/1.2.0/cats-macros_2.12-1.2.0.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "org.typelevel",
-                    "name": "cats-kernel_2.12",
-                    "version": "1.2.0",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "cats-kernel_2.12",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/typelevel/cats-kernel_2.12/1.2.0/cats-kernel_2.12-1.2.0.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "org.typelevel",
-                    "name": "machinist_2.12",
-                    "version": "0.6.4",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "machinist_2.12",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/typelevel/machinist_2.12/0.6.4/machinist_2.12-0.6.4.jar"
-                        }
-                    ]
-                },
-                {
                     "organization": "org.apache.ant",
                     "name": "ant-launcher",
                     "version": "1.10.5",
@@ -1659,102 +1335,6 @@
                         {
                             "name": "jna-platform",
                             "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/java/dev/jna/jna-platform/5.5.0/jna-platform-5.5.0.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "org.scala-js",
-                    "name": "scalajs-ir_2.12",
-                    "version": "0.6.31",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "scalajs-ir_2.12",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-js/scalajs-ir_2.12/0.6.31/scalajs-ir_2.12-0.6.31.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "com.google.javascript",
-                    "name": "closure-compiler",
-                    "version": "v20190513",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "closure-compiler",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/javascript/closure-compiler/v20190513/closure-compiler-v20190513.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "com.googlecode.json-simple",
-                    "name": "json-simple",
-                    "version": "1.1.1",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "json-simple",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/googlecode/json-simple/json-simple/1.1.1/json-simple-1.1.1.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "org.mozilla",
-                    "name": "rhino",
-                    "version": "1.7.10",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "rhino",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/mozilla/rhino/1.7.10/rhino-1.7.10.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "org.webjars",
-                    "name": "envjs",
-                    "version": "1.2",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "envjs",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/webjars/envjs/1.2/envjs-1.2.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "org.scala-sbt",
-                    "name": "test-interface",
-                    "version": "1.0",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "test-interface",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "org.foundweekends",
-                    "name": "bintry_2.12",
-                    "version": "0.6.0",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "bintry_2.12",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/foundweekends/bintry_2.12/0.6.0/bintry_2.12-0.6.0.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "org.slf4j",
-                    "name": "slf4j-nop",
-                    "version": "1.7.28",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "slf4j-nop",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/slf4j/slf4j-nop/1.7.28/slf4j-nop-1.7.28.jar"
                         }
                     ]
                 },
@@ -1815,6 +1395,18 @@
                         {
                             "name": "commons-lang3",
                             "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.8.1/commons-lang3-3.8.1.jar"
+                        }
+                    ]
+                },
+                {
+                    "organization": "com.fasterxml.jackson.core",
+                    "name": "jackson-core",
+                    "version": "2.9.7",
+                    "configurations": "default",
+                    "artifacts": [
+                        {
+                            "name": "jackson-core",
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.9.7/jackson-core-2.9.7.jar"
                         }
                     ]
                 },
@@ -1975,6 +1567,18 @@
                     ]
                 },
                 {
+                    "organization": "org.scala-lang",
+                    "name": "scala-reflect",
+                    "version": "2.12.10",
+                    "configurations": "default",
+                    "artifacts": [
+                        {
+                            "name": "scala-reflect",
+                            "path": "/Users/mew/.sbt/boot/scala-2.12.10/lib/scala-reflect.jar"
+                        }
+                    ]
+                },
+                {
                     "organization": "args4j",
                     "name": "args4j",
                     "version": "2.33",
@@ -2119,98 +1723,62 @@
                     ]
                 },
                 {
-                    "organization": "com.google.javascript",
-                    "name": "closure-compiler-externs",
-                    "version": "v20190513",
+                    "organization": "joda-time",
+                    "name": "joda-time",
+                    "version": "2.10.1",
                     "configurations": "default",
                     "artifacts": [
                         {
-                            "name": "closure-compiler-externs",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/javascript/closure-compiler-externs/v20190513/closure-compiler-externs-v20190513.jar"
+                            "name": "joda-time",
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/joda-time/joda-time/2.10.1/joda-time-2.10.1.jar"
                         }
                     ]
                 },
                 {
-                    "organization": "com.google.errorprone",
-                    "name": "error_prone_annotations",
-                    "version": "2.3.1",
+                    "organization": "org.joda",
+                    "name": "joda-convert",
+                    "version": "2.2.0",
                     "configurations": "default",
                     "artifacts": [
                         {
-                            "name": "error_prone_annotations",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/errorprone/error_prone_annotations/2.3.1/error_prone_annotations-2.3.1.jar"
+                            "name": "joda-convert",
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/joda/joda-convert/2.2.0/joda-convert-2.2.0.jar"
                         }
                     ]
                 },
                 {
-                    "organization": "com.google.guava",
-                    "name": "guava",
-                    "version": "25.1-jre",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "guava",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/guava/guava/25.1-jre/guava-25.1-jre.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "com.google.protobuf",
-                    "name": "protobuf-java",
-                    "version": "3.7.0",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "protobuf-java",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/protobuf/protobuf-java/3.7.0/protobuf-java-3.7.0.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "com.google.code.gson",
-                    "name": "gson",
-                    "version": "2.7",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "gson",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/code/gson/gson/2.7/gson-2.7.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "com.google.code.findbugs",
-                    "name": "jsr305",
-                    "version": "3.0.2",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "jsr305",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "com.google.jsinterop",
-                    "name": "jsinterop-annotations",
-                    "version": "1.0.0",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "jsinterop-annotations",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/jsinterop/jsinterop-annotations/1.0.0/jsinterop-annotations-1.0.0.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "org.dispatchhttp",
-                    "name": "dispatch-json4s-native_2.12",
+                    "organization": "org.typelevel",
+                    "name": "cats-macros_2.12",
                     "version": "1.2.0",
                     "configurations": "default",
                     "artifacts": [
                         {
-                            "name": "dispatch-json4s-native_2.12",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/dispatchhttp/dispatch-json4s-native_2.12/1.2.0/dispatch-json4s-native_2.12-1.2.0.jar"
+                            "name": "cats-macros_2.12",
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/typelevel/cats-macros_2.12/1.2.0/cats-macros_2.12-1.2.0.jar"
+                        }
+                    ]
+                },
+                {
+                    "organization": "org.typelevel",
+                    "name": "cats-kernel_2.12",
+                    "version": "1.2.0",
+                    "configurations": "default",
+                    "artifacts": [
+                        {
+                            "name": "cats-kernel_2.12",
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/typelevel/cats-kernel_2.12/1.2.0/cats-kernel_2.12-1.2.0.jar"
+                        }
+                    ]
+                },
+                {
+                    "organization": "org.typelevel",
+                    "name": "machinist_2.12",
+                    "version": "0.6.4",
+                    "configurations": "default",
+                    "artifacts": [
+                        {
+                            "name": "machinist_2.12",
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/typelevel/machinist_2.12/0.6.4/machinist_2.12-0.6.4.jar"
                         }
                     ]
                 },
@@ -2223,6 +1791,18 @@
                         {
                             "name": "trireme-kernel",
                             "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/apigee/trireme/trireme-kernel/0.9.4/trireme-kernel-0.9.4.jar"
+                        }
+                    ]
+                },
+                {
+                    "organization": "org.mozilla",
+                    "name": "rhino",
+                    "version": "1.7.10",
+                    "configurations": "default",
+                    "artifacts": [
+                        {
+                            "name": "rhino",
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/mozilla/rhino/1.7.10/rhino-1.7.10.jar"
                         }
                     ]
                 },
@@ -2335,74 +1915,14 @@
                     ]
                 },
                 {
-                    "organization": "org.checkerframework",
-                    "name": "checker-qual",
-                    "version": "2.0.0",
+                    "organization": "com.google.code.gson",
+                    "name": "gson",
+                    "version": "2.2.4",
                     "configurations": "default",
                     "artifacts": [
                         {
-                            "name": "checker-qual",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/checkerframework/checker-qual/2.0.0/checker-qual-2.0.0.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "com.google.j2objc",
-                    "name": "j2objc-annotations",
-                    "version": "1.1",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "j2objc-annotations",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/j2objc/j2objc-annotations/1.1/j2objc-annotations-1.1.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "org.codehaus.mojo",
-                    "name": "animal-sniffer-annotations",
-                    "version": "1.14",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "animal-sniffer-annotations",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/codehaus/mojo/animal-sniffer-annotations/1.14/animal-sniffer-annotations-1.14.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "org.dispatchhttp",
-                    "name": "dispatch-core_2.12",
-                    "version": "1.2.0",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "dispatch-core_2.12",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/dispatchhttp/dispatch-core_2.12/1.2.0/dispatch-core_2.12-1.2.0.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "org.json4s",
-                    "name": "json4s-core_2.12",
-                    "version": "3.6.7",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "json4s-core_2.12",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-core_2.12/3.6.7/json4s-core_2.12-3.6.7.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "org.json4s",
-                    "name": "json4s-native_2.12",
-                    "version": "3.6.7",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "json4s-native_2.12",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-native_2.12/3.6.7/json4s-native_2.12-3.6.7.jar"
+                            "name": "gson",
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/code/gson/gson/2.2.4/gson-2.2.4.jar"
                         }
                     ]
                 },
@@ -2451,54 +1971,6 @@
                         {
                             "name": "jetty-server",
                             "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/9.4.5.v20170502/jetty-server-9.4.5.v20170502.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "org.asynchttpclient",
-                    "name": "async-http-client",
-                    "version": "2.10.4",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "async-http-client",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/asynchttpclient/async-http-client/2.10.4/async-http-client-2.10.4.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "org.json4s",
-                    "name": "json4s-ast_2.12",
-                    "version": "3.6.7",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "json4s-ast_2.12",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-ast_2.12/3.6.7/json4s-ast_2.12-3.6.7.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "org.json4s",
-                    "name": "json4s-scalap_2.12",
-                    "version": "3.6.7",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "json4s-scalap_2.12",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/json4s/json4s-scalap_2.12/3.6.7/json4s-scalap_2.12-3.6.7.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "com.thoughtworks.paranamer",
-                    "name": "paranamer",
-                    "version": "2.8",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "paranamer",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/thoughtworks/paranamer/paranamer/2.8/paranamer-2.8.jar"
                         }
                     ]
                 },
@@ -2575,102 +2047,6 @@
                     ]
                 },
                 {
-                    "organization": "org.asynchttpclient",
-                    "name": "async-http-client-netty-utils",
-                    "version": "2.10.4",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "async-http-client-netty-utils",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/asynchttpclient/async-http-client-netty-utils/2.10.4/async-http-client-netty-utils-2.10.4.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "io.netty",
-                    "name": "netty-codec-http",
-                    "version": "4.1.42.Final",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "netty-codec-http",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-codec-http/4.1.42.Final/netty-codec-http-4.1.42.Final.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "io.netty",
-                    "name": "netty-handler",
-                    "version": "4.1.42.Final",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "netty-handler",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-handler/4.1.42.Final/netty-handler-4.1.42.Final.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "io.netty",
-                    "name": "netty-codec-socks",
-                    "version": "4.1.42.Final",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "netty-codec-socks",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-codec-socks/4.1.42.Final/netty-codec-socks-4.1.42.Final.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "io.netty",
-                    "name": "netty-handler-proxy",
-                    "version": "4.1.42.Final",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "netty-handler-proxy",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-handler-proxy/4.1.42.Final/netty-handler-proxy-4.1.42.Final.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "io.netty",
-                    "name": "netty-resolver-dns",
-                    "version": "4.1.42.Final",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "netty-resolver-dns",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-resolver-dns/4.1.42.Final/netty-resolver-dns-4.1.42.Final.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "com.typesafe.netty",
-                    "name": "netty-reactive-streams",
-                    "version": "2.0.3",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "netty-reactive-streams",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/netty/netty-reactive-streams/2.0.3/netty-reactive-streams-2.0.3.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "com.sun.activation",
-                    "name": "javax.activation",
-                    "version": "1.2.0",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "javax.activation",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/sun/activation/javax.activation/1.2.0/javax.activation-1.2.0.jar"
-                        }
-                    ]
-                },
-                {
                     "organization": "org.webjars.npm",
                     "name": "is-buffer",
                     "version": "1.1.6",
@@ -2691,78 +2067,6 @@
                         {
                             "name": "jetty-util",
                             "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/9.4.5.v20170502/jetty-util-9.4.5.v20170502.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "io.netty",
-                    "name": "netty-buffer",
-                    "version": "4.1.42.Final",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "netty-buffer",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-buffer/4.1.42.Final/netty-buffer-4.1.42.Final.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "io.netty",
-                    "name": "netty-common",
-                    "version": "4.1.42.Final",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "netty-common",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-common/4.1.42.Final/netty-common-4.1.42.Final.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "io.netty",
-                    "name": "netty-transport",
-                    "version": "4.1.42.Final",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "netty-transport",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-transport/4.1.42.Final/netty-transport-4.1.42.Final.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "io.netty",
-                    "name": "netty-codec",
-                    "version": "4.1.42.Final",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "netty-codec",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-codec/4.1.42.Final/netty-codec-4.1.42.Final.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "io.netty",
-                    "name": "netty-resolver",
-                    "version": "4.1.42.Final",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "netty-resolver",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-resolver/4.1.42.Final/netty-resolver-4.1.42.Final.jar"
-                        }
-                    ]
-                },
-                {
-                    "organization": "io.netty",
-                    "name": "netty-codec-dns",
-                    "version": "4.1.42.Final",
-                    "configurations": "default",
-                    "artifacts": [
-                        {
-                            "name": "netty-codec-dns",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/netty/netty-codec-dns/4.1.42.Final/netty-codec-dns-4.1.42.Final.jar"
                         }
                     ]
                 },
@@ -3355,6 +2659,18 @@
                     ]
                 },
                 {
+                    "organization": "com.google.protobuf",
+                    "name": "protobuf-java",
+                    "version": "3.7.0",
+                    "configurations": "default",
+                    "artifacts": [
+                        {
+                            "name": "protobuf-java",
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/google/protobuf/protobuf-java/3.7.0/protobuf-java-3.7.0.jar"
+                        }
+                    ]
+                },
+                {
                     "organization": "org.scala-sbt",
                     "name": "test-agent",
                     "version": "1.3.13",
@@ -3363,6 +2679,18 @@
                         {
                             "name": "test-agent",
                             "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/test-agent/1.3.13/test-agent-1.3.13.jar"
+                        }
+                    ]
+                },
+                {
+                    "organization": "org.scala-sbt",
+                    "name": "test-interface",
+                    "version": "1.0",
+                    "configurations": "default",
+                    "artifacts": [
+                        {
+                            "name": "test-interface",
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/test-interface/1.0/test-interface-1.0.jar"
                         }
                     ]
                 },
