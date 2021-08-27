@@ -17,22 +17,22 @@
 @import views.html.components.HeadingWithIdentifierCaption
 
 @this(
-mainTemplate: MainTemplate,
-        heading: HeadingWithIdentifierCaption
+    mainTemplate: MainTemplate,
+    heading: HeadingWithIdentifierCaption
 )
 
 @(identifier: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-title = messages("stillProcessing.title"),
- showBackLink = true
+    title = messages("stillProcessing.title"),
+    showBackLink = true
 ) {
 
-@heading(
- messagePrefix = "stillProcessing",
- caption = subheading(identifier)
-)
+    @heading(
+        messagePrefix = "stillProcessing",
+        caption = subheading(identifier)
+    )
 
-<p>@messages("stillProcessing.p2")</p>
-<p>@messages("stillProcessing.p3") <a target="_blank" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts">@messages("stillProcessing.link1")</a>.</p>
+    <p>@messages("stillProcessing.p2")</p>
+    <p>@messages("stillProcessing.p3") <a target="_blank" rel="noopener noreferrer" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts">@messages("stillProcessing.link1")</a>.</p>
 }

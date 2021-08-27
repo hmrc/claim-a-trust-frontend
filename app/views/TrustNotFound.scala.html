@@ -18,28 +18,28 @@
 @import views.html.components.Heading
 
 @this(
-  mainTemplate: MainTemplate,
-  config: FrontendAppConfig,
-        heading: Heading
+    mainTemplate: MainTemplate,
+    config: FrontendAppConfig,
+    heading: Heading
 )
 
 @(identifier: String)(implicit request: Request[_], messages: Messages)
 
 @mainTemplate(
-title = messages("notFound.title"),
- showBackLink = true
+    title = messages("notFound.title"),
+    showBackLink = true
 ) {
 
-@heading("notFound.heading")
+    @heading("notFound.heading")
 
-<p>@messages("notFound.p1")</p>
+    <p>@messages("notFound.p1")</p>
 
-<p>@messages("notFound.p2")</p>
-<ul class="govuk-list govuk-list--bullet">
- <li>@messages("notFound.li.1")</li>
- <li>@messages("notFound.li.2")</li>
-</ul>
+    <p>@messages("notFound.p2")</p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li>@messages("notFound.li.1")</li>
+        <li>@messages("notFound.li.2")</li>
+    </ul>
 
-<p>@messages("notFound.p3") <a href="@{config.trustsRegistration}">@messages("notFound.register.link")</a>.</p>
-<p>@messages("notFound.p4") <a target="_blank" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts">@messages("notFound.link1")</a>.</p>
+    <p>@messages("notFound.p3") <a href="@{config.trustsRegistration}">@messages("notFound.register.link")</a>.</p>
+    <p>@messages("notFound.p4") <a target="_blank" rel="noopener noreferrer" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts">@messages("notFound.link1")</a>.</p>
 }

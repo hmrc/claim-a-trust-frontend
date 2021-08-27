@@ -28,7 +28,7 @@
 @mainTemplate(
     title = messages("beforeYouContinue.title"),
     showBackLink = true
-    ) {
+) {
 
     @formHelper(action = BeforeYouContinueController.onSubmit(), 'autoComplete -> "off") {
 
@@ -42,7 +42,7 @@
         <p>@messages("beforeYouContinue.p3")</p>
         <p>
             @messages("beforeYouContinue.p4")
-            <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts" target="_blank">@messages("beforeYouContinue.a")</a>.
+            <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts" target="_blank" rel="noopener noreferrer">@messages("beforeYouContinue.a")</a>.
         </p>
 
         @submitButton()

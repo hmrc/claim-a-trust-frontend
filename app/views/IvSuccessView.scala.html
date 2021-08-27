@@ -44,7 +44,7 @@
 
         <p>@messages("ivSuccess.agent.paragraph5") <a href="@config.trustsContinueUrl">@messages("ivSuccess.agent.continueLink")</a>.</p>
 
-        <p>@messages("ivSuccess.agent.paragraph6") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts" target="_blank">@messages("ivSuccess.contactLink")</a>.</p>
+        <p>@messages("ivSuccess.agent.paragraph6") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts" target="_blank" rel="noopener noreferrer">@messages("ivSuccess.contactLink")</a>.</p>
 
     } else {
         @heading(
@@ -58,7 +58,7 @@
             <li>@messages("ivSuccess.no.agent.li.3")</li>
         </ul>
         <p>@messages("ivSuccess.no.agent.paragraph2")</p>
-        <p>@messages("ivSuccess.no.agent.paragraph3") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts" target="_blank">@messages("ivSuccess.contactLink")</a>.</p>
+        <p>@messages("ivSuccess.no.agent.paragraph3") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts" target="_blank" rel="noopener noreferrer">@messages("ivSuccess.contactLink")</a>.</p>
 
         @formHelper(action = IvSuccessController.onSubmit(), 'autoComplete -> "off") {
             @submitButton(Some(messages("site.continue")))
