@@ -19,7 +19,7 @@
         "classpath": [
             "/Users/mew/Library/Caches/Coursier/v1/https/open.artefacts.tax.service.gov.uk/ivy2/uk.gov.hmrc/sbt-auto-build/scala_2.12/sbt_1.0/3.0.0/jars/sbt-auto-build.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/open.artefacts.tax.service.gov.uk/ivy2/uk.gov.hmrc/sbt-distributables/scala_2.12/sbt_1.0/2.1.0/jars/sbt-distributables.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.play/sbt-plugin/scala_2.12/sbt_1.0/2.7.5/jars/sbt-plugin.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.play/sbt-plugin/scala_2.12/sbt_1.0/2.8.7/jars/sbt-plugin.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scalastyle/scalastyle-sbt-plugin_2.12_1.0/1.0.0/scalastyle-sbt-plugin-1.0.0.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scoverage/sbt-scoverage_2.12_1.0/1.6.0/sbt-scoverage-1.6.0.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/org.irundaia.sbt/sbt-sassify/scala_2.12/sbt_1.0/1.5.1/jars/sbt-sassify.jar",
@@ -37,18 +37,18 @@
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/eclipse/jgit/org.eclipse.jgit/4.11.9.201909030838-r/org.eclipse.jgit-4.11.9.201909030838-r.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-compress/1.19/commons-compress-1.19.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.sbt/sbt-native-packager/scala_2.12/sbt_1.0/1.5.1/jars/sbt-native-packager.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/sbt-routes-compiler_2.12/2.7.5/sbt-routes-compiler_2.12-2.7.5.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/run-support_2.12/2.7.5/run-support_2.12-2.7.5.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/config/1.3.4/config-1.3.4.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/slf4j/slf4j-simple/1.7.26/slf4j-simple-1.7.26.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/lightbend/play/play-file-watch_2.12/1.1.12/play-file-watch_2.12-1.1.12.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.sbt/sbt-twirl/scala_2.12/sbt_1.0/1.4.2/jars/sbt-twirl.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.lightbend.sbt/sbt-javaagent/scala_2.12/sbt_1.0/0.1.4/jars/sbt-javaagent.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/sbt-routes-compiler_2.12/2.8.7/sbt-routes-compiler_2.12-2.8.7.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/run-support_2.12/2.8.7/run-support_2.12-2.8.7.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/config/1.4.1/config-1.4.1.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/slf4j/slf4j-simple/1.7.30/slf4j-simple-1.7.30.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/lightbend/play/play-file-watch_2.12/1.1.14/play-file-watch_2.12-1.1.14.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.sbt/sbt-twirl/scala_2.12/sbt_1.0/1.5.0/jars/sbt-twirl.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.lightbend.sbt/sbt-javaagent/scala_2.12/sbt_1.0/0.1.5/jars/sbt-javaagent.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.sbt/sbt-web/scala_2.12/sbt_1.0/1.4.4/jars/sbt-web.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.sbt/sbt-js-engine/scala_2.12/sbt_1.0/1.2.3/jars/sbt-js-engine.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scalastyle/scalastyle_2.12/1.0.0/scalastyle_2.12-1.0.0.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scoverage/scalac-scoverage-plugin_2.12/1.4.0/scalac-scoverage-plugin_2.12-1.4.0.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/java/dev/jna/jna/5.5.0/jna-5.5.0.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/java/dev/jna/jna/5.6.0/jna-5.6.0.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/webjars/npm/uglify-js/2.8.14/uglify-js-2.8.14.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/foundweekends/giter8/giter8-lib_2.12/0.11.0/giter8-lib_2.12-0.11.0.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-sbt/main_2.12/1.3.13/main_2.12-1.3.13.jar",
@@ -61,16 +61,16 @@
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/jcraft/jzlib/1.1.1/jzlib-1.1.1.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/googlecode/javaewah/JavaEWAH/1.1.6/JavaEWAH-1.1.6.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.2/httpclient-4.5.2.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.29/slf4j-api-1.7.29.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/ant/ant/1.10.5/ant-1.10.5.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/github/eldis/tool-launcher/0.2.2/tool-launcher-0.2.2.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-parser-combinators_2.12/1.1.2/scala-parser-combinators_2.12-1.1.2.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-xml_2.12/1.3.0/scala-xml_2.12-1.3.0.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/twirl-api_2.12/1.4.2/twirl-api_2.12-1.4.2.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/build-link/2.7.5/build-link-2.7.5.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/methvin/directory-watcher/0.9.9/directory-watcher-0.9.9.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/github/pathikrit/better-files_2.12/2.17.1/better-files_2.12-2.17.1.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/twirl-compiler_2.12/1.4.2/twirl-compiler_2.12-1.4.2.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/twirl-api_2.12/1.5.0/twirl-api_2.12-1.5.0.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/build-link/2.8.7/build-link-2.8.7.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/methvin/directory-watcher/0.10.1/directory-watcher-0.10.1.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/github/pathikrit/better-files_2.12/3.8.0/better-files_2.12-3.8.0.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/twirl-compiler_2.12/1.5.0/twirl-compiler_2.12-1.5.0.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/akka/akka-actor_2.12/2.5.18/akka-actor_2.12-2.5.18.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/webjars/webjars-locator-core/0.36/webjars-locator-core-0.36.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/jse_2.12/1.2.4/jse_2.12-1.2.4.jar",
@@ -116,9 +116,9 @@
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/commons-codec/commons-codec/1.9/commons-codec-1.9.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/ant/ant-launcher/1.10.5/ant-launcher-1.10.5.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-exceptions/2.7.5/play-exceptions-2.7.5.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-exceptions/2.8.7/play-exceptions-2.8.7.jar",
             "/Users/mew/.sbt/boot/scala-2.12.10/lib/scala-compiler.jar",
-            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/twirl-parser_2.12/1.4.2/twirl-parser_2.12-1.4.2.jar",
+            "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/twirl-parser_2.12/1.5.0/twirl-parser_2.12-1.5.0.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/scala-lang/modules/scala-java8-compat_2.12/0.8.0/scala-java8-compat_2.12-0.8.0.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.8.1/commons-lang3-3.8.1.jar",
             "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/2.9.7/jackson-core-2.9.7.jar",
@@ -353,12 +353,16 @@
                 {
                     "organization": "com.typesafe.play",
                     "name": "sbt-plugin",
-                    "version": "2.7.5",
+                    "version": "2.8.7",
                     "configurations": "compile",
                     "artifacts": [
                         {
                             "name": "sbt-plugin",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.play/sbt-plugin/scala_2.12/sbt_1.0/2.7.5/jars/sbt-plugin.jar"
+                            "checksum": {
+                                "type": "sha1",
+                                "digest": "8207c2aae3f9e1fd89934fb829d122ffebf52ed4"
+                            },
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.play/sbt-plugin/scala_2.12/sbt_1.0/2.8.7/jars/sbt-plugin.jar"
                         }
                     ]
                 },
@@ -593,94 +597,84 @@
                 {
                     "organization": "com.typesafe.play",
                     "name": "sbt-routes-compiler_2.12",
-                    "version": "2.7.5",
+                    "version": "2.8.7",
                     "configurations": "default",
                     "artifacts": [
                         {
                             "name": "sbt-routes-compiler_2.12",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/sbt-routes-compiler_2.12/2.7.5/sbt-routes-compiler_2.12-2.7.5.jar"
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/sbt-routes-compiler_2.12/2.8.7/sbt-routes-compiler_2.12-2.8.7.jar"
                         }
                     ]
                 },
                 {
                     "organization": "com.typesafe.play",
                     "name": "run-support_2.12",
-                    "version": "2.7.5",
+                    "version": "2.8.7",
                     "configurations": "default",
                     "artifacts": [
                         {
                             "name": "run-support_2.12",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/run-support_2.12/2.7.5/run-support_2.12-2.7.5.jar"
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/run-support_2.12/2.8.7/run-support_2.12-2.8.7.jar"
                         }
                     ]
                 },
                 {
                     "organization": "com.typesafe",
                     "name": "config",
-                    "version": "1.3.4",
+                    "version": "1.4.1",
                     "configurations": "default",
                     "artifacts": [
                         {
                             "name": "config",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/config/1.3.4/config-1.3.4.jar"
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/config/1.4.1/config-1.4.1.jar"
                         }
                     ]
                 },
                 {
                     "organization": "org.slf4j",
                     "name": "slf4j-simple",
-                    "version": "1.7.26",
+                    "version": "1.7.30",
                     "configurations": "default",
                     "artifacts": [
                         {
                             "name": "slf4j-simple",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/slf4j/slf4j-simple/1.7.26/slf4j-simple-1.7.26.jar"
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/slf4j/slf4j-simple/1.7.30/slf4j-simple-1.7.30.jar"
                         }
                     ]
                 },
                 {
                     "organization": "com.lightbend.play",
                     "name": "play-file-watch_2.12",
-                    "version": "1.1.12",
+                    "version": "1.1.14",
                     "configurations": "default",
                     "artifacts": [
                         {
                             "name": "play-file-watch_2.12",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/lightbend/play/play-file-watch_2.12/1.1.12/play-file-watch_2.12-1.1.12.jar"
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/lightbend/play/play-file-watch_2.12/1.1.14/play-file-watch_2.12-1.1.14.jar"
                         }
                     ]
                 },
                 {
                     "organization": "com.typesafe.sbt",
                     "name": "sbt-twirl",
-                    "version": "1.4.2",
+                    "version": "1.5.0",
                     "configurations": "compile",
                     "artifacts": [
                         {
                             "name": "sbt-twirl",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.sbt/sbt-twirl/scala_2.12/sbt_1.0/1.4.2/jars/sbt-twirl.jar"
-                        },
-                        {
-                            "name": "sbt-twirl",
-                            "classifier": "sources",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.sbt/sbt-twirl/scala_2.12/sbt_1.0/1.4.2/srcs/sbt-twirl-sources.jar"
-                        },
-                        {
-                            "name": "sbt-twirl",
-                            "classifier": "javadoc",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.sbt/sbt-twirl/scala_2.12/sbt_1.0/1.4.2/docs/sbt-twirl-javadoc.jar"
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.typesafe.sbt/sbt-twirl/scala_2.12/sbt_1.0/1.5.0/jars/sbt-twirl.jar"
                         }
                     ]
                 },
                 {
                     "organization": "com.lightbend.sbt",
                     "name": "sbt-javaagent",
-                    "version": "0.1.4",
+                    "version": "0.1.5",
                     "configurations": "compile",
                     "artifacts": [
                         {
                             "name": "sbt-javaagent",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.lightbend.sbt/sbt-javaagent/scala_2.12/sbt_1.0/0.1.4/jars/sbt-javaagent.jar"
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.lightbend.sbt/sbt-javaagent/scala_2.12/sbt_1.0/0.1.5/jars/sbt-javaagent.jar"
                         }
                     ]
                 },
@@ -755,12 +749,12 @@
                 {
                     "organization": "net.java.dev.jna",
                     "name": "jna",
-                    "version": "5.5.0",
+                    "version": "5.6.0",
                     "configurations": "default",
                     "artifacts": [
                         {
                             "name": "jna",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/java/dev/jna/jna/5.5.0/jna-5.5.0.jar"
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/net/java/dev/jna/jna/5.6.0/jna-5.6.0.jar"
                         }
                     ]
                 },
@@ -897,12 +891,12 @@
                 {
                     "organization": "org.slf4j",
                     "name": "slf4j-api",
-                    "version": "1.7.29",
+                    "version": "1.7.30",
                     "configurations": "default",
                     "artifacts": [
                         {
                             "name": "slf4j-api",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.29/slf4j-api-1.7.29.jar"
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar"
                         }
                     ]
                 },
@@ -981,60 +975,60 @@
                 {
                     "organization": "com.typesafe.play",
                     "name": "twirl-api_2.12",
-                    "version": "1.4.2",
+                    "version": "1.5.0",
                     "configurations": "default",
                     "artifacts": [
                         {
                             "name": "twirl-api_2.12",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/twirl-api_2.12/1.4.2/twirl-api_2.12-1.4.2.jar"
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/twirl-api_2.12/1.5.0/twirl-api_2.12-1.5.0.jar"
                         }
                     ]
                 },
                 {
                     "organization": "com.typesafe.play",
                     "name": "build-link",
-                    "version": "2.7.5",
+                    "version": "2.8.7",
                     "configurations": "default",
                     "artifacts": [
                         {
                             "name": "build-link",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/build-link/2.7.5/build-link-2.7.5.jar"
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/build-link/2.8.7/build-link-2.8.7.jar"
                         }
                     ]
                 },
                 {
                     "organization": "io.methvin",
                     "name": "directory-watcher",
-                    "version": "0.9.9",
+                    "version": "0.10.1",
                     "configurations": "default",
                     "artifacts": [
                         {
                             "name": "directory-watcher",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/methvin/directory-watcher/0.9.9/directory-watcher-0.9.9.jar"
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/io/methvin/directory-watcher/0.10.1/directory-watcher-0.10.1.jar"
                         }
                     ]
                 },
                 {
                     "organization": "com.github.pathikrit",
                     "name": "better-files_2.12",
-                    "version": "2.17.1",
+                    "version": "3.8.0",
                     "configurations": "default",
                     "artifacts": [
                         {
                             "name": "better-files_2.12",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/github/pathikrit/better-files_2.12/2.17.1/better-files_2.12-2.17.1.jar"
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/github/pathikrit/better-files_2.12/3.8.0/better-files_2.12-3.8.0.jar"
                         }
                     ]
                 },
                 {
                     "organization": "com.typesafe.play",
                     "name": "twirl-compiler_2.12",
-                    "version": "1.4.2",
+                    "version": "1.5.0",
                     "configurations": "default",
                     "artifacts": [
                         {
                             "name": "twirl-compiler_2.12",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/twirl-compiler_2.12/1.4.2/twirl-compiler_2.12-1.4.2.jar"
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/twirl-compiler_2.12/1.5.0/twirl-compiler_2.12-1.5.0.jar"
                         }
                     ]
                 },
@@ -1341,12 +1335,12 @@
                 {
                     "organization": "com.typesafe.play",
                     "name": "play-exceptions",
-                    "version": "2.7.5",
+                    "version": "2.8.7",
                     "configurations": "default",
                     "artifacts": [
                         {
                             "name": "play-exceptions",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-exceptions/2.7.5/play-exceptions-2.7.5.jar"
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/play-exceptions/2.8.7/play-exceptions-2.8.7.jar"
                         }
                     ]
                 },
@@ -1365,12 +1359,12 @@
                 {
                     "organization": "com.typesafe.play",
                     "name": "twirl-parser_2.12",
-                    "version": "1.4.2",
+                    "version": "1.5.0",
                     "configurations": "default",
                     "artifacts": [
                         {
                             "name": "twirl-parser_2.12",
-                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/twirl-parser_2.12/1.4.2/twirl-parser_2.12-1.4.2.jar"
+                            "path": "/Users/mew/Library/Caches/Coursier/v1/https/repo1.maven.org/maven2/com/typesafe/play/twirl-parser_2.12/1.5.0/twirl-parser_2.12-1.5.0.jar"
                         }
                     ]
                 },

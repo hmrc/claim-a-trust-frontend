@@ -90,8 +90,7 @@ class IsAgentManagingTrustController @Inject()(
           } getOrElse {
             logger.error(s"[Claiming][Trust IV][Session ID: ${Session.id(hc)}] unable to retrieve identifier from user answers")
             Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
-          }
-        ,
+        },
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(IsAgentManagingTrustPage, value))

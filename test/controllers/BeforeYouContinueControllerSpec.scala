@@ -94,5 +94,45 @@ class BeforeYouContinueControllerSpec extends SpecBase {
       application.stop()
 
     }
+
+    "redirect to session expired for a GET" when {
+
+      "data does not exist" in {
+        val answers = emptyUserAnswers
+
+        val application = applicationBuilder(userAnswers = Some(answers), fakeEstablishmentServiceFailing).build()
+
+        val request = FakeRequest(GET, routes.BeforeYouContinueController.onPageLoad().url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustBe routes.SessionExpiredController.onPageLoad().url
+
+        application.stop()
+      }
+
+    }
+
+    "redirect to session expired for a POST" when {
+
+      "data does not exist" in {
+        val answers = emptyUserAnswers
+
+        val application = applicationBuilder(userAnswers = Some(answers), fakeEstablishmentServiceFailing).build()
+
+        val request = FakeRequest(POST, routes.BeforeYouContinueController.onSubmit().url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustBe routes.SessionExpiredController.onPageLoad().url
+
+        application.stop()
+      }
+
+    }
   }
 }
