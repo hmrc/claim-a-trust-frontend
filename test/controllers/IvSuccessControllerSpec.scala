@@ -444,6 +444,23 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
     }
 
+    "redirect to maintain" when {
+
+      "user continues and checks status of the trust" in {
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+        val request = FakeRequest(POST, routes.IvSuccessController.onSubmit().url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual "http://localhost:9788/maintain-a-trust/status"
+
+        application.stop()
+      }
+    }
+
     "redirect to Session Expired" when {
 
       "no existing data is found" in {

@@ -280,6 +280,28 @@ class IvFailureControllerSpec extends SpecBase {
         application.stop()
       }
 
+      "return session expired when GET for locked route" in {
+
+        val onLockedRoute = routes.IvFailureController.trustLocked().url
+
+        val answers = emptyUserAnswers
+
+        val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(
+            bind[AuditService].toInstance(mockAuditService))
+          .build()
+
+        val request = FakeRequest(GET, onLockedRoute)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustBe routes.SessionExpiredController.onPageLoad().url
+
+        application.stop()
+      }
+
       "return OK and the correct view for a GET for not found route" in {
 
         val onLockedRoute = routes.IvFailureController.trustNotFound().url
@@ -302,6 +324,28 @@ class IvFailureControllerSpec extends SpecBase {
         application.stop()
       }
 
+      "return session expired when GET for not found route" in {
+
+        val onLockedRoute = routes.IvFailureController.trustNotFound().url
+
+        val answers = emptyUserAnswers
+
+        val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(
+            bind[AuditService].toInstance(mockAuditService))
+          .build()
+
+        val request = FakeRequest(GET, onLockedRoute)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustBe routes.SessionExpiredController.onPageLoad().url
+
+        application.stop()
+      }
+
       "return OK and the correct view for a GET for still processing route" in {
 
         val onLockedRoute = routes.IvFailureController.trustStillProcessing().url
@@ -318,6 +362,28 @@ class IvFailureControllerSpec extends SpecBase {
         val result = route(application, request).value
 
         status(result) mustEqual OK
+
+        application.stop()
+      }
+
+      "return session expired when GET for still processing route" in {
+
+        val onLockedRoute = routes.IvFailureController.trustStillProcessing().url
+
+        val answers = emptyUserAnswers
+
+        val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(
+            bind[AuditService].toInstance(mockAuditService))
+          .build()
+
+        val request = FakeRequest(GET, onLockedRoute)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustBe routes.SessionExpiredController.onPageLoad().url
 
         application.stop()
       }
