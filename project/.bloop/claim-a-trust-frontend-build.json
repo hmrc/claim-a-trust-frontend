@@ -315,7 +315,7 @@
         "platform": {
             "name": "jvm",
             "config": {
-                "home": "/Library/Java/JavaVirtualMachines/jdk1.8.0_121.jdk/Contents/Home/jre",
+                "home": "/usr/local/Cellar/openjdk/13.0.2+8_2/libexec/openjdk.jdk/Contents/Home",
                 "options": [
                     "-Duser.dir=/Users/mew/projects/hmrc/trusts/claim-a-trust-frontend/project"
                 ]

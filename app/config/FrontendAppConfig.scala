@@ -19,7 +19,7 @@ package config
 import com.google.inject.{Inject, Singleton}
 import controllers.routes
 import play.api.Configuration
-import play.api.i18n.Lang
+import play.api.i18n.{Lang, Messages}
 import play.api.mvc.Call
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
@@ -99,6 +99,14 @@ class FrontendAppConfig @Inject() (val configuration: Configuration,
 
   lazy val countdownLength: Int = configuration.get[Int]("timeout.countdown")
   lazy val timeoutLength: Int = configuration.get[Int]("timeout.length")
+
+  def helplineUrl(implicit messages: Messages): String = {
+    val path = messages.lang.code match {
+      case "cy" => "urls.welshHelpline"
+      case _ => "urls.trustsHelpline"
+    }
+    configuration.get[String](path)
+  }
 
   def languageMap: Map[String, Lang] = Map(
     "english" -> Lang("en"),
