@@ -20,6 +20,13 @@ error.required = Nodwch werth
 error.summary.title = Mae problem wedi codi
 site.error = Gwall:
 
+pageNotFound.title = Heb ddod o hyd i’r dudalen
+pageNotFound.heading = Heb ddod o hyd i’r dudalen
+pageNotFound.p1 = Os gwnaethoch deipio’r cyfeiriad gwe, gwiriwch ei fod yn gywir.
+pageNotFound.p2 = Os gwnaethoch ludo’r cyfeiriad gwe, gwiriwch eich bod wedi copïo’r cyfeiriad yn llawn.
+pageNotFound.p3 = Os yw’r cyfeiriad gwe yn gywir, neu eich bod wedi dewis cysylltiad neu fotwm, {0}.
+pageNotFound.link = cysylltwch â Gwasanaeth Cwsmeriaid Cymraeg CThEM i siarad â rhywun ynghylch ymddiriedolaeth (yn agor tab newydd)
+
 utr.subheading = UTR yr ymddiriedolaeth: {0}
 urn.subheading = URN yr ymddiriedolaeth: {0}
 
