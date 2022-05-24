@@ -22,7 +22,7 @@ import play.api.test.Helpers._
 
 class FallbackFailureControllerSpec extends SpecBase {
 
-  def onFailureRoute = routes.FallbackFailureController.onPageLoad().url
+  def onFailureRoute = routes.FallbackFailureController.onPageLoad.url
 
   "FallbackFailure Controller" must {
 

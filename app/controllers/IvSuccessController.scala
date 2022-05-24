@@ -53,7 +53,7 @@ class IvSuccessController @Inject()(
   extends FrontendBaseController with I18nSupport
     with AuthPartialFunctions with Logging {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
     implicit request =>
       request.userAnswers.get(IdentifierPage).map { identifier =>
 
@@ -70,7 +70,7 @@ class IvSuccessController @Inject()(
       } getOrElse {
         logger.warn(s"[Claiming][Session ID: ${Session.id(hc)}] no identifier found in user answers, unable to" +
           s"continue with enrolling credential and claiming the trust on behalf of the user")
-        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
       }
 
   }
@@ -109,7 +109,7 @@ class IvSuccessController @Inject()(
     }
   }
 
-  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       Redirect(config.trustsContinueUrl)
   }

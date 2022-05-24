@@ -48,7 +48,7 @@ class SaveIdentifierController @Inject()(
         case _ =>
           logger.error(s"[Claiming][Session ID: ${Session.id(hc)}] " +
             s"Identifier provided is not a valid URN or UTR")
-          Future.successful(Redirect(routes.FallbackFailureController.onPageLoad()))
+          Future.successful(Redirect(routes.FallbackFailureController.onPageLoad))
       }
 
   }
@@ -59,7 +59,7 @@ class SaveIdentifierController @Inject()(
         logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] " +
           s"relationship is already established in IV for $identifier sending user to successfully claimed")
 
-        Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
+        Future.successful(Redirect(routes.IvSuccessController.onPageLoad))
       case RelationshipNotFound =>
         saveAndContinue(identifier)
     }

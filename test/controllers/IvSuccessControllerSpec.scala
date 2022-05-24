@@ -77,7 +77,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
         // Stub a mongo connection
         when(mockRepository.set(any())).thenReturn(Future.successful(true))
 
-        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
         val view = application.injector.instanceOf[IvSuccessView]
 
@@ -126,7 +126,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         when(mockRepository.set(any())).thenReturn(Future.successful(true))
 
-        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
         val view = application.injector.instanceOf[IvSuccessView]
 
@@ -180,7 +180,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
         // Stub a mongo connection
         when(mockRepository.set(any())).thenReturn(Future.successful(true))
 
-        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
         val view = application.injector.instanceOf[IvSuccessView]
 
@@ -230,7 +230,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         when(mockRepository.set(any())).thenReturn(Future.successful(true))
 
-        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
         val view = application.injector.instanceOf[IvSuccessView]
 
@@ -282,7 +282,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
             bind(classOf[AuditService]).toInstance(mockAuditService)
           ).build()
 
-        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
         val view = application.injector.instanceOf[IvSuccessView]
 
@@ -324,7 +324,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
           bind(classOf[AuditService]).toInstance(mockAuditService)
         ).build()
 
-        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
         val view = application.injector.instanceOf[IvSuccessView]
 
@@ -373,7 +373,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         when(mockRepository.set(any())).thenReturn(Future.successful(true))
 
-        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
         val view = application.injector.instanceOf[IvSuccessView]
 
@@ -416,7 +416,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         when(mockRepository.set(any())).thenReturn(Future.successful(true))
 
-        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
         val view = application.injector.instanceOf[IvSuccessView]
 
@@ -449,7 +449,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
       "user continues and checks status of the trust" in {
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-        val request = FakeRequest(POST, routes.IvSuccessController.onSubmit().url)
+        val request = FakeRequest(POST, routes.IvSuccessController.onSubmit.url)
 
         val result = route(application, request).value
 
@@ -467,13 +467,13 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
 
         val application = applicationBuilder(userAnswers = None).build()
 
-        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad().url
+        redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
 
         application.stop()
 
@@ -501,7 +501,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
                 bind(classOf[AuditService]).toInstance(mockAuditService)
               ).build()
 
-            val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+            val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
             // Stub a mongo connection
             when(mockRepository.set(any())).thenReturn(Future.successful(true))
@@ -546,7 +546,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach {
                 bind(classOf[AuditService]).toInstance(mockAuditService)
               ).build()
 
-            val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad().url)
+            val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
             // Stub a mongo connection
             when(mockRepository.set(any())).thenReturn(Future.successful(true))

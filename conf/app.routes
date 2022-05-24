@@ -1,5 +1,4 @@
 # microservice specific routes
-->         /govuk-frontend                              govuk.Routes
 ->         /hmrc-frontend                               hmrcfrontend.Routes
 
 GET        /callback-failure                            controllers.IvFailureController.onTrustIvFailure
@@ -29,8 +28,8 @@ POST       /this-service-has-been-reset                 controllers.SessionExpir
 
 GET        /unauthorised                                controllers.UnauthorisedController.onPageLoad
 
-GET        /before-you-continue                         controllers.BeforeYouContinueController.onPageLoad()
-POST       /before-you-continue                         controllers.BeforeYouContinueController.onSubmit()
+GET        /before-you-continue                         controllers.BeforeYouContinueController.onPageLoad
+POST       /before-you-continue                         controllers.BeforeYouContinueController.onSubmit
 
 GET        /managed-by-agent                            controllers.IsAgentManagingTrustController.onPageLoad(mode: Mode = NormalMode)
 POST       /managed-by-agent                            controllers.IsAgentManagingTrustController.onSubmit(mode: Mode = NormalMode)

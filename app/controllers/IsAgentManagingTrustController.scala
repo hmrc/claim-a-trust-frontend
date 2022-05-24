@@ -68,14 +68,14 @@ class IsAgentManagingTrustController @Inject()(
             logger.info(s"[Claiming][Trust IV][Session ID: ${Session.id(hc)}]" +
               s" user has recently passed IV for $identifier, sending user to successfully claimed")
 
-            Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
+            Future.successful(Redirect(routes.IvSuccessController.onPageLoad))
           case RelationshipNotFound =>
             body
         }
 
       } getOrElse {
         logger.error(s"[Claiming][Trust IV][Session ID: ${Session.id(hc)}] unable to retrieve identifier from user answers")
-        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
       }
 
   }
@@ -89,7 +89,7 @@ class IsAgentManagingTrustController @Inject()(
             Future.successful(BadRequest(view(formWithErrors, mode, utr)))
           } getOrElse {
             logger.error(s"[Claiming][Trust IV][Session ID: ${Session.id(hc)}] unable to retrieve identifier from user answers")
-            Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+            Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
         },
         value =>
           for {

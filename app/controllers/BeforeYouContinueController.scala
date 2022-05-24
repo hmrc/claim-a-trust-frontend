@@ -53,7 +53,7 @@ class BeforeYouContinueController @Inject()(
             logger.info(s"[Claiming][Session ID: ${Session.id(hc)}]" +
               s" relationship is already established in IV for $identifier sending user to successfully claimed")
 
-            Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
+            Future.successful(Redirect(routes.IvSuccessController.onPageLoad))
           case RelationshipNotFound =>
             Future.successful(Ok(view(identifier)))
         }
@@ -61,7 +61,7 @@ class BeforeYouContinueController @Inject()(
         logger.error(s"[Claiming][Session ID: ${Session.id(hc)}] " +
           s"no identifier available in user answers, cannot continue with claiming the trust")
 
-        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
       }
   }
 
@@ -100,13 +100,13 @@ class BeforeYouContinueController @Inject()(
             logger.info(s"[Claiming][Session ID: ${Session.id(hc)}]" +
               s" relationship is already established in IV for $identifier sending user to successfully claimed")
 
-            Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
+            Future.successful(Redirect(routes.IvSuccessController.onPageLoad))
           case RelationshipNotFound =>
             onRelationshipNotFound
         }
       }) getOrElse {
         logger.error(s"[Claiming][Session ID: ${Session.id(hc)}] no identifier available in user answers, cannot continue with claiming the trust")
-        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
       }
   }
 }

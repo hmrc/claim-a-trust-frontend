@@ -6,9 +6,9 @@ object AppDependencies {
   private val compile: Seq[ModuleID] = Seq(
     play.sbt.PlayImport.ws,
     "org.reactivemongo" %% "play2-reactivemongo"            % "0.20.13-play28",
-    "uk.gov.hmrc"       %% "play-frontend-hmrc"             % "1.1.0-play-28",
-    "uk.gov.hmrc"       %% "play-conditional-form-mapping"  % "1.9.0-play-28",
-    "uk.gov.hmrc"       %% "bootstrap-frontend-play-28"     % "5.9.0"
+    "uk.gov.hmrc"       %% "play-frontend-hmrc"             % "3.19.0-play-28",
+    "uk.gov.hmrc"       %% "play-conditional-form-mapping"  % "1.11.0-play-28",
+    "uk.gov.hmrc"       %% "bootstrap-frontend-play-28"     % "5.23.0"
   )
 
   private val test: Seq[ModuleID] = Seq(

@@ -54,27 +54,27 @@ class IvFailureController @Inject()(
       case RelationshipEstablishmentStatus.Locked =>
         logger.info(s"[Claiming][Trust IV][status][Session ID: ${Session.id(hc)}] $identifier is locked")
         auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.LOCKED)
-        Redirect(routes.IvFailureController.trustLocked())
+        Redirect(routes.IvFailureController.trustLocked)
       case RelationshipEstablishmentStatus.NotFound =>
         logger.info(s"[Claiming][Trust IV][status][Session ID: ${Session.id(hc)}] $identifier was not found")
         auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.IDENTIFIER_NOT_FOUND)
-        Redirect(routes.IvFailureController.trustNotFound())
+        Redirect(routes.IvFailureController.trustNotFound)
       case RelationshipEstablishmentStatus.InProcessing =>
         logger.info(s"[Claiming][Trust IV][status][Session ID: ${Session.id(hc)}] $identifier is processing")
         auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.TRUST_STILL_PROCESSING)
-        Redirect(routes.IvFailureController.trustStillProcessing())
+        Redirect(routes.IvFailureController.trustStillProcessing)
       case UnsupportedRelationshipStatus(reason) =>
         logger.warn(s"[Claiming][Trust IV][status][Session ID: ${Session.id(hc)}] Unsupported IV failure reason: $reason")
         auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.UNSUPPORTED_RELATIONSHIP_STATUS)
-        Redirect(routes.FallbackFailureController.onPageLoad())
+        Redirect(routes.FallbackFailureController.onPageLoad)
       case UpstreamRelationshipError(response) =>
         logger.warn(s"[Claiming][Trust IV][status][Session ID: ${Session.id(hc)}] HTTP response: $response")
         auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.UPSTREAM_RELATIONSHIP_ERROR)
-        Redirect(routes.FallbackFailureController.onPageLoad())
+        Redirect(routes.FallbackFailureController.onPageLoad)
       case _ =>
         logger.warn(s"[Claiming][Trust IV][status][Session ID: ${Session.id(hc)}] No errorKey in HTTP response")
         auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.IV_TECHNICAL_PROBLEM_NO_ERROR_KEY)
-        Redirect(routes.FallbackFailureController.onPageLoad())
+        Redirect(routes.FallbackFailureController.onPageLoad)
     }
   }
 
@@ -88,14 +88,14 @@ class IvFailureController @Inject()(
           queryString.fold{
             logger.warn(s"[Claiming][Trust IV][Session ID: ${Session.id(hc)}] unable to retrieve a journeyId to determine the reason")
             auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.IV_TECHNICAL_PROBLEM_NO_JOURNEY_ID)
-            Future.successful(Redirect(routes.FallbackFailureController.onPageLoad()))
+            Future.successful(Redirect(routes.FallbackFailureController.onPageLoad))
           }{
             journeyId =>
               renderFailureReason(identifier, journeyId)
           }
         case None =>
           logger.warn(s"[Claiming][Trust IV] unable to retrieve an identifier from mongo")
-          Future.successful(Redirect(routes.FallbackFailureController.onPageLoad()))
+          Future.successful(Redirect(routes.FallbackFailureController.onPageLoad))
       }
   }
 
@@ -111,7 +111,7 @@ class IvFailureController @Inject()(
         }
       }) getOrElse {
         logger.error(s"[Claiming][Trust IV][Session ID: ${Session.id(hc)}] unable to determine if trust is locked out from IV")
-        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
       }
   }
 
@@ -123,7 +123,7 @@ class IvFailureController @Inject()(
           Future.successful(Ok(notFoundView(identifier)))
       } getOrElse {
         logger.error(s"[Claiming][Trust IV][Session ID: ${Session.id(hc)}] no identifier stored in user answers when informing user the trust was not found")
-        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
       }
   }
 
@@ -135,7 +135,7 @@ class IvFailureController @Inject()(
           Future.successful(Ok(stillProcessingView(identifier)))
       } getOrElse {
         logger.error(s"[Claiming][Trust IV][Session ID: ${Session.id(hc)}] no identifier stored in user answers when informing user trust was still processing")
-        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
       }
   }
 }
