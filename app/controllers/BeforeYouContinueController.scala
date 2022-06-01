@@ -44,29 +44,29 @@ class BeforeYouContinueController @Inject()(
                                            )(implicit ec: ExecutionContext, config: FrontendAppConfig)
   extends FrontendBaseController with I18nSupport with AuthPartialFunctions with Logging {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
+  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
 
       request.userAnswers.get(IdentifierPage) map { identifier =>
         relationship.check(request.internalId, identifier) flatMap {
           case RelationshipFound =>
-            logger.info(s"[Claiming][Session ID: ${Session.id(hc)}]" +
-              s" relationship is already established in IV for $identifier sending user to successfully claimed")
+            logger.info(s"[BeforeYouContinueController][onPageLoad][Session ID: ${Session.id(hc)}]" +
+              s" relationship is already established in IV for $identifier, sending user to successfully claimed")
 
             Future.successful(Redirect(routes.IvSuccessController.onPageLoad))
           case RelationshipNotFound =>
+            logger.info(s"[BeforeYouContinueController][onPageLoad][Session ID: ${Session.id(hc)}]" +
+              s" relationship does not exist in IV for $identifier, sending user to begin journey")
             Future.successful(Ok(view(identifier)))
         }
       } getOrElse {
-        logger.error(s"[Claiming][Session ID: ${Session.id(hc)}] " +
+        logger.error(s"[BeforeYouContinueController][onPageLoad][Session ID: ${Session.id(hc)}] " +
           s"no identifier available in user answers, cannot continue with claiming the trust")
 
         Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
       }
   }
 
-  def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
+  def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
 
       (for {
         identifier <- request.userAnswers.get(IdentifierPage)
@@ -86,7 +86,7 @@ class BeforeYouContinueController @Inject()(
           )
 
           connector.claim(TrustsStoreRequest(request.internalId, identifier, isManagedByAgent, trustLocked = false)) map { _ =>
-            logger.info(s"[Claiming][Session ID: ${Session.id(hc)}]" +
+            logger.info(s"[BeforeYouContinueController][onSubmit][Session ID: ${Session.id(hc)}]" +
               s" saved users $identifier in trusts-store so they can be identified when they" +
               s" return from Trust IV. Sending the user into Trust IV to answer questions")
 
@@ -97,7 +97,7 @@ class BeforeYouContinueController @Inject()(
 
         relationship.check(request.internalId, identifier) flatMap {
           case RelationshipFound =>
-            logger.info(s"[Claiming][Session ID: ${Session.id(hc)}]" +
+            logger.info(s"[BeforeYouContinueController][onSubmit][Session ID: ${Session.id(hc)}]" +
               s" relationship is already established in IV for $identifier sending user to successfully claimed")
 
             Future.successful(Redirect(routes.IvSuccessController.onPageLoad))
@@ -105,7 +105,8 @@ class BeforeYouContinueController @Inject()(
             onRelationshipNotFound
         }
       }) getOrElse {
-        logger.error(s"[Claiming][Session ID: ${Session.id(hc)}] no identifier available in user answers, cannot continue with claiming the trust")
+        logger.error(s"[BeforeYouContinueController][onSubmit][Session ID: ${Session.id(hc)}]" +
+          s" no identifier available in user answers, cannot continue with claiming the trust")
         Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
       }
   }

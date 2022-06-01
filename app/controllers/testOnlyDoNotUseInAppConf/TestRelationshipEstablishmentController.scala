@@ -38,28 +38,27 @@ class TestRelationshipEstablishmentController @Inject()(
                                                        )(implicit ec: ExecutionContext)
   extends FrontendBaseController with Logging {
 
-  def check(identifier: String): Action[AnyContent] = identify.async {
-    implicit request =>
+  def check(identifier: String): Action[AnyContent] = identify.async { implicit request =>
 
-      logger.info("[Claiming] TrustIV is using a test route, you don't want this in production.")
+      logger.warn("[TestRelationshipEstablishmentController][check] TrustIV is using a test route, you don't want this in production.")
 
       identifier match {
         case IdentifierRegex.UtrRegex(utr) =>
           if (utr.startsWith("1")) {
             createRelationship(utr)
           } else {
-            logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] UTR did not start with '1', failing IV")
+            logger.info(s"[TestRelationshipEstablishmentController][check][Session ID: ${Session.id(hc)}] UTR did not start with '1', failing IV")
             Future.successful(Redirect(controllers.routes.FallbackFailureController.onPageLoad))
           }
         case IdentifierRegex.UrnRegex(urn) =>
           if (urn.toLowerCase.startsWith("nt")) {
             createRelationship(urn)
           } else {
-            logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] URN did not start with 'NT', failing IV")
+            logger.info(s"[TestRelationshipEstablishmentController][check][Session ID: ${Session.id(hc)}] URN did not start with 'NT', failing IV")
             Future.successful(Redirect(controllers.routes.FallbackFailureController.onPageLoad))
           }
         case _ =>
-          logger.error(s"[Claiming][Session ID: ${Session.id(hc)}] " +
+          logger.error(s"[TestRelationshipEstablishmentController][check][Session ID: ${Session.id(hc)}] " +
             s"Identifier provided is not a valid URN or UTR $identifier")
           Future.successful(Redirect(controllers.routes.FallbackFailureController.onPageLoad))
       }
@@ -68,7 +67,7 @@ class TestRelationshipEstablishmentController @Inject()(
   private def createRelationship(identifier: String)(implicit request: IdentifierRequest[AnyContent]): Future[Result] =
     relationshipEstablishmentConnector.createRelationship(request.credentials.providerId, identifier) map {
     _ =>
-      logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] Stubbed IV relationship for $identifier")
+      logger.info(s"[TestRelationshipEstablishmentController][createRelationship][Session ID: ${Session.id(hc)}] Stubbed IV relationship for $identifier")
       Redirect(controllers.routes.IvSuccessController.onPageLoad)
   }
 

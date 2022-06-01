@@ -36,9 +36,7 @@ class TaxEnrolmentsConnector @Inject()(http: HttpClient, config : FrontendAppCon
       s"${config.taxEnrolmentsUrl}/service/${config.nonTaxableEnrolmentServiceName}/enrolment"
     }
 
-    val response = http.PUT[JsValue, EnrolmentResponse](url, Json.toJson(request))
-
-    response
+    http.PUT[JsValue, EnrolmentResponse](url, Json.toJson(request))
   }
 
 }
