@@ -27,11 +27,11 @@ import scala.concurrent.{ExecutionContext, Future}
 class RelationshipEstablishmentConnector @Inject()(
                                                     val httpClient: HttpClient,
                                                     config: FrontendAppConfig
-                                                  )(implicit val ec : ExecutionContext) {
+                                                  )(implicit val ec: ExecutionContext) {
 
   private val relationshipEstablishmentPostUrl: String = s"${config.relationshipEstablishmentBaseUrl}/relationship-establishment/relationship/"
 
-  private def relationshipEstablishmentGetUrl(credId :String): String =
+  private def relationshipEstablishmentGetUrl(credId: String): String =
     s"${config.relationshipEstablishmentBaseUrl}/relationship-establishment/relationship/$credId"
 
   private def relationshipEstablishmentDeleteUrl(credId: String): String =

@@ -30,7 +30,7 @@ trait AuthPartialFunctions {
     case _: NoActiveSession =>
       Future.successful(Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl))))
     case _: AuthorisationException =>
-      Future.successful(Redirect(routes.UnauthorisedController.onPageLoad()))
+      Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))
   }
 
 }

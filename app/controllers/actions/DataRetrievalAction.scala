@@ -17,6 +17,7 @@
 package controllers.actions
 
 import javax.inject.Inject
+import models.UserAnswers
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 import play.api.mvc.ActionTransformer
 import repositories.SessionRepository
@@ -29,21 +30,14 @@ class DataRetrievalActionImpl @Inject()(
 
   override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = {
 
-    sessionRepository.get(request.identifier).map {
-      case None =>
-        OptionalDataRequest(
-          request = request.request,
-          internalId = request.identifier,
-          credentials = request.credentials,
-          affinityGroup = request.affinityGroup,
-          userAnswers = None)
-      case Some(userAnswers) =>
-        OptionalDataRequest(
-          request = request.request,
-          internalId = request.identifier,
-          credentials = request.credentials,
-          affinityGroup = request.affinityGroup,
-          userAnswers = Some(userAnswers))
+    sessionRepository.get(request.identifier).map { maybeUserAnswers: Option[UserAnswers] =>
+      OptionalDataRequest(
+        request = request.request,
+        internalId = request.identifier,
+        credentials = request.credentials,
+        affinityGroup = request.affinityGroup,
+        userAnswers = maybeUserAnswers
+      )
     }
   }
 }

@@ -49,7 +49,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
 
       val application = applicationBuilder(userAnswers = Some(answers), fakeEstablishmentServiceFailing).build()
 
-      val request = FakeRequest(GET, routes.BeforeYouContinueController.onPageLoad().url)
+      val request = FakeRequest(GET, routes.BeforeYouContinueController.onPageLoad.url)
 
       val result = route(application, request).value
 
@@ -81,7 +81,7 @@ class BeforeYouContinueControllerSpec extends SpecBase {
         .overrides(bind[Navigator].toInstance(fakeNavigator))
         .build()
 
-      val request = FakeRequest(POST, routes.BeforeYouContinueController.onSubmit().url)
+      val request = FakeRequest(POST, routes.BeforeYouContinueController.onSubmit.url)
 
       val result = route(application, request).value
 
@@ -102,13 +102,13 @@ class BeforeYouContinueControllerSpec extends SpecBase {
 
         val application = applicationBuilder(userAnswers = Some(answers), fakeEstablishmentServiceFailing).build()
 
-        val request = FakeRequest(GET, routes.BeforeYouContinueController.onPageLoad().url)
+        val request = FakeRequest(GET, routes.BeforeYouContinueController.onPageLoad.url)
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustBe routes.SessionExpiredController.onPageLoad().url
+        redirectLocation(result).value mustBe routes.SessionExpiredController.onPageLoad.url
 
         application.stop()
       }
@@ -122,13 +122,13 @@ class BeforeYouContinueControllerSpec extends SpecBase {
 
         val application = applicationBuilder(userAnswers = Some(answers), fakeEstablishmentServiceFailing).build()
 
-        val request = FakeRequest(POST, routes.BeforeYouContinueController.onSubmit().url)
+        val request = FakeRequest(POST, routes.BeforeYouContinueController.onSubmit.url)
 
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustBe routes.SessionExpiredController.onPageLoad().url
+        redirectLocation(result).value mustBe routes.SessionExpiredController.onPageLoad.url
 
         application.stop()
       }

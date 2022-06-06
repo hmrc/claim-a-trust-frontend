@@ -61,11 +61,11 @@ trait IndexManager extends Logging {
         for {
           collection <- mongo.database.map(_.collection[JSONCollection](collectionName))
           _ <- collection.indexesManager.dropAll()
-          _ <- Future.successful(logger.info(s"[$collectionName] dropped indexes"))
+          _ <- Future.successful(logger.info(s"[IndexManager][$collectionName] dropped indexes"))
           _ <- logIndex
         } yield ()
       } else {
-        logger.info(s"[$collectionName] indexes not modified")
+        logger.info(s"[IndexManager][$collectionName] indexes not modified")
         Future.successful(())
       }
     } yield ()

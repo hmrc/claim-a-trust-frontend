@@ -52,7 +52,7 @@ class TestRelationshipEstablishmentControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.IvSuccessController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.routes.IvSuccessController.onPageLoad.url
 
       application.stop()
     }
@@ -70,7 +70,7 @@ class TestRelationshipEstablishmentControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.FallbackFailureController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.routes.FallbackFailureController.onPageLoad.url
 
       application.stop()
     }
@@ -96,7 +96,7 @@ class TestRelationshipEstablishmentControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.IvSuccessController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.routes.IvSuccessController.onPageLoad.url
 
       application.stop()
     }
@@ -114,7 +114,7 @@ class TestRelationshipEstablishmentControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.FallbackFailureController.onPageLoad().url
+      redirectLocation(result).value mustBe controllers.routes.FallbackFailureController.onPageLoad.url
 
       application.stop()
     }

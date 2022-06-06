@@ -53,24 +53,22 @@ class IvSuccessController @Inject()(
   extends FrontendBaseController with I18nSupport
     with AuthPartialFunctions with Logging {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    implicit request =>
+  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
       request.userAnswers.get(IdentifierPage).map { identifier =>
-
         relationshipEstablishment.check(request.internalId, identifier) flatMap {
           case RelationshipFound =>
             onRelationshipFound(identifier)
           case RelationshipNotFound =>
-            logger.warn(s"[Claiming][Session ID: ${Session.id(hc)}] no relationship found in Trust IV," +
+            logger.warn(s"[IvSuccessController][onPageLoad][Session ID: ${Session.id(hc)}] no relationship found in Trust IV," +
               s"cannot continue with enrolling the credential, sending the user back to the start of Trust IV")
 
             Future.successful(Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode)))
         }
 
       } getOrElse {
-        logger.warn(s"[Claiming][Session ID: ${Session.id(hc)}] no identifier found in user answers, unable to" +
-          s"continue with enrolling credential and claiming the trust on behalf of the user")
-        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad()))
+        logger.warn(s"[IvSuccessController][onPageLoad][Session ID: ${Session.id(hc)}] no identifier found in user answers," +
+          s" unable to continue with enrolling credential and claiming the trust on behalf of the user")
+        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
       }
 
   }
@@ -91,7 +89,7 @@ class IvSuccessController @Inject()(
         val isAgentManagingTrust: Boolean = request.userAnswers.get(IsAgentManagingTrustPage).getOrElse(false)
         auditService.audit(CLAIM_A_TRUST_SUCCESS, identifier, isAgentManagingTrust)
 
-        logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] successfully enrolled $identifier to users" +
+        logger.info(s"[IvSuccessController][onRelationshipFound][Session ID: ${Session.id(hc)}] successfully enrolled $identifier to users" +
           s"credential after passing Trust IV, user can now maintain the trust")
 
         Ok(view(isAgentManagingTrust, identifier))
@@ -100,7 +98,7 @@ class IvSuccessController @Inject()(
           auditService.auditFailure(CLAIM_A_TRUST_ERROR, identifier, exc.getMessage)
           Future.fromTry(request.userAnswers.set(HasEnrolled, false)).flatMap { ua =>
             sessionRepository.set(ua).map { _ =>
-              logger.error(s"[Claiming][Session ID: ${Session.id(hc)}] failed to create enrolment for " +
+              logger.error(s"[IvSuccessController][onRelationshipFound][Session ID: ${Session.id(hc)}] failed to create enrolment for " +
                 s"$identifier with tax-enrolments, users credential has not been updated, user needs to claim again")
               InternalServerError(errorHandler.internalServerErrorTemplate)
             }
@@ -109,7 +107,7 @@ class IvSuccessController @Inject()(
     }
   }
 
-  def onSubmit(): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData) {
     implicit request =>
       Redirect(config.trustsContinueUrl)
   }

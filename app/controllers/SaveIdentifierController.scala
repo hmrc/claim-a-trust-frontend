@@ -46,9 +46,9 @@ class SaveIdentifierController @Inject()(
         case IdentifierRegex.UtrRegex(utr) => checkIfAlreadyHaveIvRelationship(utr)
         case IdentifierRegex.UrnRegex(urn) => checkIfAlreadyHaveIvRelationship(urn)
         case _ =>
-          logger.error(s"[Claiming][Session ID: ${Session.id(hc)}] " +
+          logger.error(s"[SaveIdentifierController][save][Session ID: ${Session.id(hc)}] " +
             s"Identifier provided is not a valid URN or UTR")
-          Future.successful(Redirect(routes.FallbackFailureController.onPageLoad()))
+          Future.successful(Redirect(routes.FallbackFailureController.onPageLoad))
       }
 
   }
@@ -56,10 +56,10 @@ class SaveIdentifierController @Inject()(
   private def checkIfAlreadyHaveIvRelationship(identifier: String)(implicit request: OptionalDataRequest[AnyContent]): Future[Result] = {
     relationship.check(request.internalId, identifier) flatMap {
       case RelationshipFound =>
-        logger.info(s"[Claiming][Session ID: ${Session.id(hc)}] " +
+        logger.info(s"[SaveIdentifierController][checkIfAlreadyHaveIvRelationship][Session ID: ${Session.id(hc)}] " +
           s"relationship is already established in IV for $identifier sending user to successfully claimed")
 
-        Future.successful(Redirect(routes.IvSuccessController.onPageLoad()))
+        Future.successful(Redirect(routes.IvSuccessController.onPageLoad))
       case RelationshipNotFound =>
         saveAndContinue(identifier)
     }
@@ -76,7 +76,8 @@ class SaveIdentifierController @Inject()(
       updatedAnswers <- Future.fromTry(userAnswers)
       _              <- sessionRepository.set(updatedAnswers)
     } yield {
-      logger.info(s"[Claiming][Session ID: ${Session.id(hc(request))}] user has started the claim a trust journey for $identifier")
+      logger.info(s"[SaveIdentifierController][saveAndContinue][Session ID: ${Session.id(hc(request))}]" +
+        s" user has started the claim a trust journey for $identifier")
       Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode))
     }
   }
