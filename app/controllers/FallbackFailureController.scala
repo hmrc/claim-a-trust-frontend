@@ -31,7 +31,11 @@ class FallbackFailureController @Inject()(
 
   def onPageLoad: Action[AnyContent] = Action {
     implicit request =>
-      logger.warn(s"[FallbackFailureController][onPageLoad][Session ID: ${Session.id(hc)}] Trust IV encountered a problem that could not be recovered from")
+
+      request.headers.get(REFERER) match {
+        case Some(referer) => logger.error(s"[FallbackFailureController][onPageLoad][Session ID: ${Session.id(hc)}] Trust IV encountered a problem that could not be recovered from. referer url: ${referer}")
+        case _ =>  logger.warn(s"[FallbackFailureController][onPageLoad][Session ID: ${Session.id(hc)}] Trust IV encountered a problem that could not be recovered from")
+      }
       InternalServerError(errorHandler.internalServerErrorTemplate)
   }
 }
