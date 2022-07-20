@@ -19,14 +19,16 @@ package connectors
 import com.github.tomakehurst.wiremock.client.WireMock._
 import config.FrontendAppConfig
 import models.{EnrolmentCreated, TaxEnrolmentsRequest, UpstreamTaxEnrolmentsError}
-import org.scalatest.{AsyncWordSpec, MustMatchers, RecoverMethods}
+import org.scalatest.RecoverMethods
+import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AsyncWordSpec
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
-class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with MustMatchers with WireMockHelper with RecoverMethods {
+class TaxEnrolmentsConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelper with RecoverMethods {
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
