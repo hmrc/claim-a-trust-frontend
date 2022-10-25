@@ -21,15 +21,16 @@ import config.FrontendAppConfig
 import models.RelationshipEstablishmentStatus
 import org.scalatest.RecoverMethods
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AsyncWordSpec
-
+import org.scalatest.wordspec.AnyWordSpec
 import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
+import scala.concurrent.ExecutionContext.Implicits.global
 
-class RelationshipEstablishmentConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelper with RecoverMethods {
+
+class RelationshipEstablishmentConnectorSpec extends AnyWordSpec with Matchers with WireMockHelper with RecoverMethods {
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 

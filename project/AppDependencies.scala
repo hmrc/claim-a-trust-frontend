@@ -5,7 +5,7 @@ object AppDependencies {
 
   private val compile: Seq[ModuleID] = Seq(
     play.sbt.PlayImport.ws,
-    "org.reactivemongo" %% "play2-reactivemongo"            % "0.20.13-play28",
+    "uk.gov.hmrc.mongo" %% "hmrc-mongo-play-28"             % "0.73.0",
     "uk.gov.hmrc"       %% "play-frontend-hmrc"             % "3.19.0-play-28",
     "uk.gov.hmrc"       %% "play-conditional-form-mapping"  % "1.11.0-play-28",
     "uk.gov.hmrc"       %% "bootstrap-frontend-play-28"     % "5.24.0"
@@ -13,14 +13,13 @@ object AppDependencies {
 
   private val test: Seq[ModuleID] = Seq(
     "org.scalatest"               %% "scalatest"                % "3.2.12",
+    "uk.gov.hmrc.mongo"           %% "hmrc-mongo-test-play-28"  %"0.73.0",
     "org.scalatestplus.play"      %% "scalatestplus-play"       % "5.1.0",
     "org.scalatestplus"           %% "scalatestplus-scalacheck" % "3.1.0.0-RC2",
     "org.pegdown"                 %  "pegdown"                  % "1.6.0",
-    "org.jsoup"                   %  "jsoup"                    % "1.15.1",
+    "org.jsoup"                   %  "jsoup"                    % "1.15.3",
     "com.typesafe.play"           %% "play-test"                % PlayVersion.current,
-    "org.mockito"                 %  "mockito-all"              % "1.10.19",
-    "org.mockito"                 %  "mockito-core"             % "4.6.1",
-    "org.scalatestplus"           %% "mockito-3-12"             % "3.2.10.0",
+    "org.mockito"                 %% "mockito-scala-scalatest"% "1.17.12",
     "org.scalacheck"              %% "scalacheck"               % "1.16.0",
     "com.github.tomakehurst"      % "wiremock-standalone"       % "2.27.2",
     "com.vladsch.flexmark"        %  "flexmark-all"             % "0.62.2"

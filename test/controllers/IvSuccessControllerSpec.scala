@@ -20,10 +20,10 @@ import base.SpecBase
 import connectors.TaxEnrolmentsConnector
 import models.auditing.Events.{CLAIM_A_TRUST_ERROR, CLAIM_A_TRUST_SUCCESS}
 import models.{EnrolmentCreated, TaxEnrolmentsRequest, UpstreamTaxEnrolmentsError, UserAnswers}
-import org.mockito.Matchers.{eq => eqTo, _}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.mockito.MockitoSugar.mock
+import org.mockito.MockitoSugar.mock
 import pages.{HasEnrolled, IdentifierPage, IsAgentManagingTrustPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest

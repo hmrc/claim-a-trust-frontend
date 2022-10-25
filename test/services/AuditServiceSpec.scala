@@ -21,9 +21,8 @@ import config.FrontendAppConfig
 import models.UserAnswers
 import models.auditing.{ClaimATrustAuditFailureEvent, ClaimATrustAuditSuccessEvent}
 import models.requests.DataRequest
-import org.mockito.Matchers.{any, eq => eqTo}
-import org.mockito.Mockito.{reset, verify}
-import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.MockitoSugar
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.auth.core.AffinityGroup
 import uk.gov.hmrc.auth.core.AffinityGroup._

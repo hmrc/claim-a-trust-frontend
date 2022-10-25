@@ -51,50 +51,50 @@ class FrontendAppConfig @Inject() (val configuration: Configuration,
 
   lazy val taxEnrolmentsUrl: String = configuration.get[Service]("microservice.services.tax-enrolments").baseUrl + "/tax-enrolments"
 
-  lazy val relationshipEstablishmentUrl : String =
+  lazy val relationshipEstablishmentUrl: String =
     configuration.get[Service]("microservice.services.relationship-establishment").baseUrl + "/relationship-establishment"
 
-  lazy val relationshipName : String =
+  lazy val relationshipName: String =
     configuration.get[String]("microservice.services.self.relationship-establishment.name")
 
-  lazy val relationshipTaxableIdentifier : String =
+  lazy val relationshipTaxableIdentifier: String =
     configuration.get[String]("microservice.services.self.relationship-establishment.taxable.identifier")
 
-  lazy val relationshipNonTaxableIdentifier : String =
+  lazy val relationshipNonTaxableIdentifier: String =
     configuration.get[String]("microservice.services.self.relationship-establishment.nonTaxable.identifier")
 
   lazy val relationshipTTL: Int =
     configuration.get[Int]("microservice.services.test.relationship-establishment-frontend.mongo.ttl")
 
-  private def relationshipEstablishmentFrontendPath(identifier: String) : String =
+  private def relationshipEstablishmentFrontendPath(identifier: String): String =
     s"${configuration.get[String]("microservice.services.relationship-establishment-frontend.path")}/$identifier"
 
-  private def relationshipEstablishmentFrontendHost : String =
+  private def relationshipEstablishmentFrontendHost: String =
     configuration.get[String]("microservice.services.relationship-establishment-frontend.host")
 
-  private def stubbedRelationshipEstablishmentFrontendPath(utr: String) : String =
+  private def stubbedRelationshipEstablishmentFrontendPath(utr: String): String =
     s"${configuration.get[String]("microservice.services.test.relationship-establishment-frontend.path")}/$utr"
 
-  private def stubbedRelationshipEstablishmentFrontendHost : String =
+  private def stubbedRelationshipEstablishmentFrontendHost: String =
     configuration.get[String]("microservice.services.test.relationship-establishment-frontend.host")
 
   lazy val relationshipEstablishmentStubbed: Boolean =
     configuration.get[Boolean]("microservice.services.features.stubRelationshipEstablishment")
 
-  def relationshipEstablishmentFrontendUrl(identifier: String) : String = {
-    if(relationshipEstablishmentStubbed) {
+  def relationshipEstablishmentFrontendUrl(identifier: String): String = {
+    if (relationshipEstablishmentStubbed) {
       s"${stubbedRelationshipEstablishmentFrontendHost}/${stubbedRelationshipEstablishmentFrontendPath(identifier)}"
     } else {
       s"${relationshipEstablishmentFrontendHost}/${relationshipEstablishmentFrontendPath(identifier)}"
     }
   }
 
-  def relationshipEstablishmentBaseUrl : String = servicesConfig.baseUrl("test.relationship-establishment")
+  def relationshipEstablishmentBaseUrl: String = servicesConfig.baseUrl("test.relationship-establishment")
 
-  lazy val successUrl : String =
+  lazy val successUrl: String =
     configuration.get[String]("microservice.services.self.relationship-establishment.successUrl")
 
-  lazy val failureUrl : String =
+  lazy val failureUrl: String =
     configuration.get[String]("microservice.services.self.relationship-establishment.failureUrl")
 
   lazy val countdownLength: Int = configuration.get[Int]("timeout.countdown")
@@ -115,4 +115,9 @@ class FrontendAppConfig @Inject() (val configuration: Configuration,
 
   def routeToSwitchLanguage: String => Call =
     (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
+
+  lazy val cachettlInSeconds: Long = configuration.get[Long]("mongodb.timeToLiveInSeconds")
+
+  lazy val dropIndexes: Boolean = configuration.getOptional[Boolean]("microservice.services.features.mongo.dropIndexes").getOrElse(false)
+
 }
