@@ -21,9 +21,9 @@ import connectors.{RelationshipEstablishmentConnector, TrustsStoreConnector}
 import models.auditing.Events.CLAIM_A_TRUST_FAILURE
 import models.auditing.FailureReasons
 import models.{RelationshipEstablishmentStatus, StatusStored, TrustsStoreRequest}
-import org.mockito.Matchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{verify, when}
-import org.scalatestplus.mockito.MockitoSugar.mock
+import org.mockito.MockitoSugar.mock
 import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest

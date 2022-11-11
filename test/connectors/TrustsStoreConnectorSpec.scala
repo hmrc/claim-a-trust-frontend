@@ -20,7 +20,7 @@ import com.github.tomakehurst.wiremock.client.WireMock._
 import models.{StatusStored, TrustsStoreRequest, UpstreamTrustStoreError}
 import org.scalatest.RecoverMethods
 import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AsyncWordSpec
+import org.scalatest.wordspec.AnyWordSpec
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
@@ -29,7 +29,9 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
-class TrustsStoreConnectorSpec extends AsyncWordSpec with Matchers with WireMockHelper with RecoverMethods {
+import scala.concurrent.ExecutionContext.Implicits.global
+
+class TrustsStoreConnectorSpec extends AnyWordSpec with Matchers with WireMockHelper with RecoverMethods {
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 

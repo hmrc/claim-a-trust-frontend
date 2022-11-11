@@ -20,7 +20,7 @@ import base.SpecBase
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.when
-import org.scalatestplus.mockito.MockitoSugar.mock
+import org.mockito.MockitoSugar.mock
 import pages.IdentifierPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
