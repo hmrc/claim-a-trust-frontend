@@ -62,7 +62,7 @@ class DefaultSessionRepository @Inject()(val mongo: MongoComponent,
     val newUser = userAnswers.copy(lastUpdated = LocalDateTime.now)
     val replaceOptions = new ReplaceOptions().upsert(true)
 
-    collection.replaceOne(selector, newUser, replaceOptions) .headOption() .map(_.exists(_.wasAcknowledged()))
+    collection.replaceOne(selector, newUser, replaceOptions).headOption().map(_.exists(_.wasAcknowledged()))
     }
   }
 
