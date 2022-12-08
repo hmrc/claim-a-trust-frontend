@@ -18,6 +18,7 @@ package controllers.actions
 
 import base.SpecBase
 import controllers.routes
+import play.api.mvc.Results.Redirect
 import play.api.mvc.{BodyParsers, Results}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core._
@@ -46,7 +47,8 @@ class AuthActionSpec extends SpecBase {
 
         status(result) mustBe SEE_OTHER
 
-        redirectLocation(result).get must startWith(frontendAppConfig.loginUrl)
+        Redirect(frontendAppConfig.loginUrl, Map("continue" -> Seq(frontendAppConfig.loginContinueUrl),
+          "origin" -> Seq(frontendAppConfig.appName)))
       }
     }
 

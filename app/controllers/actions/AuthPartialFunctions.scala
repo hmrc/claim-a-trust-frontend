@@ -28,7 +28,8 @@ trait AuthPartialFunctions {
 
   def recoverFromException()(implicit config : FrontendAppConfig) : PartialFunction[Throwable, Future[Result]] = {
     case _: NoActiveSession =>
-      Future.successful(Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl))))
+      Future.successful(Redirect(config.loginUrl, Map("continue" -> Seq(config.loginContinueUrl),
+        "origin" -> Seq(config.appName))))
     case _: AuthorisationException =>
       Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))
   }
