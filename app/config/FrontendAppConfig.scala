@@ -40,6 +40,8 @@ class FrontendAppConfig @Inject() (val configuration: Configuration,
   lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
   lazy val logoutUrl: String = configuration.get[String]("urls.logout")
 
+  lazy val appName: String = configuration.get[String]("appName")
+
   lazy val trustsContinueUrl: String = {
     configuration.get[String]("urls.maintainContinue")
   }
