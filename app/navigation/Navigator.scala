@@ -32,5 +32,4 @@ class Navigator @Inject()() {
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
       normalRoutes(page)(userAnswers)
-  
 }
