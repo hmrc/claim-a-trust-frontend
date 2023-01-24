@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ object ViewUtils {
         s"${error.key}.${error.args.head}"
       case _ if error.message.toLowerCase.contains("yesno") =>
         s"${error.key}-yes"
-      case _ if radioOptions.size != 0 =>
+      case _ if radioOptions.nonEmpty =>
         radioOptions.head.id
       case _ =>
         val isSingleDateField = error.message.toLowerCase.contains("date") && !error.message.toLowerCase.contains("yesno")

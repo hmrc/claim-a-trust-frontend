@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,12 +29,14 @@ import uk.gov.hmrc.auth.core.AffinityGroup._
 import uk.gov.hmrc.auth.core.retrieve.Credentials
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+import scala.concurrent.ExecutionContext
 
 class AuditServiceSpec extends SpecBase with MockitoSugar {
 
   private val auditConnector: AuditConnector = mock[AuditConnector]
   lazy val config: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-  private val auditService: AuditService = new AuditService(auditConnector, config)
+  implicit val ec = ExecutionContext.global
+  private val auditService: AuditService = new AuditService(auditConnector, config, ec)
 
   private val event: String = "event"
   private val utr: String = "1234567890"

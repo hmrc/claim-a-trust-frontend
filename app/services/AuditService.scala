@@ -1,5 +1,5 @@
 /*
- * Copyright 2022 HM Revenue & Customs
+ * Copyright 2023 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,9 +24,9 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import javax.inject.Inject
 import models.IsUTR
 
-import scala.concurrent.ExecutionContext.Implicits._
+import scala.concurrent.ExecutionContext
 
-class AuditService @Inject()(auditConnector: AuditConnector,  config : FrontendAppConfig) {
+class AuditService @Inject()(auditConnector: AuditConnector,  config : FrontendAppConfig, implicit val ec: ExecutionContext) {
 
   def audit(event: String, identifier: String, isManagedByAgent: Boolean)
            (implicit request: DataRequest[_], hc: HeaderCarrier): Unit = {
