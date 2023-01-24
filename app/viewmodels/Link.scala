@@ -15,5 +15,4 @@
  */
 
 package viewmodels
-
 case class Link(text: String, url: String)
