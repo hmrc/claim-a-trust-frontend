@@ -18,6 +18,7 @@ package base
 
 import config.FrontendAppConfig
 import controllers.actions._
+import handlers.ErrorHandler
 import models.UserAnswers
 import org.scalatest.TryValues
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
@@ -27,8 +28,12 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.inject.{Injector, bind}
 import play.api.libs.json.Json
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
+import repositories.SessionRepository
 import services.{FakeRelationshipEstablishmentService, RelationshipEstablishment}
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues with ScalaFutures with IntegrationPatience {
 
@@ -36,7 +41,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues with Sca
 
   val fakeInternalId = "internalId"
 
-  def emptyUserAnswers = UserAnswers(userAnswersId, Json.obj())
+  def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId, Json.obj())
 
   def injector: Injector = app.injector
 
@@ -44,9 +49,13 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues with Sca
 
   def messagesApi: MessagesApi = injector.instanceOf[MessagesApi]
 
-  implicit def fakeRequest = FakeRequest("", "")
+  implicit def fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("", "")
 
   implicit def messages: Messages = messagesApi.preferred(fakeRequest)
+
+  val sessionRepository: SessionRepository = injector.instanceOf[SessionRepository]
+
+  val errorHandler: ErrorHandler = injector.instanceOf[ErrorHandler]
 
   protected def applicationBuilder(
                                     userAnswers: Option[UserAnswers] = None,
@@ -56,7 +65,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues with Sca
       .overrides(
         bind[DataRequiredAction].to[DataRequiredActionImpl],
         bind[IdentifierAction].to[FakeIdentifierAction],
-        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
+        bind[DataRetrievalRefinerAction].toInstance(new FakeDataRetrievalAction(userAnswers, sessionRepository, errorHandler)),
         bind[RelationshipEstablishment].toInstance(relationshipEstablishment)
       )
 }

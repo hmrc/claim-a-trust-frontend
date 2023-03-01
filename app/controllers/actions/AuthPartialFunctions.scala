@@ -33,5 +33,4 @@ trait AuthPartialFunctions {
     case _: AuthorisationException =>
       Future.successful(Redirect(routes.UnauthorisedController.onPageLoad))
   }
-
 }

@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package forms
+package errors
 
-import forms.mappings.Mappings
-import play.api.data.Form
+import play.api.mvc.Result
 
-import javax.inject.Inject
+sealed trait TrustErrors
 
-class IsAgentManagingTrustFormProvider @Inject() extends Mappings {
+final case class ServerError(exceptionMessage: String = "") extends TrustErrors
 
-  def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("isAgentManagingTrustYesNo.error.required")
-    )
-}
+final case class TrustFormError(result: Result) extends TrustErrors
+
+case object InvalidIdentifier extends TrustErrors
+
+case object NoData extends TrustErrors
+
+case class UpstreamRelationshipError(reason: String) extends TrustErrors

@@ -16,19 +16,32 @@
 
 package connectors
 
+import cats.data.EitherT
 import config.FrontendAppConfig
+import errors.UpstreamRelationshipError
+import models.RelationshipEstablishmentStatus.{RelationshipEstablishmentStatus, processRelationshipEstablishmentStatusResponse}
+import play.api.http.Status.OK
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import utils.TrustEnvelope.TrustEnvelope
+
 import javax.inject.Inject
-import models.RelationshipEstablishmentStatus.RelationshipEstablishmentStatus
-import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.http.HttpClient
+import scala.concurrent.ExecutionContext
 
-import scala.concurrent.{ExecutionContext, Future}
+class RelationshipEstablishmentConnector @Inject()(http: HttpClient, config : FrontendAppConfig) extends ConnectorErrorResponseHandler {
 
-class RelationshipEstablishmentConnector @Inject()(http: HttpClient, config : FrontendAppConfig) {
+  override val className: String = getClass.getSimpleName
 
-  def journeyId(id: String)(implicit hc : HeaderCarrier, ec : ExecutionContext): Future[RelationshipEstablishmentStatus] = {
+  def journeyId(id: String)(implicit hc : HeaderCarrier, ec : ExecutionContext): TrustEnvelope[RelationshipEstablishmentStatus] = EitherT {
     val url = s"${config.relationshipEstablishmentUrl}/journey-failure/$id"
 
-    http.GET[RelationshipEstablishmentStatus](url)
+    http.GET[HttpResponse](url).map{response =>
+      response.status match {
+      case OK => Right(processRelationshipEstablishmentStatusResponse(response.json))
+      case status => logger.warn(s"[RelationshipEstablishmentConnector] [journeyId] Unexpected HTTP response code $status")
+        Left(UpstreamRelationshipError(s"Unexpected HTTP response code $status"))
+      }
+    }.recover {
+      case ex => Left(handleError(ex, "journeyId", url))
+    }
   }
 }

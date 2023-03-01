@@ -17,9 +17,12 @@
 package controllers
 
 import connectors.{RelationshipEstablishmentConnector, TrustsStoreConnector}
-import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
-import javax.inject.Inject
-import models.RelationshipEstablishmentStatus.{UnsupportedRelationshipStatus, UpstreamRelationshipError}
+import controllers.actions.Actions
+import errors.{NoData, UpstreamRelationshipError}
+import handlers.ErrorHandler
+import models.RelationshipEstablishmentStatus.UnsupportedRelationshipStatus
+import models.auditing.Events._
+import models.auditing.FailureReasons
 import models.requests.DataRequest
 import models.{RelationshipEstablishmentStatus, TrustsStoreRequest}
 import pages.{IdentifierPage, IsAgentManagingTrustPage}
@@ -29,56 +32,56 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import services.AuditService
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.Session
+import utils.{Session, TrustEnvelope}
 import views.html.{TrustLocked, TrustNotFound, TrustStillProcessing}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import models.auditing.Events._
-import models.auditing.FailureReasons
 
 class IvFailureController @Inject()(
                                      val controllerComponents: MessagesControllerComponents,
                                      lockedView: TrustLocked,
                                      stillProcessingView: TrustStillProcessing,
                                      notFoundView: TrustNotFound,
-                                     identify: IdentifierAction,
-                                     getData: DataRetrievalAction,
-                                     requireData: DataRequiredAction,
+                                     actions: Actions,
                                      relationshipEstablishmentConnector: RelationshipEstablishmentConnector,
                                      connector: TrustsStoreConnector,
-                                     auditService: AuditService
+                                     auditService: AuditService,
+                                     errorHandler: ErrorHandler
                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
+  private val className = this.getClass.getSimpleName
+
   private def renderFailureReason(identifier: String, journeyId: String)(implicit hc : HeaderCarrier, request: DataRequest[_]): Future[Result] = {
-    relationshipEstablishmentConnector.journeyId(journeyId) map {
-      case RelationshipEstablishmentStatus.Locked =>
+    relationshipEstablishmentConnector.journeyId(journeyId).value.map {
+      case Right(RelationshipEstablishmentStatus.Locked) =>
         logger.info(s"[IvFailureController][renderFailureReason][Session ID: ${Session.id(hc)}] $identifier is locked")
         auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.LOCKED)
         Redirect(routes.IvFailureController.trustLocked)
-      case RelationshipEstablishmentStatus.NotFound =>
+      case Right(RelationshipEstablishmentStatus.NotFound) =>
         logger.info(s"[IvFailureController][renderFailureReason][Session ID: ${Session.id(hc)}] $identifier was not found")
         auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.IDENTIFIER_NOT_FOUND)
         Redirect(routes.IvFailureController.trustNotFound)
-      case RelationshipEstablishmentStatus.InProcessing =>
+      case Right(RelationshipEstablishmentStatus.InProcessing) =>
         logger.info(s"[IvFailureController][renderFailureReason][Session ID: ${Session.id(hc)}] $identifier is processing")
         auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.TRUST_STILL_PROCESSING)
         Redirect(routes.IvFailureController.trustStillProcessing)
-      case UnsupportedRelationshipStatus(reason) =>
+      case Right(UnsupportedRelationshipStatus(reason)) =>
         logger.error(s"[IvFailureController][renderFailureReason][Session ID: ${Session.id(hc)}] Unsupported IV failure reason: $reason")
         auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.UNSUPPORTED_RELATIONSHIP_STATUS)
         Redirect(routes.FallbackFailureController.onPageLoad)
-      case UpstreamRelationshipError(response) =>
-        logger.error(s"[IvFailureController][renderFailureReason][Session ID: ${Session.id(hc)}] HTTP response: $response")
+      case Left(UpstreamRelationshipError(response)) =>
+        logger.warn(s"[IvFailureController][renderFailureReason][Session ID: ${Session.id(hc)}] HTTP response: $response")
         auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.UPSTREAM_RELATIONSHIP_ERROR)
         Redirect(routes.FallbackFailureController.onPageLoad)
       case _ =>
-        logger.error(s"[IvFailureController][renderFailureReason][Session ID: ${Session.id(hc)}] No errorKey in HTTP response")
+        logger.warn(s"[IvFailureController][renderFailureReason][Session ID: ${Session.id(hc)}] No errorKey in HTTP response")
         auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.IV_TECHNICAL_PROBLEM_NO_ERROR_KEY)
         Redirect(routes.FallbackFailureController.onPageLoad)
     }
   }
 
-  def onTrustIvFailure: Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
+  def onTrustIvFailure: Action[AnyContent] = actions.authWithData.async { implicit request =>
 
       request.userAnswers.get(IdentifierPage) match {
         case Some(identifier) =>
@@ -100,25 +103,32 @@ class IvFailureController @Inject()(
       }
   }
 
-  def trustLocked : Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
+  def trustLocked : Action[AnyContent] = actions.authWithData.async { implicit request =>
 
-      (for {
-        identifier <- request.userAnswers.get(IdentifierPage)
-        isManagedByAgent <- request.userAnswers.get(IsAgentManagingTrustPage)
+      val result = for {
+        identifier <- TrustEnvelope.fromOption(request.userAnswers.get(IdentifierPage))
+        isManagedByAgent <- TrustEnvelope.fromOption(request.userAnswers.get(IsAgentManagingTrustPage))
+        _ <- connector.claim(TrustsStoreRequest(request.internalId, identifier, isManagedByAgent, trustLocked = true))
       } yield {
-        connector.claim(TrustsStoreRequest(request.internalId, identifier, isManagedByAgent, trustLocked = true)) map { _ =>
           logger.info(s"[IvFailureController][onTrustIvFailure][Session ID: ${Session.id(hc)}]" +
             s" failed IV 3 times, $identifier trust is locked out from IV")
           Ok(lockedView(identifier))
-        }
-      }) getOrElse {
-        logger.warn(s"[IvFailureController][onTrustIvFailure][Session ID: ${Session.id(hc)}]" +
-          s" unable to determine if trust was locked out from IV")
-        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
+      }
+
+      result.value.map {
+        case Right(call) => call
+        case Left(NoData) => logger.warn(s"[IvFailureController][onTrustIvFailure][Session ID: ${Session.id(hc)}]" +
+                  s" unable to determine if trust was locked out from IV")
+          (Redirect(routes.SessionExpiredController.onPageLoad))
+        case Left(_) => logger.warn(s"[$className][onSubmit][Session ID: ${Session.id(hc)}] " +
+
+          //TODO
+          s"Error while storing user answers")
+          InternalServerError(errorHandler.internalServerErrorTemplate)
       }
   }
 
-  def trustNotFound : Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def trustNotFound : Action[AnyContent] = actions.authWithData.async {
     implicit request =>
       request.userAnswers.get(IdentifierPage) map {
         identifier =>
@@ -132,7 +142,7 @@ class IvFailureController @Inject()(
       }
   }
 
-  def trustStillProcessing : Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def trustStillProcessing : Action[AnyContent] = actions.authWithData.async {
     implicit request =>
       request.userAnswers.get(IdentifierPage) map {
         identifier =>

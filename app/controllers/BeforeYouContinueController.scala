@@ -19,95 +19,106 @@ package controllers
 import config.FrontendAppConfig
 import connectors.TrustsStoreConnector
 import controllers.actions._
-import javax.inject.Inject
+import errors.NoData
+import handlers.ErrorHandler
 import models.TrustsStoreRequest
-import pages.{IsAgentManagingTrustPage, IdentifierPage}
+import models.requests.DataRequest
+import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import services.{RelationEstablishmentStatus, RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.Session
+import utils.TrustEnvelope.TrustEnvelope
+import utils.{Session, TrustEnvelope}
 import views.html.BeforeYouContinueView
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import controllers.actions.Actions
 
 class BeforeYouContinueController @Inject()(
                                              override val messagesApi: MessagesApi,
-                                             identify: IdentifierAction,
                                              relationship: RelationshipEstablishment,
-                                             getData: DataRetrievalAction,
-                                             requireData: DataRequiredAction,
                                              val controllerComponents: MessagesControllerComponents,
                                              view: BeforeYouContinueView,
-                                             connector: TrustsStoreConnector
+                                             connector: TrustsStoreConnector,
+                                             errorHandler: ErrorHandler,
+                                             actions: Actions,
                                            )(implicit ec: ExecutionContext, config: FrontendAppConfig)
   extends FrontendBaseController with I18nSupport with AuthPartialFunctions with Logging {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
+  private val className = this.getClass.getSimpleName
 
-      request.userAnswers.get(IdentifierPage) map { identifier =>
-        relationship.check(request.internalId, identifier) flatMap {
-          case RelationshipFound =>
-            logger.info(s"[BeforeYouContinueController][onPageLoad][Session ID: ${Session.id(hc)}]" +
-              s" relationship is already established in IV for $identifier, sending user to successfully claimed")
-
-            Future.successful(Redirect(routes.IvSuccessController.onPageLoad))
-          case RelationshipNotFound =>
-            logger.info(s"[BeforeYouContinueController][onPageLoad][Session ID: ${Session.id(hc)}]" +
-              s" relationship does not exist in IV for $identifier, sending user to begin journey")
-            Future.successful(Ok(view(identifier)))
-        }
-      } getOrElse {
-        logger.error(s"[BeforeYouContinueController][onPageLoad][Session ID: ${Session.id(hc)}] " +
-          s"no identifier available in user answers, cannot continue with claiming the trust")
-
-        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
+  def onPageLoad: Action[AnyContent] = actions.authWithData.async { implicit request =>
+      val result = for {
+        identifier <- TrustEnvelope.fromOption(request.userAnswers.get(IdentifierPage))
+        relationshipStatus <- relationship.check(request.internalId, identifier)
+      } yield relationshipStatus match {
+        case RelationshipFound =>
+          logger.info(s"[$className][onPageLoad][Session ID: ${Session.id(hc)}]" +
+            s" relationship is already established in IV for $identifier, sending user to successfully claimed")
+          Redirect(routes.IvSuccessController.onPageLoad)
+        case RelationshipNotFound =>
+          logger.info(s"[BeforeYouContinueController][onPageLoad][Session ID: ${Session.id(hc)}]" +
+            s" relationship does not exist in IV for $identifier, sending user to begin journey")
+          Ok(view(identifier))
       }
+    handleResult(result, "onPageLoad")
   }
 
-  def onSubmit: Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
+  def onSubmit: Action[AnyContent] = actions.authWithData.async { implicit request =>
 
-      (for {
-        identifier <- request.userAnswers.get(IdentifierPage)
-        isManagedByAgent <- request.userAnswers.get(IsAgentManagingTrustPage)
-      } yield {
+      val result = for {
+        identifier <- TrustEnvelope.fromOption(request.userAnswers.get(IdentifierPage))
+        isManagedByAgent <- TrustEnvelope.fromOption(request.userAnswers.get(IsAgentManagingTrustPage))
+        relationshipStatus <- relationship.check(request.internalId, identifier)
+        result <- handleRelationshipStatus(relationshipStatus, identifier, isManagedByAgent)
+      } yield result
+    handleResult(result, "onSubmit")
+  }
 
-        def onRelationshipNotFound =  {
+  private def handleResult(result: TrustEnvelope[Result], functionName: String)
+                  (implicit request: DataRequest[AnyContent]): Future[Result] = result.value.map {
+      case Right(call) => call
+      case Left(NoData) => logger.error(s"[$className][$functionName][Session ID: ${Session.id(hc)}]" +
+        s" no identifier available in user answers, cannot continue with claiming the trust")
+        Redirect(routes.SessionExpiredController.onPageLoad)
+      case Left(_) => logger.warn(s"[$className][$functionName][Session ID: ${Session.id(hc)}] " +
+        //TODO
+        s"Error while storing user answers")
+        InternalServerError(errorHandler.internalServerErrorTemplate)
+  }
 
-          val successRedirect = config.successUrl
-          val failureRedirect = config.failureUrl
+  private def handleRelationshipStatus(relationshipStatus: RelationEstablishmentStatus, identifier: String, isManagedByAgent: Boolean)
+                              (implicit request: DataRequest[AnyContent]): TrustEnvelope[Result] = relationshipStatus match {
+    case RelationshipFound =>
+      logger.info(s"[$className][handleRelationshipStatus][Session ID: ${Session.id(hc)}]" +
+        s" relationship is already established in IV for $identifier sending user to successfully claimed")
+      TrustEnvelope(Redirect(routes.IvSuccessController.onPageLoad))
+    case RelationshipNotFound =>
+      onRelationshipNotFound(identifier, isManagedByAgent)
+  }
 
-          val host = config.relationshipEstablishmentFrontendUrl(identifier)
+  private def onRelationshipNotFound(identifier: String, isManagedByAgent: Boolean)(implicit request: DataRequest[AnyContent]): TrustEnvelope[Result] = {
 
-          val queryString: Map[String, Seq[String]] = Map(
-            "success" -> Seq(successRedirect),
-            "failure" -> Seq(failureRedirect)
-          )
+    val successRedirect = config.successUrl
+    val failureRedirect = config.failureUrl
 
-          connector.claim(TrustsStoreRequest(request.internalId, identifier, isManagedByAgent, trustLocked = false)) map { _ =>
-            logger.info(s"[BeforeYouContinueController][onSubmit][Session ID: ${Session.id(hc)}]" +
-              s" saved users $identifier in trusts-store so they can be identified when they" +
-              s" return from Trust IV. Sending the user into Trust IV to answer questions")
+    val host = config.relationshipEstablishmentFrontendUrl(identifier)
 
-            Redirect(host, queryString)
-          }
+    val queryString: Map[String, Seq[String]] = Map(
+      "success" -> Seq(successRedirect),
+      "failure" -> Seq(failureRedirect)
+    )
 
-        }
+    connector.claim(TrustsStoreRequest(request.internalId, identifier, isManagedByAgent, trustLocked = false)) map { _ =>
+      logger.info(s"[$className][onRelationshipNotFound][Session ID: ${Session.id(hc)}]" +
+        s" saved users $identifier in trusts-store so they can be identified when they" +
+        s" return from Trust IV. Sending the user into Trust IV to answer questions")
 
-        relationship.check(request.internalId, identifier) flatMap {
-          case RelationshipFound =>
-            logger.info(s"[BeforeYouContinueController][onSubmit][Session ID: ${Session.id(hc)}]" +
-              s" relationship is already established in IV for $identifier sending user to successfully claimed")
+      Redirect(host, queryString)
+    }
 
-            Future.successful(Redirect(routes.IvSuccessController.onPageLoad))
-          case RelationshipNotFound =>
-            onRelationshipNotFound
-        }
-      }) getOrElse {
-        logger.error(s"[BeforeYouContinueController][onSubmit][Session ID: ${Session.id(hc)}]" +
-          s" no identifier available in user answers, cannot continue with claiming the trust")
-        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
-      }
   }
 }
