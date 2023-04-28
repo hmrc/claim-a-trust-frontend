@@ -29,3 +29,5 @@ case object InvalidIdentifier extends TrustErrors
 case object NoData extends TrustErrors
 
 case class UpstreamRelationshipError(reason: String) extends TrustErrors
+
+final case class UpstreamTaxEnrolmentsError(message : String) extends Exception(message) with TrustErrors

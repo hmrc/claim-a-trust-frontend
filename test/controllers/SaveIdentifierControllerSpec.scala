@@ -17,6 +17,8 @@
 package controllers
 
 import base.SpecBase
+import cats.data.EitherT
+import errors.TrustErrors
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.when
@@ -70,7 +72,7 @@ class SaveIdentifierControllerSpec extends SpecBase {
           val mockSessionRepository = mock[SessionRepository]
 
           when(mockSessionRepository.set(captor.capture()))
-            .thenReturn(Future.successful(true))
+            .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(Right(true))))
 
           val application = applicationBuilder(userAnswers = None, fakeEstablishmentServiceFailing)
             .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
@@ -94,7 +96,7 @@ class SaveIdentifierControllerSpec extends SpecBase {
           val mockSessionRepository = mock[SessionRepository]
 
           when(mockSessionRepository.set(captor.capture()))
-            .thenReturn(Future.successful(true))
+            .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(Right(true))))
 
           val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), fakeEstablishmentServiceFailing)
             .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
@@ -125,7 +127,7 @@ class SaveIdentifierControllerSpec extends SpecBase {
           val mockSessionRepository = mock[SessionRepository]
 
           when(mockSessionRepository.set(captor.capture()))
-            .thenReturn(Future.successful(true))
+            .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(Right(true))))
 
           val application = applicationBuilder(userAnswers = None, fakeEstablishmentServiceFailing)
             .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
@@ -149,7 +151,7 @@ class SaveIdentifierControllerSpec extends SpecBase {
           val mockSessionRepository = mock[SessionRepository]
 
           when(mockSessionRepository.set(captor.capture()))
-            .thenReturn(Future.successful(true))
+            .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(Right(true))))
 
           val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), fakeEstablishmentServiceFailing)
             .overrides(bind[SessionRepository].toInstance(mockSessionRepository))

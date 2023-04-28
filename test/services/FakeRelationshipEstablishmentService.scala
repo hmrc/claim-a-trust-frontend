@@ -16,9 +16,13 @@
 
 package services
 
+import cats.data.EitherT
 import controllers.actions.FakeAuthConnector
+import errors.TrustErrors
+import models.RelationshipEstablishmentStatus.RelationshipEstablishmentStatus
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.auth.core.AuthConnector
+import utils.TrustEnvelope.TrustEnvelope
 
 import scala.concurrent.Future
 
@@ -27,6 +31,7 @@ class FakeRelationshipEstablishmentService(response: RelationEstablishmentStatus
   override def authConnector: AuthConnector = new FakeAuthConnector(Future.successful(()))
 
   override def check(internalId: String, utr: String)
-                    (implicit request: Request[AnyContent]) = Future.successful(response)
+                    (implicit request: Request[AnyContent]): TrustEnvelope[RelationEstablishmentStatus] =
+    EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(response)))
 
 }

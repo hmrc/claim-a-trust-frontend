@@ -18,10 +18,11 @@ package connectors
 
 import cats.data.EitherT
 import config.FrontendAppConfig
-import models.{EnrolmentCreated, IsUTR, TaxEnrolmentsRequest}
+import errors.UpstreamTaxEnrolmentsError
+import models.{EnrolmentCreated, EnrolmentResponse, IsUTR, TaxEnrolmentsRequest}
 import play.api.http.Status.NO_CONTENT
 import play.api.libs.json.{JsValue, Json, Writes}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
 import utils.TrustEnvelope.TrustEnvelope
 
 import javax.inject.Inject
@@ -32,7 +33,7 @@ class TaxEnrolmentsConnector @Inject()(http: HttpClient, config : FrontendAppCon
   override val className: String = getClass.getSimpleName
 
   def enrol(request: TaxEnrolmentsRequest)
-           (implicit hc : HeaderCarrier, ec : ExecutionContext, writes: Writes[TaxEnrolmentsRequest]): TrustEnvelope[Boolean] = EitherT {
+           (implicit hc : HeaderCarrier, ec : ExecutionContext, writes: Writes[TaxEnrolmentsRequest]): TrustEnvelope[EnrolmentResponse] = EitherT {
 
     val url: String = if (IsUTR(request.identifier)) {
       s"${config.taxEnrolmentsUrl}/service/${config.taxableEnrolmentServiceName}/enrolment"
@@ -40,10 +41,14 @@ class TaxEnrolmentsConnector @Inject()(http: HttpClient, config : FrontendAppCon
       s"${config.taxEnrolmentsUrl}/service/${config.nonTaxableEnrolmentServiceName}/enrolment"
     }
 
-    http.PUT[JsValue, HttpResponse](url, Json.toJson(request)).map(
-      _.status match {
+    val httpReads = HttpReads.Implicits.readRaw
+
+    http.PUT[JsValue, HttpResponse](url, Json.toJson(request))(implicitly[Writes[JsValue]], httpReads, hc, ec).map(
+      response =>
+      response.status match {
         case NO_CONTENT => Right(EnrolmentCreated)
-        case status => Left(handleError(status, "updateTaskStatus", url))
+        case status =>
+          Left(UpstreamTaxEnrolmentsError(s"HTTP response ${response.status} ${response.body}"))
       }
     ).recover {
       case ex => Left(handleError(ex, "updateTaskStatus", url))
