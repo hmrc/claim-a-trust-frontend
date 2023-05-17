@@ -18,21 +18,24 @@ package controllers
 
 import base.SpecBase
 import cats.data.EitherT
+import connectors.TaxEnrolmentsConnector
 import errors.TrustErrors
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.mockito.MockitoSugar.mock
-import pages.IdentifierPage
+import org.scalatest.EitherValues
+import pages.{HasEnrolled, IdentifierPage, IsAgentManagingTrustPage}
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.{FakeRelationshipEstablishmentService, RelationshipNotFound}
+import services.{AuditService, FakeRelationshipEstablishmentService, RelationshipNotFound}
 
 import scala.concurrent.Future
 
-class SaveIdentifierControllerSpec extends SpecBase {
+class SaveIdentifierControllerSpec extends SpecBase with EitherValues {
 
   val utr = "1234567890"
   val urn = "ABTRUST12345678"
@@ -167,11 +170,32 @@ class SaveIdentifierControllerSpec extends SpecBase {
           captor.getValue.get(IdentifierPage).value mustBe urn
 
         }
+
+        "user directed to trust claimed" in {
+
+          val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
+
+          val mockSessionRepository = mock[SessionRepository]
+
+          when(mockSessionRepository.set(captor.capture()))
+            .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(Right(true))))
+
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+            .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
+            .build()
+
+          val request = FakeRequest(GET, routes.SaveIdentifierController.save(urn).url)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual SEE_OTHER
+
+          redirectLocation(result).value mustEqual routes.IvSuccessController.onPageLoad.url
+
+          captor.getValue.get(IdentifierPage).value mustBe urn
+
+        }
       }
-
     }
-
-
   }
-
 }

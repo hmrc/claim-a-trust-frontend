@@ -120,7 +120,7 @@ class IvSuccessController @Inject()(
     }
   }
 
-  private def handleError(result: TrustEnvelope[Result], exceptionMessage: String, identifier: String, methodName: String, sessionId: String)
+  private def handleError(result: TrustEnvelope[Result], identifier: String, exceptionMessage: String, methodName: String, sessionId: String)
                             (implicit request: DataRequest[_]): Result = {
     auditService.auditFailure(CLAIM_A_TRUST_ERROR, identifier, exceptionMessage)
     for {

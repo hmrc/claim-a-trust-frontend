@@ -66,7 +66,7 @@ class RelationshipEstablishmentServiceSpec extends SpecBase with ScalaFutures {
 
             whenReady(result) {
               s =>
-                s mustBe RelationshipNotFound
+                s mustBe Right(RelationshipNotFound)
             }
           }
 
@@ -124,7 +124,7 @@ class RelationshipEstablishmentServiceSpec extends SpecBase with ScalaFutures {
 
             whenReady(result) {
               s =>
-                s mustBe RelationshipNotFound
+                s mustBe Right(RelationshipNotFound)
             }
           }
 
@@ -142,7 +142,7 @@ class RelationshipEstablishmentServiceSpec extends SpecBase with ScalaFutures {
 
             whenReady(result) {
               s =>
-                s mustBe RelationshipFound
+                s mustBe Right(RelationshipFound)
             }
 
           }

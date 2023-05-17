@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import cats.data.EitherT
 import connectors.{RelationshipEstablishmentConnector, TrustsStoreConnector}
-import errors.TrustErrors
+import errors.{TrustErrors, UpstreamRelationshipError}
 import models.RelationshipEstablishmentStatus.RelationshipEstablishmentStatus
 import models.auditing.Events.CLAIM_A_TRUST_FAILURE
 import models.auditing.FailureReasons
@@ -210,7 +210,7 @@ class IvFailureControllerSpec extends SpecBase with EitherValues {
 //        when(connector.journeyId(any[String])(any(), any()))
 //          .thenReturn(Future.successful(RelationshipEstablishmentStatus.UpstreamRelationshipError("")))
         when(connector.journeyId(any[String])(any(), any()))
-          .thenReturn(EitherT[Future, TrustErrors, RelationshipEstablishmentStatus](Future.successful(Right(RelationshipEstablishmentStatus.UpstreamRelationshipError("")))))
+          .thenReturn(EitherT[Future, TrustErrors, RelationshipEstablishmentStatus](Future.successful(Left(UpstreamRelationshipError("")))))
 
         val onIvFailureRoute = routes.IvFailureController.onTrustIvFailure.url
 

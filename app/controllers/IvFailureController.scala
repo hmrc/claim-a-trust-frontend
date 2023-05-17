@@ -86,7 +86,6 @@ class IvFailureController @Inject()(
       request.userAnswers.get(IdentifierPage) match {
         case Some(identifier) =>
           val queryString = request.getQueryString("journeyId")
-          println("HERE I AM!!!" + queryString)
 
           queryString.fold{
             logger.error(s"[IvFailureController][onTrustIvFailure][Session ID: ${Session.id(hc)}]" +

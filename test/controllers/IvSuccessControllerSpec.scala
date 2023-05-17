@@ -19,9 +19,9 @@ package controllers
 import base.SpecBase
 import cats.data.EitherT
 import connectors.TaxEnrolmentsConnector
-import errors.TrustErrors
+import errors.{TrustErrors, UpstreamTaxEnrolmentsError}
 import models.auditing.Events.{CLAIM_A_TRUST_ERROR, CLAIM_A_TRUST_SUCCESS}
-import models.{EnrolmentCreated, EnrolmentResponse, TaxEnrolmentsRequest, UpstreamTaxEnrolmentsError, UserAnswers}
+import models.{EnrolmentCreated, EnrolmentResponse, TaxEnrolmentsRequest, UserAnswers}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito._
 import org.mockito.MockitoSugar.mock
@@ -75,6 +75,9 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
           bind(classOf[SessionRepository]).toInstance(mockRepository),
           bind(classOf[AuditService]).toInstance(mockAuditService)
         ).build()
+
+        when(connector.enrol(any())(any(), any(), any()))
+          .thenReturn(EitherT[Future, TrustErrors, EnrolmentResponse](Future.successful((Right(EnrolmentCreated)))))
 
         // Stub a mongo connection
         when(mockRepository.set(any()))
@@ -299,7 +302,6 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
         val viewAsString = view(isAgent = false, utr)(request, messages).toString
 
         when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
-//          .thenReturn(Future.successful(RelationshipFound))
           .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound))))
 
         val result = route(application, request).value
@@ -342,11 +344,9 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
         val viewAsString = view(isAgent = true, utr)(request, messages).toString
 
         when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
-//          .thenReturn(Future.successful(RelationshipFound))
           .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound))))
 
         when(connector.enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any()))
-//          .thenReturn(Future.successful(EnrolmentCreated))
           .thenReturn(EitherT[Future, TrustErrors, EnrolmentResponse](Future.successful(Right(EnrolmentCreated))))
 
         val result = route(application, request).value
@@ -438,11 +438,9 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
         val viewAsString = view(isAgent = true, urn)(request, messages).toString
 
         when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(urn))(any()))
-//          .thenReturn(Future.successful(RelationshipFound))
           .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound))))
 
         when(connector.enrol(eqTo(TaxEnrolmentsRequest(urn)))(any(), any(), any()))
-//          .thenReturn(Future.successful(EnrolmentCreated))
           .thenReturn(EitherT[Future, TrustErrors, EnrolmentResponse](Future.successful(Right(EnrolmentCreated))))
 
         val result = route(application, request).value
@@ -528,7 +526,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
               .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound))))
 
             when(connector.enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any()))
-              .thenReturn(EitherT[Future, TrustErrors, EnrolmentResponse](Future.failed(UpstreamTaxEnrolmentsError("Unauthorized"))))
+              .thenReturn(EitherT[Future, TrustErrors, EnrolmentResponse](Future.successful(Left(UpstreamTaxEnrolmentsError("Unauthorized")))))
 
             val result = route(application, request).value
 
@@ -574,7 +572,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
               .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound))))
 
             when(connector.enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any()))
-              .thenReturn(EitherT[Future, TrustErrors, EnrolmentResponse](Future.failed(new BadRequestException("BadRequest"))))
+              .thenReturn(EitherT[Future, TrustErrors, EnrolmentResponse](Future.successful(Left(UpstreamTaxEnrolmentsError("BadRequest")))))
 
             val result = route(application, request).value
 
