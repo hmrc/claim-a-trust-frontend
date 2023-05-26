@@ -26,12 +26,13 @@ import utils.TrustEnvelope.TrustEnvelope
 
 import scala.concurrent.Future
 
-class FakeRelationshipEstablishmentService(response: RelationEstablishmentStatus = RelationshipFound) extends RelationshipEstablishment {
+class FakeRelationshipEstablishmentService(response: Either[TrustErrors, RelationEstablishmentStatus] = Right(RelationshipFound))
+  extends RelationshipEstablishment {
 
   override def authConnector: AuthConnector = new FakeAuthConnector(Future.successful(()))
 
   override def check(internalId: String, utr: String)
                     (implicit request: Request[AnyContent]): TrustEnvelope[RelationEstablishmentStatus] =
-    EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(response)))
+    EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(response))
 
 }

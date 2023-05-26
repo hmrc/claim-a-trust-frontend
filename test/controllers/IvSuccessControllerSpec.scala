@@ -19,9 +19,9 @@ package controllers
 import base.SpecBase
 import cats.data.EitherT
 import connectors.TaxEnrolmentsConnector
-import errors.{TrustErrors, UpstreamTaxEnrolmentsError}
+import errors.{ServerError, TrustErrors, UpstreamTaxEnrolmentsError}
 import models.auditing.Events.{CLAIM_A_TRUST_ERROR, CLAIM_A_TRUST_SUCCESS}
-import models.{EnrolmentCreated, EnrolmentResponse, TaxEnrolmentsRequest, UserAnswers}
+import models.{EnrolmentCreated, EnrolmentResponse, NormalMode, TaxEnrolmentsRequest, UserAnswers}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito._
 import org.mockito.MockitoSugar.mock
@@ -31,7 +31,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.{AuditService, RelationEstablishmentStatus, RelationshipEstablishment, RelationshipFound}
+import services.{AuditService, RelationEstablishmentStatus, RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.http.BadRequestException
 import views.html.IvSuccessView
 
@@ -92,9 +92,8 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
         when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
           .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound))))
 
-
-        when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
-          .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound))))
+//        when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
+//          .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound))))
 
         val result = route(application, request).value
 
@@ -111,6 +110,117 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
         verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
 
         verify(mockAuditService).audit(eqTo(CLAIM_A_TRUST_SUCCESS), eqTo(utr), eqTo(false))(any(), any())
+
+        application.stop()
+      }
+
+      "when error exception message is nonEmpty" in {
+
+        val userAnswers = UserAnswers(userAnswersId)
+          .set(IsAgentManagingTrustPage, true).value
+          .set(IdentifierPage, utr).value
+
+        val application = applicationBuilder(
+          userAnswers = Some(userAnswers),
+          relationshipEstablishment = mockRelationshipEstablishment
+        ).overrides(
+          bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
+          bind(classOf[SessionRepository]).toInstance(mockRepository),
+          bind(classOf[AuditService]).toInstance(mockAuditService)
+        ).build()
+
+        when(connector.enrol(any())(any(), any(), any()))
+          .thenReturn(EitherT[Future, TrustErrors, EnrolmentResponse](Future.successful((Left(ServerError("an exception was returned"))))))
+
+        // Stub a mongo connection
+        when(mockRepository.set(any()))
+          .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful((Left(ServerError("an exception was returned"))))))
+
+        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
+
+        when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
+          .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound))))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual INTERNAL_SERVER_ERROR
+
+        contentType(result) mustBe Some("text/html")
+      }
+
+      "when error exception message is unexpected issue due to empty exceptionMessage" in {
+
+        val userAnswers = UserAnswers(userAnswersId)
+          .set(IsAgentManagingTrustPage, true).value
+          .set(IdentifierPage, utr).value
+
+        val application = applicationBuilder(
+          userAnswers = Some(userAnswers),
+          relationshipEstablishment = mockRelationshipEstablishment
+        ).overrides(
+          bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
+          bind(classOf[SessionRepository]).toInstance(mockRepository),
+          bind(classOf[AuditService]).toInstance(mockAuditService)
+        ).build()
+
+        when(connector.enrol(any())(any(), any(), any()))
+          .thenReturn(EitherT[Future, TrustErrors, EnrolmentResponse](Future.successful((Left(ServerError(""))))))
+
+        // Stub a mongo connection
+        when(mockRepository.set(any()))
+          .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful((Left(ServerError(""))))))
+
+        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
+
+        when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
+          .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound))))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual INTERNAL_SERVER_ERROR
+
+        contentType(result) mustBe Some("text/html")
+      }
+
+      "no relationship found in Trust IV" in {
+
+        val userAnswers = UserAnswers(userAnswersId)
+          .set(IsAgentManagingTrustPage, false).value
+          .set(IdentifierPage, utr).value
+
+        val application = applicationBuilder(
+          userAnswers = Some(userAnswers),
+          relationshipEstablishment = mockRelationshipEstablishment
+        ).overrides(
+          bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
+          bind(classOf[SessionRepository]).toInstance(mockRepository),
+          bind(classOf[AuditService]).toInstance(mockAuditService)
+        ).build()
+
+        when(connector.enrol(any())(any(), any(), any()))
+          .thenReturn(EitherT[Future, TrustErrors, EnrolmentResponse](Future.successful((Right(EnrolmentCreated)))))
+
+        // Stub a mongo connection
+        when(mockRepository.set(any()))
+          .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(Right(true))))
+
+        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
+
+        val view = application.injector.instanceOf[IvSuccessView]
+
+        val viewAsString = view(isAgent = false, utr)(request, messages).toString
+
+        when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
+          .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipNotFound))))
+
+        when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
+          .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipNotFound))))
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
 
         application.stop()
 
@@ -494,6 +604,24 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
 
       }
 
+      "no identifier is found" in {
+
+        val userAnswers = UserAnswers(userAnswersId)
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+
+        val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual routes.SessionExpiredController.onPageLoad.url
+
+        application.stop()
+
+      }
+
       "redirect to Internal Server Error" when {
 
         "tax enrolments fails" when {
@@ -589,10 +717,46 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
             application.stop()
 
           }
+
+          "onPageLoad fails" in {
+
+            val utr = "0987654321"
+
+            val userAnswers = UserAnswers(userAnswersId)
+              .set(IsAgentManagingTrustPage, true).value
+              .set(IdentifierPage, utr).value
+
+            when(mockRepository.set(any()))
+              .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(Left(ServerError()))))
+
+            when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
+              .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Left(ServerError()))))
+
+            when(connector.enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any()))
+              .thenReturn(EitherT[Future, TrustErrors, EnrolmentResponse](Future.successful(Left(UpstreamTaxEnrolmentsError("BadRequest")))))
+
+            val application = applicationBuilder(
+              userAnswers = Some(userAnswers),
+              relationshipEstablishment = mockRelationshipEstablishment
+            )
+              .overrides(
+                bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
+                bind(classOf[SessionRepository]).toInstance(mockRepository),
+                bind(classOf[AuditService]).toInstance(mockAuditService)
+              ).build()
+
+            val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
+
+            val result = route(application, request).value
+
+            status(result) mustEqual INTERNAL_SERVER_ERROR
+
+            contentType(result) mustBe Some("text/html")
+
+            application.stop()
+          }
         }
-
       }
-
     }
 
   }

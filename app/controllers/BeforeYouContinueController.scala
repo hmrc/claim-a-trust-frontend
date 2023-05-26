@@ -85,7 +85,6 @@ class BeforeYouContinueController @Inject()(
         s" no identifier available in user answers, cannot continue with claiming the trust")
         Redirect(routes.SessionExpiredController.onPageLoad)
       case Left(_) => logger.warn(s"[$className][$functionName][Session ID: ${Session.id(hc)}] " +
-        //TODO
         s"Error while storing user answers")
         InternalServerError(errorHandler.internalServerErrorTemplate)
   }

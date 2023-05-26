@@ -121,8 +121,6 @@ class IvFailureController @Inject()(
                   s" unable to determine if trust was locked out from IV")
           (Redirect(routes.SessionExpiredController.onPageLoad))
         case Left(_) => logger.warn(s"[$className][onSubmit][Session ID: ${Session.id(hc)}] " +
-
-          //TODO
           s"Error while storing user answers")
           InternalServerError(errorHandler.internalServerErrorTemplate)
       }

@@ -86,8 +86,6 @@ class IvFailureControllerSpec extends SpecBase with EitherValues {
           )
           .build()
 
-//        when(connector.journeyId(any[String])(any(), any()))
-//          .thenReturn(EitherT[Future, TrustErrors, Boolean])(Future.successful(RelationshipEstablishmentStatus.Locked)))
         when(connector.journeyId(any[String])(any(), any()))
           .thenReturn(EitherT[Future, TrustErrors, RelationshipEstablishmentStatus](Future.successful(Right(RelationshipEstablishmentStatus.Locked))))
 
@@ -114,8 +112,6 @@ class IvFailureControllerSpec extends SpecBase with EitherValues {
             bind[AuditService].toInstance(mockAuditService))
           .build()
 
-//        when(connector.journeyId(any[String])(any(), any()))
-//          .thenReturn(Future.successful(RelationshipEstablishmentStatus.NotFound))
         when(connector.journeyId(any[String])(any(), any()))
           .thenReturn(EitherT[Future, TrustErrors, RelationshipEstablishmentStatus](Future.successful(Right(RelationshipEstablishmentStatus.NotFound))))
 
@@ -145,8 +141,6 @@ class IvFailureControllerSpec extends SpecBase with EitherValues {
             bind[AuditService].toInstance(mockAuditService))
           .build()
 
-//        when(connector.journeyId(any[String])(any(), any()))
-//          .thenReturn(Future.successful(RelationshipEstablishmentStatus.InProcessing))
         when(connector.journeyId(any[String])(any(), any()))
           .thenReturn(EitherT[Future, TrustErrors, RelationshipEstablishmentStatus](Future.successful(Right(RelationshipEstablishmentStatus.InProcessing))))
 
@@ -175,8 +169,6 @@ class IvFailureControllerSpec extends SpecBase with EitherValues {
             bind[AuditService].toInstance(mockAuditService))
           .build()
 
-//        when(connector.journeyId(any[String])(any(), any()))
-//          .thenReturn(Future.successful(RelationshipEstablishmentStatus.UnsupportedRelationshipStatus("")))
         when(connector.journeyId(any[String])(any(), any()))
           .thenReturn(EitherT[Future, TrustErrors, RelationshipEstablishmentStatus](Future.successful(Right(RelationshipEstablishmentStatus.UnsupportedRelationshipStatus("")))))
 
@@ -207,8 +199,6 @@ class IvFailureControllerSpec extends SpecBase with EitherValues {
             bind[AuditService].toInstance(mockAuditService))
           .build()
 
-//        when(connector.journeyId(any[String])(any(), any()))
-//          .thenReturn(Future.successful(RelationshipEstablishmentStatus.UpstreamRelationshipError("")))
         when(connector.journeyId(any[String])(any(), any()))
           .thenReturn(EitherT[Future, TrustErrors, RelationshipEstablishmentStatus](Future.successful(Left(UpstreamRelationshipError("")))))
 
@@ -239,8 +229,6 @@ class IvFailureControllerSpec extends SpecBase with EitherValues {
             bind[AuditService].toInstance(mockAuditService))
           .build()
 
-//        when(connector.journeyId(any[String])(any(), any()))
-//          .thenReturn(Future.successful(RelationshipEstablishmentStatus.NoRelationshipStatus))
         when(connector.journeyId(any[String])(any(), any()))
           .thenReturn(EitherT[Future, TrustErrors, RelationshipEstablishmentStatus](Future.successful(Right(RelationshipEstablishmentStatus.NoRelationshipStatus))))
 
@@ -259,6 +247,34 @@ class IvFailureControllerSpec extends SpecBase with EitherValues {
         application.stop()
       }
     }
+
+    "redirect to FallbackFailureController when unable to retrieve identifier" in {
+
+      val answers = emptyUserAnswers
+        .set(IsAgentManagingTrustPage, true).value
+
+      val application = applicationBuilder(userAnswers = Some(answers))
+        .overrides(
+          bind[RelationshipEstablishmentConnector].toInstance(connector),
+          bind[AuditService].toInstance(mockAuditService))
+        .build()
+
+      when(connector.journeyId(any[String])(any(), any()))
+        .thenReturn(EitherT[Future, TrustErrors, RelationshipEstablishmentStatus](Future.successful(Right(RelationshipEstablishmentStatus.NoRelationshipStatus))))
+
+      val onIvFailureRoute = routes.IvFailureController.onTrustIvFailure.url
+
+      val request = FakeRequest(GET, s"$onIvFailureRoute?journeyId=47a8a543-6961-4221-86e8-d22e2c3c91de")
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustEqual routes.FallbackFailureController.onPageLoad.url
+
+      application.stop()
+    }
+  }
 
     "locked route" when {
 
@@ -293,6 +309,44 @@ class IvFailureControllerSpec extends SpecBase with EitherValues {
         contentAsString(result) must include("As you have had 3 unsuccessful tries at accessing this trust you will need to try again in 30 minutes.")
 
         verify(connector).claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
+
+        application.stop()
+      }
+
+      "return Internal Server when trustLocked fails" in {
+
+        val onLockedRoute = routes.IvFailureController.trustLocked.url
+        val utr = "3000000001"
+        val managedByAgent = true
+        val trustLocked = true
+
+        val connector = mock[TrustsStoreConnector]
+
+        when(connector.claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any()))
+          .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(Right(true))))
+
+        val answers = emptyUserAnswers
+          .set(IdentifierPage, utr).value
+          .set(IsAgentManagingTrustPage, true).value
+
+//        val application = applicationBuilder(userAnswers = Some(answers))
+//          .overrides(
+//            bind[TrustsStoreConnector].toInstance(connector),
+//            bind[AuditService].toInstance(mockAuditService))
+//          .build()
+
+        val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(
+            bind[AuditService].toInstance(mockAuditService))
+          .build()
+
+        val request = FakeRequest(GET, onLockedRoute)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual INTERNAL_SERVER_ERROR
+
+        contentType(result) mustBe Some("text/html")
 
         application.stop()
       }
@@ -423,8 +477,7 @@ class IvFailureControllerSpec extends SpecBase with EitherValues {
 
         application.stop()
       }
-
     }
-
-  }
 }
+
+
