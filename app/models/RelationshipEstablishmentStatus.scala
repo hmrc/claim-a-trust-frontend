@@ -16,7 +16,7 @@
 
 package models
 
-import uk.gov.hmrc.http.{HttpReads, HttpResponse}
+import play.api.libs.json.JsValue
 
 object RelationshipEstablishmentStatus {
 
@@ -27,24 +27,14 @@ object RelationshipEstablishmentStatus {
   case object InProcessing extends RelationshipEstablishmentStatus
   case class UnsupportedRelationshipStatus(reason: String) extends RelationshipEstablishmentStatus
   case object NoRelationshipStatus extends RelationshipEstablishmentStatus
-  case class UpstreamRelationshipError(reason: String) extends RelationshipEstablishmentStatus
 
-  import play.api.http.Status._
-
-  implicit lazy val httpReads : HttpReads[RelationshipEstablishmentStatus] = new HttpReads[RelationshipEstablishmentStatus] {
-    override def read(method: String, url: String, response: HttpResponse): RelationshipEstablishmentStatus = {
-      response.status match {
-        case OK =>
-          (response.json \ "errorKey").asOpt[String] match {
-            case Some("TRUST_LOCKED")       => Locked
-            case Some("TRUST_NOT_FOUND")      => NotFound
-            case Some("TRUST_IN_PROCESSING")  => InProcessing
-            case Some(unsupported)          => UnsupportedRelationshipStatus(unsupported)
-            case _                          => NoRelationshipStatus
-          }
-        case status => UpstreamRelationshipError(s"Unexpected HTTP response code $status")
-      }
+  def processRelationshipEstablishmentStatusResponse(responseJson: JsValue) : RelationshipEstablishmentStatus = {
+    (responseJson \ "errorKey").asOpt[String] match {
+      case Some("TRUST_LOCKED")       => Locked
+      case Some("TRUST_NOT_FOUND")      => NotFound
+      case Some("TRUST_IN_PROCESSING")  => InProcessing
+      case Some(unsupported)          => UnsupportedRelationshipStatus(unsupported)
+      case _                          => NoRelationshipStatus
     }
   }
-
 }

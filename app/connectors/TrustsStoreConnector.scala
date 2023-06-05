@@ -16,21 +16,31 @@
 
 package connectors
 
+import cats.data.EitherT
 import config.FrontendAppConfig
-import models.{TrustStoreResponse, TrustsStoreRequest}
+import models.TrustsStoreRequest
+import play.api.http.Status.CREATED
 import play.api.libs.json.{JsValue, Json, Writes}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import utils.TrustEnvelope.TrustEnvelope
 
 import javax.inject.Inject
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
-class TrustsStoreConnector @Inject()(http: HttpClient, config: FrontendAppConfig) {
+class TrustsStoreConnector @Inject()(http: HttpClient, config: FrontendAppConfig) extends ConnectorErrorResponseHandler {
+
+  override val className: String = getClass.getSimpleName
 
   val url: String = config.trustsStoreUrl + "/claim"
 
   def claim(request: TrustsStoreRequest)
-           (implicit hc: HeaderCarrier, ec: ExecutionContext, writes: Writes[TrustsStoreRequest]): Future[TrustStoreResponse] = {
-    http.POST[JsValue, TrustStoreResponse](url, Json.toJson(request))
+           (implicit hc: HeaderCarrier, ec: ExecutionContext, writes: Writes[TrustsStoreRequest]): TrustEnvelope[Boolean] = EitherT {
+    http.POST[JsValue, HttpResponse](url, Json.toJson(request)).map ( _.status match {
+      case CREATED => Right(true)
+      case status => Left(handleError(status, "claim", url))
+    }).recover {
+      case ex => Left(handleError(ex, "claim", url))
+    }
   }
 
 }

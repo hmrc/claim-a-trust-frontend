@@ -16,14 +16,17 @@
 
 package controllers.actions
 
+import handlers.ErrorHandler
 import models.UserAnswers
 import models.requests.{IdentifierRequest, OptionalDataRequest}
+import repositories.SessionRepository
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class FakeDataRetrievalAction(dataToReturn: Option[UserAnswers]) extends DataRetrievalAction {
-
-  override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] =
+class FakeDataRetrievalAction(dataToReturn: Option[UserAnswers], sessionRepository: SessionRepository, errorHandler: ErrorHandler)
+                             (implicit executionContext: ExecutionContext)
+  extends DataRetrievalRefinerAction(sessionRepository, errorHandler) {
+  protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] =
     dataToReturn match {
       case None =>
         Future(OptionalDataRequest(
@@ -40,7 +43,4 @@ class FakeDataRetrievalAction(dataToReturn: Option[UserAnswers]) extends DataRet
           affinityGroup = request.affinityGroup,
           userAnswers = Some(userAnswers)))
     }
-
-  override protected implicit val executionContext: ExecutionContext =
-    scala.concurrent.ExecutionContext.Implicits.global
 }

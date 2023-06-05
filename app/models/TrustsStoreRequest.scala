@@ -23,5 +23,4 @@ final case class TrustsStoreRequest(internalId: String, id: String, managedByAge
 object TrustsStoreRequest {
 
   implicit val writes: Writes[TrustsStoreRequest] = Json.writes[TrustsStoreRequest]
-
 }

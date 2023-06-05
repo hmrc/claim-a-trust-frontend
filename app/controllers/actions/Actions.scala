@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.actions
 
-import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.UnauthorisedView
+import models.requests.{DataRequest, OptionalDataRequest}
+import play.api.mvc.{ActionBuilder, AnyContent}
 
 import javax.inject.Inject
 
-class UnauthorisedController @Inject()(
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: UnauthorisedView
-                                      ) extends FrontendBaseController with I18nSupport {
+class Actions @Inject()(
+                         identify: IdentifierAction,
+                         getData: DataRetrievalRefinerAction,
+                         requireData: DataRequiredAction) {
 
-  def onPageLoad: Action[AnyContent] = Action { implicit request =>
-    Ok(view())
-  }
+  def authWithData: ActionBuilder[DataRequest, AnyContent] = identify andThen getData andThen requireData
+
+  def authWithOptionalData: ActionBuilder[OptionalDataRequest, AnyContent] = identify andThen getData
+
+  def authAction: IdentifierAction = identify
 }

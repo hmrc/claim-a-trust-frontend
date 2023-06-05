@@ -22,6 +22,7 @@ import models.{EnrolmentCreated, TaxEnrolmentsRequest, UpstreamTaxEnrolmentsErro
 import org.scalatest.RecoverMethods
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -37,7 +38,7 @@ class TaxEnrolmentsConnectorSpec extends AnyWordSpec with Matchers with WireMock
   lazy val config: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
   lazy val connector: TaxEnrolmentsConnector = app.injector.instanceOf[TaxEnrolmentsConnector]
 
-  lazy val app = new GuiceApplicationBuilder()
+  lazy val app: Application = new GuiceApplicationBuilder()
     .configure(Seq(
       "microservice.services.tax-enrolments.port" -> server.port(),
       "auditing.enabled" -> false): _*
@@ -116,7 +117,7 @@ class TaxEnrolmentsConnectorSpec extends AnyWordSpec with Matchers with WireMock
           url = taxableEnrolmentUrl
         )
 
-        recoverToSucceededIf[UpstreamTaxEnrolmentsError](connector.enrol(TaxEnrolmentsRequest(utr)))
+        recoverToSucceededIf[UpstreamTaxEnrolmentsError](connector.enrol(TaxEnrolmentsRequest(utr))
 
       }
       "returns 401 UNAUTHORIZED" in {
