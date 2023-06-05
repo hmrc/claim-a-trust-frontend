@@ -48,5 +48,7 @@ class MongoDateTimeFormatsSpec extends AnyFreeSpec with Matchers with OptionValu
       val result = Json.toJson(date).as[LocalDateTime]
       result mustEqual date
     }
+
+    
   }
 }

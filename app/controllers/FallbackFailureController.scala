@@ -34,10 +34,16 @@ class FallbackFailureController @Inject()(
     implicit request =>
 
       request.headers.get(REFERER) match {
-        case Some(referer) => logger.error(s"[FallbackFailureController][onPageLoad][Session ID: ${Session.id(hc)}]" +
+        case Some(referer) =>
+          // $COVERAGE-OFF$
+          logger.error(s"[FallbackFailureController][onPageLoad][Session ID: ${Session.id(hc)}]" +
           s" Trust IV encountered a problem that could not be recovered from. referer url: ${referer}")
-        case _ =>  logger.warn(s"[FallbackFailureController][onPageLoad][Session ID: ${Session.id(hc)}] " +
+          // $COVERAGE-ON$
+        case _ =>
+          // $COVERAGE-OFF$
+          logger.warn(s"[FallbackFailureController][onPageLoad][Session ID: ${Session.id(hc)}] " +
           s"Trust IV encountered a problem that could not be recovered from")
+          // $COVERAGE-ON$
       }
       InternalServerError(errorHandler.internalServerErrorTemplate)
   }
