@@ -18,8 +18,7 @@ package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import config.FrontendAppConfig
-import errors.UpstreamTaxEnrolmentsError
-import models.{EnrolmentCreated, TaxEnrolmentsRequest, UpstreamTaxEnrolmentsError}
+import models.{EnrolmentCreated, TaxEnrolmentsRequest}
 import org.scalatest.RecoverMethods
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec

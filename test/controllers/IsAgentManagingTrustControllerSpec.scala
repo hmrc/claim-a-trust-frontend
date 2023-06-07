@@ -20,13 +20,11 @@ import base.SpecBase
 import cats.data.EitherT
 import errors.{ServerError, TrustErrors}
 import forms.IsAgentManagingTrustFormProvider
-import models.requests.OptionalDataRequest
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.MockitoSugar
 import org.scalatest.EitherValues
-import org.scalatest.matchers.must.Matchers.include
 import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.data.Form
 import play.api.inject.bind
@@ -35,9 +33,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import services.{FakeRelationshipEstablishmentService, RelationEstablishmentStatus, RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
-import uk.gov.hmrc.auth.core.AffinityGroup
-import uk.gov.hmrc.auth.core.retrieve.Credentials
-import utils.TrustEnvelope
 import views.html.IsAgentManagingTrustView
 
 import scala.concurrent.Future

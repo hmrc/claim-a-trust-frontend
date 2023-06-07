@@ -33,7 +33,6 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.AuditService
-import uk.gov.hmrc.http.BadRequestException
 
 import scala.concurrent.Future
 

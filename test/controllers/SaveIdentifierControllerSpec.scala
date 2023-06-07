@@ -18,8 +18,6 @@ package controllers
 
 import base.SpecBase
 import cats.data.EitherT
-import cats.implicits.toFoldableOps
-import connectors.TrustsStoreConnector
 import errors.{InvalidIdentifier, NoData, ServerError, TrustErrors}
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
@@ -33,7 +31,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.{FakeRelationshipEstablishmentService, RelationEstablishmentStatus, RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
+import services.{FakeRelationshipEstablishmentService, RelationEstablishmentStatus, RelationshipEstablishment, RelationshipNotFound}
 
 import scala.concurrent.Future
 

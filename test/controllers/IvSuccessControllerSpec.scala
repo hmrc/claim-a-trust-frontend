@@ -32,7 +32,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
 import services.{AuditService, RelationEstablishmentStatus, RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
-import uk.gov.hmrc.http.BadRequestException
 import views.html.IvSuccessView
 
 import scala.concurrent.Future

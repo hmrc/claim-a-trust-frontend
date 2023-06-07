@@ -21,7 +21,6 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.data.{Form, FormError}
 import models.Enumerable
-import play.twirl.api.Format
 
 object MappingsSpec {
 

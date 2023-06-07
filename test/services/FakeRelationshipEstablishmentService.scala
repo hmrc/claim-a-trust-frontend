@@ -19,7 +19,6 @@ package services
 import cats.data.EitherT
 import controllers.actions.FakeAuthConnector
 import errors.TrustErrors
-import models.RelationshipEstablishmentStatus.RelationshipEstablishmentStatus
 import play.api.mvc.{AnyContent, Request}
 import uk.gov.hmrc.auth.core.AuthConnector
 import utils.TrustEnvelope.TrustEnvelope

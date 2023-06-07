@@ -29,11 +29,9 @@ import org.scalatest.EitherValues
 import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.inject.bind
 import play.api.mvc.Call
-import play.api.mvc.Results.InternalServerError
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import services.{FakeRelationshipEstablishmentService, RelationshipFound, RelationshipNotFound}
-import uk.gov.hmrc.play.bootstrap.controller
 import views.html.BeforeYouContinueView
 
 import scala.concurrent.Future
