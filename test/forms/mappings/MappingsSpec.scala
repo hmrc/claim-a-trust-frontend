@@ -16,11 +16,11 @@
 
 package forms.mappings
 
+import models.Enumerable
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.data.{Form, FormError}
-import models.Enumerable
 
 object MappingsSpec {
 
@@ -128,6 +128,11 @@ class MappingsSpec extends AnyWordSpec with Matchers with OptionValues with Mapp
     "not bind an empty value" in {
       val result = testForm.bind(Map("value" -> ""))
       result.errors must contain(FormError("value", "error.required"))
+    }
+
+    "not bind invalid regEx value" in {
+      val result = testForm.bind(Map("value" -> "1.1"))
+      result.errors must contain(FormError("value", "error.wholeNumber"))
     }
 
     "not bind an empty map" in {

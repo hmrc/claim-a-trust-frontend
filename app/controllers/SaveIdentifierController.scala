@@ -16,7 +16,10 @@
 
 package controllers
 
-import controllers.actions.{DataRetrievalAction, IdentifierAction}
+import cats.data.EitherT
+import controllers.actions.Actions
+import errors.{InvalidIdentifier, TrustErrors}
+import handlers.ErrorHandler
 import models.requests.OptionalDataRequest
 import models.{NormalMode, UserAnswers}
 import pages.IdentifierPage
@@ -25,60 +28,83 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
+import uk.gov.hmrc.http.SessionKeys.sessionId
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.{IdentifierRegex, Session}
+import utils.TrustEnvelope.TrustEnvelope
+import utils.{IdentifierRegex, Session, TrustEnvelope}
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class SaveIdentifierController @Inject()(
-                                          identify: IdentifierAction,
                                           val controllerComponents: MessagesControllerComponents,
-                                          getData: DataRetrievalAction,
                                           sessionRepository: SessionRepository,
-                                          relationship: RelationshipEstablishment
+                                          errorHandler: ErrorHandler,
+                                          relationship: RelationshipEstablishment,
+                                          actions: Actions
                                         )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
-  def save(identifier: String): Action[AnyContent] = (identify andThen getData).async {
+  private val className = getClass.getSimpleName
+
+  def save(identifier: String): Action[AnyContent] = actions.authWithOptionalData.async {
     implicit request =>
-
-      identifier match {
-        case IdentifierRegex.UtrRegex(utr) => checkIfAlreadyHaveIvRelationship(utr)
-        case IdentifierRegex.UrnRegex(urn) => checkIfAlreadyHaveIvRelationship(urn)
-        case _ =>
-          logger.error(s"[SaveIdentifierController][save][Session ID: ${Session.id(hc)}] " +
-            s"Identifier provided is not a valid URN or UTR")
-          Future.successful(Redirect(routes.FallbackFailureController.onPageLoad))
-      }
-
-  }
-
-  private def checkIfAlreadyHaveIvRelationship(identifier: String)(implicit request: OptionalDataRequest[AnyContent]): Future[Result] = {
-    relationship.check(request.internalId, identifier) flatMap {
-      case RelationshipFound =>
-        logger.info(s"[SaveIdentifierController][checkIfAlreadyHaveIvRelationship][Session ID: ${Session.id(hc)}] " +
-          s"relationship is already established in IV for $identifier sending user to successfully claimed")
-
-        Future.successful(Redirect(routes.IvSuccessController.onPageLoad))
-      case RelationshipNotFound =>
-        saveAndContinue(identifier)
+      val result = for {
+        _ <- TrustEnvelope(getIdentifier(identifier))
+        result <- checkIfAlreadyHaveIvRelationship(identifier)
+      } yield result
+    result.value.map{
+      case Right(call) => call
+    case Left(InvalidIdentifier) => Redirect(routes.FallbackFailureController.onPageLoad)
+    case Left(_) => logger.warn(s"[$className][save][Session ID: ${Session.id(hc)}] " +
+      s"Could not save identifier")
+      InternalServerError(errorHandler.internalServerErrorTemplate)
     }
   }
 
-  private def saveAndContinue(identifier: String)(implicit request: OptionalDataRequest[AnyContent]): Future[Result] = {
-    val userAnswers = request.userAnswers match {
+  def getIdentifier(identifier: String)(implicit request: OptionalDataRequest[AnyContent]): Either[TrustErrors, String] = identifier match {
+    case IdentifierRegex.UtrRegex(utr) => Right(utr)
+    case IdentifierRegex.UrnRegex(urn) => Right(urn)
+    case _ =>
+      logger.error(s"[$className][getIdentifier][Session ID: ${Session.id(hc)}] " +
+        s"Identifier provided is not a valid URN or UTR")
+    Left(InvalidIdentifier)
+  }
+
+  private def checkIfAlreadyHaveIvRelationship(identifier: String)(implicit request: OptionalDataRequest[AnyContent]): TrustEnvelope[Result] = EitherT{
+    relationship.check(request.internalId, identifier).value flatMap {
+      case Right(RelationshipFound) =>
+        logger.info(s"[$className][checkIfAlreadyHaveIvRelationship][Session ID: ${Session.id(hc)}] " +
+          s"relationship is already established in IV for $identifier sending user to successfully claimed")
+
+      Future.successful(Right(Redirect(routes.IvSuccessController.onPageLoad)))
+      case Right(RelationshipNotFound) =>
+        saveAndContinue(identifier).value
+      case Left(error) => Future.successful(Left(error))
+    }
+  }
+
+  private def saveAndContinue(identifier: String)(implicit request: OptionalDataRequest[AnyContent]): TrustEnvelope[Result] = EitherT{
+    val result = for {
+      updatedAnswers <- TrustEnvelope(extractUserAnswers(request.userAnswers, identifier, request.internalId))
+      _              <- sessionRepository.set(updatedAnswers)
+    } yield {
+      logger.info(s"[$className][saveAndContinue][Session ID: ${Session.id(hc(request))}]" +
+        s" user has started the claim a trust journey for $identifier")
+      Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode))
+    }
+    result.value.map{
+      case Right(call) => Right(call)
+      case Left(error) => logger.warn(s"[$className][saveAndContinue][Session ID: $sessionId] Error while storing user answers")
+        Left(error)
+    }
+  }
+
+  private def extractUserAnswers(optUserAnswers: Option[UserAnswers], identifier: String, internalId: String): Either[TrustErrors, UserAnswers] = {
+    optUserAnswers match {
       case Some(userAnswers) =>
         userAnswers.set(IdentifierPage, identifier)
       case _ =>
-        UserAnswers(request.internalId).set(IdentifierPage, identifier)
-    }
-    for {
-      updatedAnswers <- Future.fromTry(userAnswers)
-      _              <- sessionRepository.set(updatedAnswers)
-    } yield {
-      logger.info(s"[SaveIdentifierController][saveAndContinue][Session ID: ${Session.id(hc(request))}]" +
-        s" user has started the claim a trust journey for $identifier")
-      Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode))
+        UserAnswers(internalId).set(IdentifierPage, identifier)
     }
   }
 }

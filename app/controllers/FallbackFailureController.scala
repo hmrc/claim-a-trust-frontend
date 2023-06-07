@@ -17,12 +17,13 @@
 package controllers
 
 import handlers.ErrorHandler
-import javax.inject.Inject
 import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
+
+import javax.inject.Inject
 
 class FallbackFailureController @Inject()(
                                            val controllerComponents: MessagesControllerComponents,
@@ -33,8 +34,16 @@ class FallbackFailureController @Inject()(
     implicit request =>
 
       request.headers.get(REFERER) match {
-        case Some(referer) => logger.error(s"[FallbackFailureController][onPageLoad][Session ID: ${Session.id(hc)}] Trust IV encountered a problem that could not be recovered from. referer url: ${referer}")
-        case _ =>  logger.warn(s"[FallbackFailureController][onPageLoad][Session ID: ${Session.id(hc)}] Trust IV encountered a problem that could not be recovered from")
+        case Some(referer) =>
+          // $COVERAGE-OFF$
+          logger.error(s"[FallbackFailureController][onPageLoad][Session ID: ${Session.id(hc)}]" +
+          s" Trust IV encountered a problem that could not be recovered from. referer url: ${referer}")
+          // $COVERAGE-ON$
+        case _ =>
+          // $COVERAGE-OFF$
+          logger.warn(s"[FallbackFailureController][onPageLoad][Session ID: ${Session.id(hc)}] " +
+          s"Trust IV encountered a problem that could not be recovered from")
+          // $COVERAGE-ON$
       }
       InternalServerError(errorHandler.internalServerErrorTemplate)
   }

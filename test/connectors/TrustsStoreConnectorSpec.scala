@@ -17,7 +17,8 @@
 package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
-import models.{StatusStored, TrustsStoreRequest, UpstreamTrustStoreError}
+import errors.ServerError
+import models.TrustsStoreRequest
 import org.scalatest.RecoverMethods
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -90,8 +91,8 @@ class TrustsStoreConnectorSpec extends AnyWordSpec with Matchers with WireMockHe
           expectedResponse = response
         )
 
-        connector.claim(request) map { response =>
-          response mustBe StatusStored
+        connector.claim(request).value map { response =>
+          response mustBe Right(true)
         }
 
       }
@@ -113,8 +114,8 @@ class TrustsStoreConnectorSpec extends AnyWordSpec with Matchers with WireMockHe
           expectedResponse = response
         )
 
-        recoverToSucceededIf[UpstreamTrustStoreError] {
-          connector.claim(request)
+        recoverToSucceededIf[ServerError] {
+          connector.claim(request).value
         }
 
       }
@@ -135,8 +136,8 @@ class TrustsStoreConnectorSpec extends AnyWordSpec with Matchers with WireMockHe
           expectedResponse = response
         )
 
-        recoverToSucceededIf[UpstreamTrustStoreError] {
-          connector.claim(request)
+        recoverToSucceededIf[ServerError] {
+          connector.claim(request).value
         }
       }
 

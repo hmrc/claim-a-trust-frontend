@@ -17,13 +17,13 @@
 package services
 
 import config.FrontendAppConfig
+import models.IsUTR
 import models.auditing._
 import models.requests.DataRequest
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import javax.inject.Inject
-import models.IsUTR
 
+import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class AuditService @Inject()(auditConnector: AuditConnector,  config : FrontendAppConfig, implicit val ec: ExecutionContext) {

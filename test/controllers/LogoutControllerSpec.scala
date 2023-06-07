@@ -19,13 +19,14 @@ package controllers
 import base.SpecBase
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.{ArgumentCaptor, MockitoSugar}
+import org.scalatest.EitherValues
 import pages.IdentifierPage
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
-class LogoutControllerSpec extends SpecBase with MockitoSugar {
+class LogoutControllerSpec extends SpecBase with MockitoSugar with EitherValues {
 
   "logout should redirect to feedback and audit with a utr" in {
 
@@ -33,7 +34,7 @@ class LogoutControllerSpec extends SpecBase with MockitoSugar {
 
     val captor = ArgumentCaptor.forClass(classOf[Map[String, String]])
 
-    val userAnswers = emptyUserAnswers.set(IdentifierPage, "1234567890").success.value
+    val userAnswers = emptyUserAnswers.set(IdentifierPage, "1234567890").value
 
     val application = applicationBuilder(userAnswers = Some(userAnswers))
     .overrides(bind[AuditConnector].toInstance(mockAuditConnector))
@@ -62,7 +63,7 @@ class LogoutControllerSpec extends SpecBase with MockitoSugar {
 
     val captor = ArgumentCaptor.forClass(classOf[Map[String, String]])
 
-    val userAnswers = emptyUserAnswers.set(IdentifierPage, "ABTRUST12345678").success.value
+    val userAnswers = emptyUserAnswers.set(IdentifierPage, "ABTRUST12345678").value
 
     val application = applicationBuilder(userAnswers = Some(userAnswers))
       .overrides(bind[AuditConnector].toInstance(mockAuditConnector))

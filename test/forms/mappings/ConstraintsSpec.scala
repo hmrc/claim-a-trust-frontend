@@ -16,15 +16,14 @@
 
 package forms.mappings
 
-import java.time.LocalDate
-
 import generators.Generators
 import org.scalacheck.Gen
-import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-
+import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.data.validation.{Invalid, Valid}
+
+import java.time.LocalDate
 
 class ConstraintsSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyChecks with Generators  with Constraints {
 
@@ -85,6 +84,20 @@ class ConstraintsSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyC
     "return Invalid for a number above the threshold" in {
       val result = maximumValue(1, "error.max").apply(2)
       result mustEqual Invalid("error.max", 1)
+    }
+  }
+
+  "inRange" must {
+
+    "return Valid for a number within the range" in {
+      val result = inRange(1, 3, "error.valid").apply(2)
+      result mustEqual Valid
+    }
+
+    "return invalid for a number outside the range" in {
+      val result = inRange(1, 3,"error.max").apply(4)
+      println("HERE I AM " + result)
+      result mustEqual Invalid("error.max", 1, 3)
     }
   }
 

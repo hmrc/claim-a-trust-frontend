@@ -16,10 +16,10 @@
 
 package forms
 
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.OptionValues
+import org.scalatest.matchers.must.Matchers
 import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
+import org.scalatest.wordspec.AnyWordSpec
 import play.api.data.{Form, FormError}
 
 trait FormSpec extends AnyWordSpec with OptionValues with Matchers {

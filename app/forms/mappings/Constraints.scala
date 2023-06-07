@@ -16,9 +16,9 @@
 
 package forms.mappings
 
-import java.time.LocalDate
-
 import play.api.data.validation.{Constraint, Invalid, Valid}
+
+import java.time.LocalDate
 
 trait Constraints {
 
@@ -100,13 +100,5 @@ trait Constraints {
         Invalid(errorKey, args: _*)
       case _ =>
         Valid
-    }
-
-  protected def nonEmptySet(errorKey: String): Constraint[Set[_]] =
-    Constraint {
-      case set if set.nonEmpty =>
-        Valid
-      case _ =>
-        Invalid(errorKey)
     }
 }

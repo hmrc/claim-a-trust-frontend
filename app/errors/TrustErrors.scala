@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-package navigation
+package errors
 
-import base.SpecBase
-import controllers.routes
-import models._
-import pages._
+import play.api.mvc.Result
 
-class NavigatorSpec extends SpecBase {
+sealed trait TrustErrors
 
-  val navigator = new Navigator
+final case class ServerError(exceptionMessage: String = "") extends TrustErrors
 
-  "Navigator" must {
+final case class TrustFormError(result: Result) extends TrustErrors
 
-      "go to BeforeYouContinue from IsAgentManagingTrust" in {
+case object InvalidIdentifier extends TrustErrors
 
-        navigator.nextPage(IsAgentManagingTrustPage, NormalMode, UserAnswers("id")) mustBe routes.BeforeYouContinueController.onPageLoad
+case object NoData extends TrustErrors
 
-      }
-  }
-}
+case class UpstreamRelationshipError(reason: String) extends TrustErrors
+
+final case class UpstreamTaxEnrolmentsError(message : String) extends Exception(message) with TrustErrors

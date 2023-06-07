@@ -16,8 +16,8 @@
 
 package models
 
-import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
 class WithNameSpec extends AnyWordSpec with Matchers {
 

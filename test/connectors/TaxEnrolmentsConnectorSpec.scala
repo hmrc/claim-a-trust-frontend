@@ -18,10 +18,11 @@ package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import config.FrontendAppConfig
-import models.{EnrolmentCreated, TaxEnrolmentsRequest, UpstreamTaxEnrolmentsError}
+import models.{EnrolmentCreated, TaxEnrolmentsRequest}
 import org.scalatest.RecoverMethods
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
+import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.Helpers._
@@ -37,7 +38,7 @@ class TaxEnrolmentsConnectorSpec extends AnyWordSpec with Matchers with WireMock
   lazy val config: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
   lazy val connector: TaxEnrolmentsConnector = app.injector.instanceOf[TaxEnrolmentsConnector]
 
-  lazy val app = new GuiceApplicationBuilder()
+  lazy val app: Application = new GuiceApplicationBuilder()
     .configure(Seq(
       "microservice.services.tax-enrolments.port" -> server.port(),
       "auditing.enabled" -> false): _*
@@ -116,7 +117,9 @@ class TaxEnrolmentsConnectorSpec extends AnyWordSpec with Matchers with WireMock
           url = taxableEnrolmentUrl
         )
 
-        recoverToSucceededIf[UpstreamTaxEnrolmentsError](connector.enrol(TaxEnrolmentsRequest(utr)))
+        connector.enrol(TaxEnrolmentsRequest(utr)).value map { response =>
+          response mustBe Left(errors.UpstreamTaxEnrolmentsError)
+        }
 
       }
       "returns 401 UNAUTHORIZED" in {
@@ -127,53 +130,57 @@ class TaxEnrolmentsConnectorSpec extends AnyWordSpec with Matchers with WireMock
           url = taxableEnrolmentUrl
         )
 
-        recoverToSucceededIf[UpstreamTaxEnrolmentsError](connector.enrol(TaxEnrolmentsRequest(utr)))
-
-      }
-
-    }
-
-    "non-taxable" must {
-
-      "returns 204 NO_CONTENT" in {
-
-        wiremock(
-          payload = nonTaxableRequest,
-          expectedStatus = NO_CONTENT,
-          url = nonTaxableEnrolmentUrl
-        )
-
-        connector.enrol(TaxEnrolmentsRequest(urn)) map { response =>
-          response mustBe EnrolmentCreated
+        connector.enrol(TaxEnrolmentsRequest(utr)).value map { response =>
+          response mustBe Left(errors.UpstreamTaxEnrolmentsError)
         }
 
       }
 
-      "returns 400 BAD_REQUEST" in {
+      "non-taxable" must {
 
-        wiremock(
-          payload = nonTaxableRequest,
-          expectedStatus = BAD_REQUEST,
-          url = nonTaxableEnrolmentUrl
-        )
+        "returns 204 NO_CONTENT" in {
 
-        recoverToSucceededIf[UpstreamTaxEnrolmentsError](connector.enrol(TaxEnrolmentsRequest(urn)))
+          wiremock(
+            payload = nonTaxableRequest,
+            expectedStatus = NO_CONTENT,
+            url = nonTaxableEnrolmentUrl
+          )
 
-      }
-      "returns 401 UNAUTHORIZED" in {
+          connector.enrol(TaxEnrolmentsRequest(urn)) map { response =>
+            response mustBe Right(EnrolmentCreated)
+          }
 
-        wiremock(
-          payload = nonTaxableRequest,
-          expectedStatus = UNAUTHORIZED,
-          url = nonTaxableEnrolmentUrl
-        )
+        }
 
-        recoverToSucceededIf[UpstreamTaxEnrolmentsError](connector.enrol(TaxEnrolmentsRequest(urn)))
+        "returns 400 BAD_REQUEST" in {
+
+          wiremock(
+            payload = nonTaxableRequest,
+            expectedStatus = BAD_REQUEST,
+            url = nonTaxableEnrolmentUrl
+          )
+
+          connector.enrol(TaxEnrolmentsRequest(urn)).value map { response =>
+            response mustBe Left(errors.UpstreamTaxEnrolmentsError)
+          }
+        }
+
+        "returns 401 UNAUTHORIZED" in {
+
+          wiremock(
+            payload = nonTaxableRequest,
+            expectedStatus = UNAUTHORIZED,
+            url = nonTaxableEnrolmentUrl
+          )
+
+          connector.enrol(TaxEnrolmentsRequest(urn)).value map { response =>
+            response mustBe Left(errors.UpstreamTaxEnrolmentsError)
+          }
+
+        }
 
       }
 
     }
-
   }
-
 }

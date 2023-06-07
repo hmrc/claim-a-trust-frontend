@@ -52,14 +52,14 @@ class SessionRepositorySpec extends SpecBase with MongoSupport with BeforeAndAft
   "SessionRepository" must {
 
     "return None when no data exists" in {
-      repository.get(internalId1).futureValue mustBe None
+      repository.get(internalId1).value.futureValue mustBe Right(None)
     }
 
     "must be able to store data" in {
       //store
       repository.collection.countDocuments().toFuture().futureValue mustBe 0
-      repository.set(user1).futureValue mustBe true
-      repository.set(user2).futureValue mustBe true
+      repository.set(user1).value.futureValue mustBe Right(true)
+      repository.set(user2).value.futureValue mustBe Right(true)
 
       //retrieve
       val selector1 = Filters.equal("_id", internalId1)
@@ -76,29 +76,29 @@ class SessionRepositorySpec extends SpecBase with MongoSupport with BeforeAndAft
       await(repository.collection.insertOne(user2).toFuture())
 
       //retrieve
-      checkAnswers(repository.get(internalId1).futureValue.value, user1)
-      checkAnswers(repository.get(internalId2).futureValue.value, user2)
+      checkAnswers(repository.get(internalId1).value.futureValue.right.get.get, user1)
+      checkAnswers(repository.get(internalId2).value.futureValue.right.get.get, user2)
       repository.collection.countDocuments().toFuture().futureValue mustBe 2
     }
 
     "must be able to update data" in {
       //store
       repository.collection.countDocuments().toFuture().futureValue mustBe 0
-      repository.set(user1).futureValue mustBe true
-      repository.set(user2).futureValue mustBe true
+      repository.set(user1).value.futureValue mustBe Right(true)
+      repository.set(user2).value.futureValue mustBe Right(true)
 
       //retrieve
-      checkAnswers(repository.get(internalId1).futureValue.value, user1)
-      checkAnswers(repository.get(internalId2).futureValue.value, user2)
+      checkAnswers(repository.get(internalId1).value.futureValue.right.get.get, user1)
+      checkAnswers(repository.get(internalId2).value.futureValue.right.get.get, user2)
       repository.collection.countDocuments().toFuture().futureValue mustBe 2
 
       //update
-      repository.set(user1Updated).futureValue mustBe true
-      repository.set(user2Updated).futureValue mustBe true
+      repository.set(user1Updated).value.futureValue mustBe Right(true)
+      repository.set(user2Updated).value.futureValue mustBe Right(true)
 
       //retrieve updated
-      checkAnswers(repository.get(internalId1).futureValue.value, user1Updated)
-      checkAnswers(repository.get(internalId2).futureValue.value, user2Updated)
+      checkAnswers(repository.get(internalId1).value.futureValue.right.get.get, user1Updated)
+      checkAnswers(repository.get(internalId2).value.futureValue.right.get.get, user2Updated)
       repository.collection.countDocuments().toFuture().futureValue mustBe 2
     }
 
