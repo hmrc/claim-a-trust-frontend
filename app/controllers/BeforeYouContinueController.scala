@@ -44,7 +44,7 @@ class BeforeYouContinueController @Inject()(
                                              view: BeforeYouContinueView,
                                              connector: TrustsStoreConnector,
                                              errorHandler: ErrorHandler,
-                                             actions: Actions,
+                                             actions: Actions
                                            )(implicit ec: ExecutionContext, config: FrontendAppConfig)
   extends FrontendBaseController with I18nSupport with AuthPartialFunctions with Logging {
 
