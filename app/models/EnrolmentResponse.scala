@@ -19,5 +19,3 @@ package models
 sealed trait EnrolmentResponse
 
 case object EnrolmentCreated extends EnrolmentResponse
-
-final case class UpstreamTaxEnrolmentsError(message : String) extends Exception(message) with EnrolmentResponse

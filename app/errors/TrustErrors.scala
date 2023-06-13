@@ -30,4 +30,4 @@ case object NoData extends TrustErrors
 
 case class UpstreamRelationshipError(reason: String) extends TrustErrors
 
-final case class UpstreamTaxEnrolmentsError(message : String) extends Exception(message) with TrustErrors
+final case class UpstreamTaxEnrolmentsError(message : String) extends TrustErrors
