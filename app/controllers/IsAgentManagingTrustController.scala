@@ -17,78 +17,100 @@
 package controllers
 
 import controllers.actions._
+import errors.{NoData, TrustFormError}
 import forms.IsAgentManagingTrustFormProvider
-import javax.inject.Inject
+import handlers.ErrorHandler
 import models.Mode
+import models.requests.DataRequest
 import navigation.Navigator
-import pages.{IsAgentManagingTrustPage, IdentifierPage}
+import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.Logging
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
-import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
+import services.{RelationEstablishmentStatus, RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.Session
+import utils.{Session, TrustEnvelope}
 import views.html.IsAgentManagingTrustView
 
-import scala.concurrent.{ExecutionContext, Future}
+import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class IsAgentManagingTrustController @Inject()(
                                                 override val messagesApi: MessagesApi,
                                                 sessionRepository: SessionRepository,
                                                 navigator: Navigator,
-                                                identify: IdentifierAction,
-                                                getData: DataRetrievalAction,
-                                                requireData: DataRequiredAction,
                                                 formProvider: IsAgentManagingTrustFormProvider,
                                                 val controllerComponents: MessagesControllerComponents,
                                                 view: IsAgentManagingTrustView,
-                                                relationship: RelationshipEstablishment
+                                                errorHandler: ErrorHandler,
+                                                relationship: RelationshipEstablishment,
+                                                actions: Actions
                                               )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   private val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
+  private val className = getClass.getSimpleName
 
-      request.userAnswers.get(IdentifierPage) map { identifier =>
-        relationship.check(request.internalId, identifier) flatMap {
-          case RelationshipFound =>
-            logger.info(s"[IsAgentManagingTrustController][onPageLoad][Session ID: ${Session.id(hc)}]" +
-              s" user has recently passed IV for $identifier, sending user to successfully claimed")
+  def onPageLoad(mode: Mode): Action[AnyContent] = actions.authWithData.async { implicit request =>
+    val result = for {
+      identifier <- TrustEnvelope.fromOption(request.userAnswers.get(IdentifierPage))
+      relationshipStatus <- relationship.check(request.internalId, identifier)
+      outcome <- TrustEnvelope(relationshipOutcome(identifier, relationshipStatus, mode))
+    } yield outcome
+    result.value.map {
+      case Right(call) => call
+      case Left(NoData) => logger.warn(s"[$className][onPageLoad][Session ID: ${Session.id(hc)}] unable to retrieve identifier from user answers")
+        Redirect(routes.SessionExpiredController.onPageLoad)
+      case Left(_) => logger.warn(s"[$className][onPageLoad][Session ID: ${Session.id(hc)}] " +
+        s"Error while loading page")
+        InternalServerError(errorHandler.internalServerErrorTemplate)
+    }
+  }
+  def relationshipOutcome(identifier: String, relationStatus: RelationEstablishmentStatus, mode: Mode)
+                 (implicit request: DataRequest[AnyContent]): Result = relationStatus match {
+    case RelationshipFound =>
+      logger.info(s"[$className][onPageLoad][Session ID: ${Session.id(hc)}]" +
+        s" user has recently passed IV for $identifier, sending user to successfully claimed")
+      Redirect(routes.IvSuccessController.onPageLoad)
 
-            Future.successful(Redirect(routes.IvSuccessController.onPageLoad))
-          case RelationshipNotFound =>
-            val preparedForm = request.userAnswers.get(IsAgentManagingTrustPage) match {
-              case None => form
-              case Some(value) => form.fill(value)
-            }
-
-            Future.successful(Ok(view(preparedForm, mode, identifier)))
-        }
-
-      } getOrElse {
-        logger.warn(s"[IsAgentManagingTrustController][onPageLoad][Session ID: ${Session.id(hc)}] unable to retrieve identifier from user answers")
-        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
+    case RelationshipNotFound =>
+      val preparedForm = request.userAnswers.get(IsAgentManagingTrustPage) match {
+        case None => form
+        case Some(value) => form.fill(value)
       }
-
+          Ok(view(preparedForm, mode, identifier))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async { implicit request =>
 
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          request.userAnswers.get(IdentifierPage) map { utr =>
-            Future.successful(BadRequest(view(formWithErrors, mode, utr)))
-          } getOrElse {
-            logger.warn(s"[IsAgentManagingTrustController][onSubmit][Session ID: ${Session.id(hc)}] unable to retrieve identifier from user answers")
-            Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
-        },
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(IsAgentManagingTrustPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(IsAgentManagingTrustPage, mode, updatedAnswers))
-      )
+  def onSubmit(mode: Mode): Action[AnyContent] = actions.authWithData.async { implicit request =>
+    val result = for {
+      value <- TrustEnvelope(validateForm(mode))
+      updatedAnswers <- TrustEnvelope(request.userAnswers.set(IsAgentManagingTrustPage, value))
+      _ <- sessionRepository.set(updatedAnswers)
+    } yield Redirect(navigator.nextPage(IsAgentManagingTrustPage, mode, updatedAnswers))
+
+    result.value.map {
+      case Right(call) => call
+      case Left(TrustFormError(call)) => call
+      case Left(_) =>
+        logger.warn(s"[$className][onSubmit][Session ID: ${Session.id(hc)}] " +
+          s"Error while storing user answers")
+        InternalServerError(errorHandler.internalServerErrorTemplate)
+    }
+  }
+
+  def validateForm(mode: Mode) (implicit request:DataRequest[AnyContent]): Either[TrustFormError, Boolean] = {
+    form.bindFromRequest ().fold (
+      formWithErrors => {
+        request.userAnswers.get(IdentifierPage) map { utr =>
+          Left(TrustFormError(BadRequest(view(formWithErrors, mode, utr))))
+        } getOrElse {
+          logger.warn(s"[$className][onSubmit][Session ID: ${Session.id(hc)}] unable to retrieve identifier from user answers")
+          Left(TrustFormError(Redirect(routes.SessionExpiredController.onPageLoad)))
+        }
+      }, value => Right(value)
+    )
   }
 }

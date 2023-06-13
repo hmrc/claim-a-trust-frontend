@@ -16,52 +16,49 @@
 
 package models
 
-import java.time.LocalDateTime
-
+import errors._
 import pages._
+import play.api.Logging
 import play.api.libs.json._
 
-import scala.util.{Failure, Success, Try}
+import java.time.LocalDateTime
 
 final case class UserAnswers(
                               id: String,
                               data: JsObject = Json.obj(),
                               lastUpdated: LocalDateTime = LocalDateTime.now
-                            ) {
+                            ) extends Logging {
 
   def get[A](page: QuestionPage[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
 
-  def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A]): Try[UserAnswers] = {
+  def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A]): Either[TrustErrors, UserAnswers] = {
 
     val updatedData = data.setObject(page.path, Json.toJson(value)) match {
       case JsSuccess(jsValue, _) =>
-        Success(jsValue)
+        Right(jsValue)
       case JsError(errors) =>
-        Failure(JsResultException(errors))
+        logger.error(s"[UserAnswers][set] Unable to set path ${page.path} due to errors")
+        Left(ServerError(JsResultException(errors).getMessage))
     }
 
     updatedData.flatMap {
       d =>
         val updatedAnswers = copy (data = d)
-        page.cleanup(Some(value), updatedAnswers)
+        page.cleanup(updatedAnswers)
     }
   }
 
-  def remove[A](page: QuestionPage[A]): Try[UserAnswers] = {
+  // Only used by unit test
+  def remove[A](page: QuestionPage[A]): Either[TrustErrors, UserAnswers] = {
 
     val updatedData = data.setObject(page.path, JsNull) match {
-      case JsSuccess(jsValue, _) =>
-        Success(jsValue)
-      case JsError(_) =>
-        Success(data)
+      case JsSuccess(jsValue, _) => jsValue
+      case JsError(_) => data
     }
 
-    updatedData.flatMap {
-      d =>
-        val updatedAnswers = copy (data = d)
-        page.cleanup(None, updatedAnswers)
-    }
+    val updatedAnswers = copy (data = updatedData)
+    page.cleanup(updatedAnswers)
   }
 }
 
@@ -73,9 +70,9 @@ object UserAnswers {
 
     (
       (__ \ "_id").read[String] and
-      (__ \ "data").read[JsObject] and
-      (__ \ "lastUpdated").read(MongoDateTimeFormats.localDateTimeRead)
-    ) (UserAnswers.apply _)
+        (__ \ "data").read[JsObject] and
+        (__ \ "lastUpdated").read(MongoDateTimeFormats.localDateTimeRead)
+      ) (UserAnswers.apply _)
   }
 
   implicit lazy val writes: OWrites[UserAnswers] = {
@@ -84,8 +81,8 @@ object UserAnswers {
 
     (
       (__ \ "_id").write[String] and
-      (__ \ "data").write[JsObject] and
-      (__ \ "lastUpdated").write(MongoDateTimeFormats.localDateTimeWrite)
-    ) (unlift(UserAnswers.unapply))
+        (__ \ "data").write[JsObject] and
+        (__ \ "lastUpdated").write(MongoDateTimeFormats.localDateTimeWrite)
+      ) (unlift(UserAnswers.unapply))
   }
 }

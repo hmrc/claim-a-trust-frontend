@@ -130,6 +130,11 @@ class MappingsSpec extends AnyWordSpec with Matchers with OptionValues with Mapp
       result.errors must contain(FormError("value", "error.required"))
     }
 
+    "not bind invalid regEx value" in {
+      val result = testForm.bind(Map("value" -> "1.1"))
+      result.errors must contain(FormError("value", "error.wholeNumber"))
+    }
+
     "not bind an empty map" in {
       val result = testForm.bind(Map.empty[String, String])
       result.errors must contain(FormError("value", "error.required"))

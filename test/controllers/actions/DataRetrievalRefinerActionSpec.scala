@@ -17,10 +17,15 @@
 package controllers.actions
 
 import base.SpecBase
+import cats.data.EitherT
+import errors.TrustErrors
+import handlers.ErrorHandler
 import models.UserAnswers
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 import org.mockito.MockitoSugar
+import org.scalatest.EitherValues
 import org.scalatest.concurrent.ScalaFutures
+import play.api.mvc.Result
 import repositories.SessionRepository
 import uk.gov.hmrc.auth.core.AffinityGroup.Organisation
 import uk.gov.hmrc.auth.core.retrieve.Credentials
@@ -28,10 +33,11 @@ import uk.gov.hmrc.auth.core.retrieve.Credentials
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutures {
+class DataRetrievalRefinerActionSpec extends SpecBase with MockitoSugar with ScalaFutures with EitherValues {
 
-  class Harness(sessionRepository: SessionRepository) extends DataRetrievalActionImpl(sessionRepository) {
-    def callTransform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
+  private val mockErrorHandler = mock[ErrorHandler]
+  class Harness(sessionRepository: SessionRepository) extends DataRetrievalRefinerAction(sessionRepository, mockErrorHandler) {
+    def callRefine[A](request: IdentifierRequest[A]): Future[Either[Result, OptionalDataRequest[A]]] = refine(request)
   }
 
   "Data Retrieval Action" when {
@@ -41,13 +47,14 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
       "set userAnswers to 'None' in the request" in {
 
         val sessionRepository = mock[SessionRepository]
-        when(sessionRepository.get("id")) thenReturn Future(None)
+        when(sessionRepository.get("id"))
+          .thenReturn(EitherT[Future, TrustErrors, Option[UserAnswers]](Future.successful(Right(None))))
         val action = new Harness(sessionRepository)
 
-        val futureResult = action.callTransform(new IdentifierRequest(fakeRequest, "id", Credentials("providerId", "GG"), Organisation))
+        val futureResult = action.callRefine(new IdentifierRequest(fakeRequest, "id", Credentials("providerId", "GG"), Organisation))
 
         whenReady(futureResult) { result =>
-          result.userAnswers.isEmpty mustBe true
+          result.value.userAnswers.isEmpty mustBe true
         }
       }
     }
@@ -57,13 +64,14 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutur
       "build a userAnswers object and add it to the request" in {
 
         val sessionRepository = mock[SessionRepository]
-        when(sessionRepository.get("id")) thenReturn Future(Some(new UserAnswers("id")))
+        when(sessionRepository.get("id"))
+        .thenReturn(EitherT[Future, TrustErrors, Option[UserAnswers]](Future.successful(Right(Some(new UserAnswers("id"))))))
         val action = new Harness(sessionRepository)
 
-        val futureResult = action.callTransform(new IdentifierRequest(fakeRequest, "id", Credentials("providerId", "GG"), Organisation))
+        val futureResult = action.callRefine(new IdentifierRequest(fakeRequest, "id", Credentials("providerId", "GG"), Organisation))
 
         whenReady(futureResult) { result =>
-          result.userAnswers.isDefined mustBe true
+          result.value.userAnswers.isDefined mustBe true
         }
       }
     }

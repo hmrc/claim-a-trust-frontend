@@ -17,7 +17,7 @@
 package controllers.testOnlyDoNotUseInAppConf
 
 import com.google.inject.Inject
-import controllers.actions.IdentifierAction
+import controllers.actions.Actions
 import models.requests.IdentifierRequest
 import play.api.Logging
 import play.api.i18n.MessagesApi
@@ -34,11 +34,11 @@ class TestRelationshipEstablishmentController @Inject()(
                                                          override val messagesApi: MessagesApi,
                                                          val controllerComponents: MessagesControllerComponents,
                                                          relationshipEstablishmentConnector: RelationshipEstablishmentConnector,
-                                                         identify: IdentifierAction
+                                                         actions: Actions
                                                        )(implicit ec: ExecutionContext)
   extends FrontendBaseController with Logging {
 
-  def check(identifier: String): Action[AnyContent] = identify.async { implicit request =>
+  def check(identifier: String): Action[AnyContent] = actions.authAction.async { implicit request =>
 
       logger.warn("[TestRelationshipEstablishmentController][check] TrustIV is using a test route, you don't want this in production.")
 

@@ -16,31 +16,23 @@
 
 package controllers.actions
 
+import handlers.ErrorHandler
 import models.UserAnswers
 import models.requests.{IdentifierRequest, OptionalDataRequest}
+import play.api.mvc.Result
+import repositories.SessionRepository
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class FakeDataRetrievalAction(dataToReturn: Option[UserAnswers]) extends DataRetrievalAction {
+class FakeDataRetrievalRefinerAction(dataToReturn: Option[UserAnswers], sessionRepository: SessionRepository, errorHandler: ErrorHandler)
+                                    (implicit executionContext: ExecutionContext)
+  extends DataRetrievalRefinerAction(sessionRepository, errorHandler) {
 
-  override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] =
-    dataToReturn match {
-      case None =>
-        Future(OptionalDataRequest(
-          request = request.request,
+  override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, OptionalDataRequest[A]]] = {
+        Future.successful(Right(OptionalDataRequest(request = request.request,
           internalId = request.identifier,
           credentials = request.credentials,
           affinityGroup = request.affinityGroup,
-          userAnswers = None))
-      case Some(userAnswers) =>
-        Future(OptionalDataRequest(
-          request = request.request,
-          internalId = request.identifier,
-          credentials = request.credentials,
-          affinityGroup = request.affinityGroup,
-          userAnswers = Some(userAnswers)))
-    }
-
-  override protected implicit val executionContext: ExecutionContext =
-    scala.concurrent.ExecutionContext.Implicits.global
+          userAnswers = dataToReturn)))
+  }
 }

@@ -17,9 +17,9 @@
 package services
 
 import java.util.concurrent.TimeUnit
-
 import base.SpecBase
 import controllers.actions.{FakeAuthConnector, FakeFailingAuthConnector}
+import errors.ServerError
 import models.RelationshipForIdentifier
 import org.scalatest.concurrent.ScalaFutures
 import uk.gov.hmrc.auth.core.{FailedRelationship, MissingBearerToken}
@@ -33,7 +33,7 @@ class RelationshipEstablishmentServiceSpec extends SpecBase with ScalaFutures {
   val utr = "1234567890"
   val urn = "ABTRUST12345678"
 
-  val relationshipForIdentifier = injector.instanceOf[RelationshipForIdentifier]
+  val relationshipForIdentifier: RelationshipForIdentifier = injector.instanceOf[RelationshipForIdentifier]
 
   "RelationshipEstablishment" when {
 
@@ -47,9 +47,8 @@ class RelationshipEstablishmentServiceSpec extends SpecBase with ScalaFutures {
 
           val service = new RelationshipEstablishmentService(auth, relationshipForIdentifier)
 
-          intercept[RelationshipError] {
-            Await.result(service.check(fakeInternalId, utr), Duration(5, TimeUnit.SECONDS))
-          }
+          val result = Await.result(service.check(fakeInternalId, utr).value, Duration(5, TimeUnit.SECONDS))
+            result mustBe Left(ServerError("Bearer token not supplied"))
         }
       }
 
@@ -63,11 +62,11 @@ class RelationshipEstablishmentServiceSpec extends SpecBase with ScalaFutures {
 
             val service = new RelationshipEstablishmentService(auth, relationshipForIdentifier)
 
-            val result = service.check(fakeInternalId, utr)
+            val result = service.check(fakeInternalId, utr).value
 
             whenReady(result) {
               s =>
-                s mustBe RelationshipNotFound
+                s mustBe Right(RelationshipNotFound)
             }
           }
 
@@ -81,11 +80,11 @@ class RelationshipEstablishmentServiceSpec extends SpecBase with ScalaFutures {
 
             val service = new RelationshipEstablishmentService(auth, relationshipForIdentifier)
 
-            val result = service.check(fakeInternalId, utr)
+            val result = service.check(fakeInternalId, utr).value
 
             whenReady(result) {
               s =>
-                s mustBe RelationshipFound
+                s mustBe Right(RelationshipFound)
             }
 
           }
@@ -106,9 +105,8 @@ class RelationshipEstablishmentServiceSpec extends SpecBase with ScalaFutures {
 
           val service = new RelationshipEstablishmentService(auth, relationshipForIdentifier)
 
-          intercept[RelationshipError] {
-            Await.result(service.check(fakeInternalId, urn), Duration(5, TimeUnit.SECONDS))
-          }
+          val result = Await.result(service.check(fakeInternalId, urn).value, Duration(5, TimeUnit.SECONDS))
+          result mustBe Left(ServerError("Bearer token not supplied"))
         }
       }
 
@@ -122,11 +120,11 @@ class RelationshipEstablishmentServiceSpec extends SpecBase with ScalaFutures {
 
             val service = new RelationshipEstablishmentService(auth, relationshipForIdentifier)
 
-            val result = service.check(fakeInternalId, urn)
+            val result = service.check(fakeInternalId, urn).value
 
             whenReady(result) {
               s =>
-                s mustBe RelationshipNotFound
+                s mustBe Right(RelationshipNotFound)
             }
           }
 
@@ -140,11 +138,11 @@ class RelationshipEstablishmentServiceSpec extends SpecBase with ScalaFutures {
 
             val service = new RelationshipEstablishmentService(auth, relationshipForIdentifier)
 
-            val result = service.check(fakeInternalId, urn)
+            val result = service.check(fakeInternalId, urn).value
 
             whenReady(result) {
               s =>
-                s mustBe RelationshipFound
+                s mustBe Right(RelationshipFound)
             }
 
           }

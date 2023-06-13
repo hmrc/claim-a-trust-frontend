@@ -18,15 +18,15 @@ package controllers
 
 import com.google.inject.{Inject, Singleton}
 import config.FrontendAppConfig
-import controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import controllers.actions.Actions
 import models.IsUTR
 import pages.IdentifierPage
 import play.api.Logging
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.Session
 
 import scala.concurrent.ExecutionContext
@@ -34,14 +34,12 @@ import scala.concurrent.ExecutionContext
 @Singleton
 class LogoutController @Inject()(
                                   appConfig: FrontendAppConfig,
-                                  identify: IdentifierAction,
-                                  getData: DataRetrievalAction,
-                                  requireData: DataRequiredAction,
+                                  actions: Actions,
                                   val controllerComponents: MessagesControllerComponents,
                                   auditConnector: AuditConnector
                                 )(implicit val ec: ExecutionContext) extends FrontendBaseController with Logging {
 
-  def logout: Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def logout: Action[AnyContent] = actions.authWithData {
     request =>
 
       implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)

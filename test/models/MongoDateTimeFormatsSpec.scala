@@ -17,7 +17,6 @@
 package models
 
 import java.time.{LocalDate, LocalDateTime}
-
 import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.freespec.AnyFreeSpec
@@ -49,5 +48,7 @@ class MongoDateTimeFormatsSpec extends AnyFreeSpec with Matchers with OptionValu
       val result = Json.toJson(date).as[LocalDateTime]
       result mustEqual date
     }
+
+    
   }
 }

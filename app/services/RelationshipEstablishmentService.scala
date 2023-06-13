@@ -16,8 +16,9 @@
 
 package services
 
+import cats.data.EitherT
 import config.FrontendAppConfig
-import javax.inject.Inject
+import errors.ServerError
 import models.RelationshipForIdentifier
 import play.api.Logging
 import play.api.mvc._
@@ -25,15 +26,15 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import utils.Session
+import utils.TrustEnvelope.TrustEnvelope
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 sealed trait RelationEstablishmentStatus
 
 case object RelationshipFound extends RelationEstablishmentStatus
 case object RelationshipNotFound extends RelationEstablishmentStatus
-case class RelationshipError(reason : String) extends Exception(reason)
-
 class RelationshipEstablishmentService @Inject()(
                                                   val authConnector: AuthConnector,
                                                   relationshipForIdentifier: RelationshipForIdentifier
@@ -43,7 +44,7 @@ class RelationshipEstablishmentService @Inject()(
                                                 )
   extends RelationshipEstablishment with Logging {
 
-  def check(internalId: String, identifier: String)(implicit request: Request[AnyContent]): Future[RelationEstablishmentStatus] = {
+  def check(internalId: String, identifier: String)(implicit request: Request[AnyContent]): TrustEnvelope[RelationEstablishmentStatus] = EitherT{
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
@@ -52,16 +53,16 @@ class RelationshipEstablishmentService @Inject()(
     authorised(relationshipToCheck) {
       logger.info(s"[RelationshipEstablishmentService][check][Session ID: ${Session.id(hc)}]" +
         s" Relationship established in Trust IV for user and $identifier")
-        Future.successful(RelationshipFound)
+        Future.successful(Right(RelationshipFound))
     } recoverWith {
       case FailedRelationship(msg) =>
         logger.warn(s"[RelationshipEstablishmentService][check][Session ID: ${Session.id(hc)}]" +
           s" Relationship does not exist in Trust IV for user and $identifier due to error $msg")
-        Future.successful(RelationshipNotFound)
+        Future.successful(Right(RelationshipNotFound))
       case e : Throwable =>
         logger.error(s"[RelationshipEstablishmentService][check][Session ID: ${Session.id(hc)}]" +
           s" Service was unable to determine if an IV relationship existed in Trust IV. Cannot continue with the journey")
-        throw RelationshipError(e.getMessage)
+        Future.successful(Left(ServerError(e.getMessage)))
     }
   }
 
@@ -69,6 +70,6 @@ class RelationshipEstablishmentService @Inject()(
 
 trait RelationshipEstablishment extends AuthorisedFunctions {
 
-  def check(internalId: String, utr: String)(implicit request: Request[AnyContent]): Future[RelationEstablishmentStatus]
+  def check(internalId: String, utr: String)(implicit request: Request[AnyContent]): TrustEnvelope[RelationEstablishmentStatus]
 
 }
