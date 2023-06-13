@@ -42,7 +42,7 @@ class ConnectorErrorResponseHandlerSpec extends AnyWordSpec with Matchers with R
 
       "returns a ServerError object with the correct message" in {
 
-        val result = ServerError(s"HTTP response ${NOT_FOUND} for ")
+        val result = ServerError(s"HTTP response $NOT_FOUND for ")
 
         val actualOutput = TestConnectorErrorResponseHandler.handleError(NOT_FOUND, "", "")
 

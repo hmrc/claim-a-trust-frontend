@@ -328,12 +328,6 @@ class IvFailureControllerSpec extends SpecBase with EitherValues {
           .set(IdentifierPage, utr).value
           .set(IsAgentManagingTrustPage, true).value
 
-//        val application = applicationBuilder(userAnswers = Some(answers))
-//          .overrides(
-//            bind[TrustsStoreConnector].toInstance(connector),
-//            bind[AuditService].toInstance(mockAuditService))
-//          .build()
-
         val application = applicationBuilder(userAnswers = Some(answers))
           .overrides(
             bind[AuditService].toInstance(mockAuditService))

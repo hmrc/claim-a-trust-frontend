@@ -91,9 +91,6 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
         when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
           .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound))))
 
-//        when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
-//          .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound))))
-
         val result = route(application, request).value
 
         status(result) mustEqual OK
@@ -147,7 +144,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
         contentType(result) mustBe Some("text/html")
       }
 
-      "when error exception message is unexpected issue due to empty exceptionMessage" in {
+      "when error exception message is empty" in {
 
         val userAnswers = UserAnswers(userAnswersId)
           .set(IsAgentManagingTrustPage, true).value

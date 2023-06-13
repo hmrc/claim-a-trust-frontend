@@ -33,7 +33,7 @@ import uk.gov.hmrc.auth.core.retrieve.Credentials
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DataRetrievalActionSpec extends SpecBase with MockitoSugar with ScalaFutures with EitherValues {
+class DataRetrievalRefinerActionSpec extends SpecBase with MockitoSugar with ScalaFutures with EitherValues {
 
   private val mockErrorHandler = mock[ErrorHandler]
   class Harness(sessionRepository: SessionRepository) extends DataRetrievalRefinerAction(sessionRepository, mockErrorHandler) {

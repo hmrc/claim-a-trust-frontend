@@ -48,7 +48,7 @@ class TaxEnrolmentsConnector @Inject()(http: HttpClient, config : FrontendAppCon
       response.status match {
         case NO_CONTENT => Right(EnrolmentCreated)
         case status =>
-          Left(UpstreamTaxEnrolmentsError(s"HTTP response ${response.status} ${response.body}"))
+          Left(UpstreamTaxEnrolmentsError(s"HTTP response ${status} ${response.body}"))
       }
     ).recover {
       case ex => Left(handleError(ex, "updateTaskStatus", url))

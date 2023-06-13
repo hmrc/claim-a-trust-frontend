@@ -61,7 +61,7 @@ class DefaultSessionRepository @Inject()(val mongo: MongoComponent,
         logger.error(s"[$className][set] failed to fetch from ${collectionName} ${e.getMessage}")
         Left(ServerError(e.getMessage))
       case e: Exception =>
-        logger.error(s"[$className][set] ${collectionName} ${e.getMessage}")
+        logger.error(s"[$className][set] $collectionName ${e.getMessage}")
         Left(ServerError(e.getMessage))
     }
   }

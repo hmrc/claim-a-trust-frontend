@@ -60,7 +60,7 @@ class BeforeYouContinueController @Inject()(
             s" relationship is already established in IV for $identifier, sending user to successfully claimed")
           Redirect(routes.IvSuccessController.onPageLoad)
         case RelationshipNotFound =>
-          logger.info(s"[BeforeYouContinueController][onPageLoad][Session ID: ${Session.id(hc)}]" +
+          logger.info(s"[$className][onPageLoad][Session ID: ${Session.id(hc)}]" +
             s" relationship does not exist in IV for $identifier, sending user to begin journey")
           Ok(view(identifier))
       }

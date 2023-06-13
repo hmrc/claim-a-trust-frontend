@@ -56,8 +56,8 @@ class IsAgentManagingTrustController @Inject()(
   def onPageLoad(mode: Mode): Action[AnyContent] = actions.authWithData.async { implicit request =>
     val result = for {
       identifier <- TrustEnvelope.fromOption(request.userAnswers.get(IdentifierPage))
-      relatishipStatus <- relationship.check(request.internalId, identifier)
-      outcome <- TrustEnvelope(relationshipOutcome(identifier, relatishipStatus, mode))
+      relationshipStatus <- relationship.check(request.internalId, identifier)
+      outcome <- TrustEnvelope(relationshipOutcome(identifier, relationshipStatus, mode))
     } yield outcome
     result.value.map {
       case Right(call) => call

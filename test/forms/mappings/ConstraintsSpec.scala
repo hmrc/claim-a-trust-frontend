@@ -97,7 +97,6 @@ class ConstraintsSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyC
 
     "return invalid for a number outside the range" in {
       val result = inRange(1, 3,"error.max").apply(4)
-      println("HERE I AM " + result)
       result mustEqual Invalid("error.max", 1, 3)
     }
   }

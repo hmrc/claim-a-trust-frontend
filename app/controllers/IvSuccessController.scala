@@ -31,7 +31,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services._
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import utils.TrustEnvelope.TrustEnvelope
 import utils.{Session, TrustEnvelope}
 import views.html.IvSuccessView
 
@@ -42,7 +41,6 @@ class IvSuccessController @Inject()(
                                      override val messagesApi: MessagesApi,
                                      actions: Actions,
                                      val controllerComponents: MessagesControllerComponents,
-                                     relationshipEstablishment: RelationshipEstablishment,
                                      taxEnrolmentsConnector: TaxEnrolmentsConnector,
                                      view: IvSuccessView,
                                      errorHandler: ErrorHandler,
@@ -109,18 +107,18 @@ class IvSuccessController @Inject()(
       result.value.map {
         case Right(call) => call
         case Left(UpstreamTaxEnrolmentsError(exceptionMessage)) if exceptionMessage.nonEmpty =>
-          handleError(result, identifier, exceptionMessage, methodName = "onRelationshipFound", sessionId = {
+          handleError(identifier, exceptionMessage, methodName = "onRelationshipFound", sessionId = {
             Session.id(hc)
           })
         case Left(ServerError(exceptionMessage)) if exceptionMessage.nonEmpty =>
-          handleError(result, identifier, exceptionMessage, methodName = "onRelationshipFound", sessionId = {Session.id(hc)})
+          handleError(identifier, exceptionMessage, methodName = "onRelationshipFound", sessionId = {Session.id(hc)})
         case _ => val exceptionMessage = s"Encountered an unexpected issue claiming a trust"
-          handleError(result, identifier, exceptionMessage, methodName = "onRelationshipFound", sessionId = {Session.id(hc)})
+          handleError(identifier, exceptionMessage, methodName = "onRelationshipFound", sessionId = {Session.id(hc)})
       }
     }
   }
 
-  private def handleError(result: TrustEnvelope[Result], identifier: String, exceptionMessage: String, methodName: String, sessionId: String)
+  private def handleError(identifier: String, exceptionMessage: String, methodName: String, sessionId: String)
                             (implicit request: DataRequest[_]): Result = {
     auditService.auditFailure(CLAIM_A_TRUST_ERROR, identifier, exceptionMessage)
     for {

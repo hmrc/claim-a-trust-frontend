@@ -87,8 +87,6 @@ class SaveIdentifierControllerSpec extends SpecBase with EitherValues {
 
         val result = route(application, request).value
 
-        println(status(result))
-
         status(result) mustEqual INTERNAL_SERVER_ERROR
 
         contentType(result) mustBe Some("text/html")
@@ -204,7 +202,7 @@ class SaveIdentifierControllerSpec extends SpecBase with EitherValues {
 
         }
 
-        "user answers do not exist" in {
+        "return an internal server error when user answers do not exist" in {
 
           val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
 

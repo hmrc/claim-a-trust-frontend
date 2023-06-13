@@ -156,12 +156,6 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar with
 
       val repository = mock[SessionRepository]
 
-      val userAnswers = UserAnswers(userAnswersId)
-        .set(IsAgentManagingTrustPage, true)
-        .value
-        .set(IdentifierPage, identifier)
-        .value
-
       when(repository.set(any()))
         .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(Left(ServerError()))))
 
@@ -188,7 +182,7 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar with
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn
-        (EitherT[Future, TrustErrors, Boolean])(Future.successful(Right(true)))
+        EitherT[Future, TrustErrors, Boolean](Future.successful(Right(true)))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers), relationshipEstablishment = fakeEstablishmentServiceNotFound)

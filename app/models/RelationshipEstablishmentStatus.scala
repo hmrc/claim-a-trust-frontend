@@ -28,8 +28,6 @@ object RelationshipEstablishmentStatus {
   case class UnsupportedRelationshipStatus(reason: String) extends RelationshipEstablishmentStatus
   case object NoRelationshipStatus extends RelationshipEstablishmentStatus
 
-  case class UpstreamRelationshipError(reason: String) extends RelationshipEstablishmentStatus
-
   def processRelationshipEstablishmentStatusResponse(responseJson: JsValue) : RelationshipEstablishmentStatus = {
     (responseJson \ "errorKey").asOpt[String] match {
       case Some("TRUST_LOCKED")       => Locked
