@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package Repositories
+package repositories
+
 
 import base.SpecBase
 import models.UserAnswers
 import org.mongodb.scala.bson.BsonDocument
-import org.mongodb.scala.model.Filters
-import org.scalatest.BeforeAndAfterEach
+import org.scalatest.{BeforeAndAfterEach, EitherValues}
 import play.api.libs.json.Json
 import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import repositories.DefaultSessionRepository
@@ -28,7 +28,7 @@ import uk.gov.hmrc.mongo.test.MongoSupport
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class SessionRepositorySpec extends SpecBase with MongoSupport with BeforeAndAfterEach {
+class SessionRepositorySpec extends SpecBase with MongoSupport with BeforeAndAfterEach with EitherValues {
 
   private val repository = new DefaultSessionRepository(mongoComponent, frontendAppConfig)
 
@@ -39,9 +39,9 @@ class SessionRepositorySpec extends SpecBase with MongoSupport with BeforeAndAft
   private val user1Updated = UserAnswers(internalId1, Json.obj("test" -> "321"))
   private val user2Updated = UserAnswers(internalId2, Json.obj("test" -> "654"))
 
-  private def checkAnswers(actual: UserAnswers, expected: UserAnswers): Unit = {
-    actual.id mustBe expected.id
-    actual.data mustBe expected.data
+  private def checkAnswers(actual: Option[UserAnswers], expected: UserAnswers): Unit = {
+    actual.value.id mustBe expected.id
+    actual.value.data mustBe expected.data
   }
 
   override def beforeEach(): Unit = {
@@ -62,10 +62,8 @@ class SessionRepositorySpec extends SpecBase with MongoSupport with BeforeAndAft
       repository.set(user2).value.futureValue mustBe Right(true)
 
       //retrieve
-      val selector1 = Filters.equal("_id", internalId1)
-      val selector2 = Filters.equal("_id", internalId2)
-      checkAnswers(repository.collection.find(selector1).headOption().futureValue.value, user1)
-      checkAnswers(repository.collection.find(selector2).headOption().futureValue.value, user2)
+      checkAnswers(repository.get(internalId1).value.futureValue.value, user1)
+      checkAnswers(repository.get(internalId2).value.futureValue.value, user2)
       repository.collection.countDocuments().toFuture().futureValue mustBe 2
     }
 
@@ -76,8 +74,8 @@ class SessionRepositorySpec extends SpecBase with MongoSupport with BeforeAndAft
       await(repository.collection.insertOne(user2).toFuture())
 
       //retrieve
-      checkAnswers(repository.get(internalId1).value.futureValue.right.get.get, user1)
-      checkAnswers(repository.get(internalId2).value.futureValue.right.get.get, user2)
+      checkAnswers(repository.get(internalId1).value.futureValue.value, user1)
+      checkAnswers(repository.get(internalId2).value.futureValue.value, user2)
       repository.collection.countDocuments().toFuture().futureValue mustBe 2
     }
 
@@ -88,8 +86,8 @@ class SessionRepositorySpec extends SpecBase with MongoSupport with BeforeAndAft
       repository.set(user2).value.futureValue mustBe Right(true)
 
       //retrieve
-      checkAnswers(repository.get(internalId1).value.futureValue.right.get.get, user1)
-      checkAnswers(repository.get(internalId2).value.futureValue.right.get.get, user2)
+      checkAnswers(repository.get(internalId1).value.futureValue.value, user1)
+      checkAnswers(repository.get(internalId2).value.futureValue.value, user2)
       repository.collection.countDocuments().toFuture().futureValue mustBe 2
 
       //update
@@ -97,8 +95,8 @@ class SessionRepositorySpec extends SpecBase with MongoSupport with BeforeAndAft
       repository.set(user2Updated).value.futureValue mustBe Right(true)
 
       //retrieve updated
-      checkAnswers(repository.get(internalId1).value.futureValue.right.get.get, user1Updated)
-      checkAnswers(repository.get(internalId2).value.futureValue.right.get.get, user2Updated)
+      checkAnswers(repository.get(internalId1).value.futureValue.value, user1Updated)
+      checkAnswers(repository.get(internalId2).value.futureValue.value, user2Updated)
       repository.collection.countDocuments().toFuture().futureValue mustBe 2
     }
 
