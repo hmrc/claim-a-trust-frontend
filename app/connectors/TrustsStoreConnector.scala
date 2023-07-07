@@ -23,6 +23,7 @@ import play.api.http.Status.CREATED
 import play.api.libs.json.{JsValue, Json, Writes}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
 import utils.TrustEnvelope.TrustEnvelope
+import uk.gov.hmrc.http.HttpReads.Implicits._
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext

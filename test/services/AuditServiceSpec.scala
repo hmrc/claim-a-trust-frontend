@@ -31,11 +31,10 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import scala.concurrent.ExecutionContext
 
-class AuditServiceSpec extends SpecBase with MockitoSugar {
+class AuditServiceSpec (implicit ec: ExecutionContext) extends SpecBase with MockitoSugar {
 
   private val auditConnector: AuditConnector = mock[AuditConnector]
   lazy val config: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-  implicit val ec = ExecutionContext.global
   private val auditService: AuditService = new AuditService(auditConnector, config, ec)
 
   private val event: String = "event"

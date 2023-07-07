@@ -60,7 +60,7 @@
         <p>@messages("ivSuccess.no.agent.paragraph2")</p>
         <p>@messages("ivSuccess.no.agent.paragraph3") <a href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/trusts" target="_blank" rel="noopener noreferrer">@messages("ivSuccess.contactLink")</a>.</p>
 
-        @formHelper(action = IvSuccessController.onSubmit, 'autoComplete -> "off") {
+        @formHelper(action = IvSuccessController.onSubmit, Symbol("autoComplete") -> "off") {
             @submitButton(Some(messages("site.continue")))
         }
     }

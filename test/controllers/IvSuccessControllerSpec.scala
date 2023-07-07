@@ -48,7 +48,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
   // Mock mongo repository
   private val mockRepository = mock[SessionRepository]
 
-  override def beforeEach {
+  override def beforeEach(): Unit = {
     reset(connector)
     reset(mockRelationshipEstablishment)
     reset(mockRepository)
@@ -201,10 +201,6 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
           .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(Right(true))))
 
         val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
-
-        val view = application.injector.instanceOf[IvSuccessView]
-
-        val viewAsString = view(isAgent = false, utr)(request, messages).toString
 
         when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
           .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipNotFound))))
