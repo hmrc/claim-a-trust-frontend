@@ -40,12 +40,10 @@ lazy val root = (project in file("."))
   .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(DefaultBuildSettings.scalaSettings: _*)
   .settings(DefaultBuildSettings.defaultSettings(): _*)
-  .settings(SbtDistributablesPlugin.publishingSettings: _*)
   .settings(inConfig(Test)(testSettings): _*)
   .settings(majorVersion := 0)
   .settings(
-    scalaVersion := "2.12.15",
-    SilencerSettings(),
+    scalaVersion := "2.13.11",
     name := appName,
     RoutesKeys.routesImport += "models._",
     TwirlKeys.templateImports ++= Seq(
@@ -63,6 +61,8 @@ lazy val root = (project in file("."))
     ScoverageKeys.coverageMinimumStmtTotal := 81,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
+    scalacOptions+= "-Wconf:src=routes/.*:s",
+    scalacOptions+= "-Wconf:cat=unused-imports&src=html/.*:s",
     scalacOptions ++= Seq("-feature"),
     libraryDependencies ++= AppDependencies(),
     dependencyOverrides ++= AppDependencies.overrides,
@@ -96,3 +96,5 @@ lazy val testSettings: Seq[Def.Setting[_]] = Seq(
 )
 
 addCommandAlias("scalastyleAll", "all scalastyle test:scalastyle")
+
+libraryDependencySchemes ++= Seq("org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always)

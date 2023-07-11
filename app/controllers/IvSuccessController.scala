@@ -124,7 +124,7 @@ class IvSuccessController @Inject()(
     for {
       ua <- TrustEnvelope(request.userAnswers.set(HasEnrolled, false))
       _ <- sessionRepository.set(ua)
-    } yield Unit
+    } yield()
     logger.error(s"[$className][handleError][Session ID: ${Session.id(hc)}] failed to create enrolment for " +
       s"$identifier with tax-enrolments, users credential has not been updated, user needs to claim again")
     InternalServerError(errorHandler.internalServerErrorTemplate)
