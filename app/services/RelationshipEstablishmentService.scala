@@ -48,6 +48,10 @@ class RelationshipEstablishmentService @Inject()(
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
+    logger.info(s"[RelationshipEstablishmentService][check][Session ID: ${Session.id(hc)}]" +
+      s"HeaderCarrier contained bearer token: ${hc.authorization.isDefined}"
+    )
+
     val relationshipToCheck = relationshipForIdentifier(identifier)
 
     authorised(relationshipToCheck) {
