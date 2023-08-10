@@ -22,7 +22,6 @@ object AppDependencies {
     "org.scalatestplus"           %% "scalacheck-1-17"          % "3.2.16.0",
     "org.pegdown"                 %  "pegdown"                  % "1.6.0",
     "org.jsoup"                   %  "jsoup"                    % "1.16.1",
-    "com.typesafe.play"           %% "play-test"                % PlayVersion.current,
     "org.scalacheck"              %% "scalacheck"               % "1.17.0",
     "com.github.tomakehurst"      % "wiremock-standalone"       % "2.27.2",
     "com.vladsch.flexmark"        %  "flexmark-all"             % "0.64.8"

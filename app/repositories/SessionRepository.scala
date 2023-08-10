@@ -30,7 +30,7 @@ import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 import utils.TrustEnvelope.TrustEnvelope
 
-import java.time.LocalDateTime
+import java.time.Instant
 import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
@@ -69,7 +69,7 @@ class DefaultSessionRepository @Inject()(val mongo: MongoComponent,
   override def set(userAnswers: UserAnswers): TrustEnvelope[Boolean] = EitherT {
 
     val selector = equal("_id", userAnswers.id)
-    val newUser = userAnswers.copy(lastUpdated = LocalDateTime.now)
+    val newUser = userAnswers.copy(lastUpdated = Instant.now())
     val replaceOptions = new ReplaceOptions().upsert(true)
 
     collection.replaceOne(selector, newUser, replaceOptions).headOption().map { result =>
