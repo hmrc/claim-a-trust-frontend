@@ -1,7 +1,6 @@
 import sbt._
 
 object AppDependencies {
-  import play.core.PlayVersion
 
   val bootstrapFrontendPlay28 = "7.21.0"
 
