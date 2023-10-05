@@ -36,12 +36,12 @@ val excludedPackages = Seq(
 lazy val root = (project in file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
-  .settings(DefaultBuildSettings.scalaSettings: _*)
-  .settings(DefaultBuildSettings.defaultSettings(): _*)
-  .settings(inConfig(Test)(testSettings): _*)
+  .settings(DefaultBuildSettings.scalaSettings)
+  .settings(DefaultBuildSettings.defaultSettings())
+  .settings(inConfig(Test)(testSettings))
   .settings(majorVersion := 0)
   .settings(
-    scalaVersion := "2.13.11",
+    scalaVersion := "2.13.12",
     name := appName,
     RoutesKeys.routesImport += "models._",
     TwirlKeys.templateImports ++= Seq(
@@ -63,7 +63,6 @@ lazy val root = (project in file("."))
     scalacOptions+= "-Wconf:cat=unused-imports&src=html/.*:s",
     scalacOptions ++= Seq("-feature"),
     libraryDependencies ++= AppDependencies(),
-    dependencyOverrides ++= AppDependencies.overrides,
     retrieveManaged := true,
     resolvers ++= Seq(
       Resolver.jcenterRepo
@@ -86,7 +85,7 @@ lazy val root = (project in file("."))
     uglify / includeFilter := GlobFilter("claimatrustfrontend-*.js")
   )
 
-lazy val testSettings: Seq[Def.Setting[_]] = Seq(
+lazy val testSettings: Seq[Def.Setting[?]] = Seq(
   fork        := true,
   javaOptions ++= Seq(
     "-Dconfig.resource=test.application.conf"
