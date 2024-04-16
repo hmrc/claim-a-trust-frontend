@@ -20,8 +20,8 @@ import cats.data.EitherT
 import config.FrontendAppConfig
 import errors.UpstreamTaxEnrolmentsError
 import models.{EnrolmentCreated, EnrolmentResponse, IsUTR, TaxEnrolmentsRequest}
-import play.api.http.Status.NO_CONTENT
-import play.api.libs.json.{JsValue, Json, Writes}
+import play.api.http.Status.{BAD_REQUEST, NO_CONTENT}
+import play.api.libs.json.{JsDefined, JsLookupResult, JsString, JsUndefined, JsValue, Json, Writes}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
 import utils.TrustEnvelope.TrustEnvelope
 
@@ -43,12 +43,34 @@ class TaxEnrolmentsConnector @Inject()(http: HttpClient, config : FrontendAppCon
 
     val httpReads = HttpReads.Implicits.readRaw
 
+    def logCodeAndErrors(json: JsValue): Unit = {
+      val maybeCode: JsLookupResult = json \ "code"
+      val maybeErrors: JsLookupResult = json \ "errors"
+      (maybeCode, maybeErrors) match {
+        case (JsDefined(code), JsDefined(errors)) =>
+          if (code == JsString("MULTIPLE_ERRORS")) {
+            logger.info(s"Multiple errors encountered, code: ${code}, errors: ${errors}")
+          }
+          else {
+            logger.info(s"Encountered error, code: ${code}, error: ${errors}")
+          }
+        case (JsDefined(code), JsUndefined()) =>
+          logger.info(s"Encountered error, code: ${code}")
+        case (JsUndefined(), JsDefined(error)) =>
+          logger.info(s"Encountered error, error: ${error}")
+        case (JsUndefined(), JsUndefined()) =>
+          logger.info(s"Could not find code or errors in response")
+      }
+    }
+
     http.PUT[JsValue, HttpResponse](url, Json.toJson(request))(implicitly[Writes[JsValue]], httpReads, hc, ec).map(
-      response =>
-      response.status match {
-        case NO_CONTENT => Right(EnrolmentCreated)
-        case status =>
-          Left(UpstreamTaxEnrolmentsError(s"HTTP response ${status} ${response.body}"))
+      (response: HttpResponse) => {
+        response.status match {
+          case NO_CONTENT => Right(EnrolmentCreated)
+          case _ =>
+            logCodeAndErrors(response.json)
+            Left(UpstreamTaxEnrolmentsError(s"HTTP response ${response.body}"))
+        }
       }
     ).recover {
       case ex => Left(handleError(ex, "updateTaskStatus", url))
