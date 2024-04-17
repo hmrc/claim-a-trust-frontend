@@ -21,16 +21,35 @@ import config.FrontendAppConfig
 import errors.UpstreamTaxEnrolmentsError
 import models.{EnrolmentCreated, EnrolmentResponse, IsUTR, TaxEnrolmentsRequest}
 import play.api.http.Status.{BAD_REQUEST, NO_CONTENT}
-import play.api.libs.json.{JsDefined, JsLookupResult, JsString, JsUndefined, JsValue, Json, Writes}
+import play.api.libs.json.{JsDefined, JsLookupResult, JsString, JsUndefined, JsValue, Writes}
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
 import utils.TrustEnvelope.TrustEnvelope
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class TaxEnrolmentsConnector @Inject()(http: HttpClient, config : FrontendAppConfig) extends ConnectorErrorResponseHandler {
 
   override val className: String = getClass.getSimpleName
+
+  val testResponseBody ="""
+      {
+        "code":"MULTIPLE_ERRORS",
+        "message":"Multiple errors have occurred",
+        "errors": [
+          { "code": "MULTIPLE_ENROLMENTS_INVALID",
+            "message": "Multiple Enrolments are not valid for this service"
+          },
+          { "code": "INVALID_IDENTIFIERS",
+            "message": "The enrolment identifiers provided were invalid"
+          }
+        ]
+      }
+      """
+  val testResponse: Future[HttpResponse] = Future.successful(HttpResponse(
+    BAD_REQUEST,
+    testResponseBody
+  ))
 
   def enrol(request: TaxEnrolmentsRequest)
            (implicit hc : HeaderCarrier, ec : ExecutionContext, writes: Writes[TaxEnrolmentsRequest]): TrustEnvelope[EnrolmentResponse] = EitherT {
@@ -62,8 +81,8 @@ class TaxEnrolmentsConnector @Inject()(http: HttpClient, config : FrontendAppCon
           logger.info(s"Could not find code or errors in response")
       }
     }
-
-    http.PUT[JsValue, HttpResponse](url, Json.toJson(request))(implicitly[Writes[JsValue]], httpReads, hc, ec).map(
+//    http.PUT[JsValue, HttpResponse](url, Json.toJson(request))(implicitly[Writes[JsValue]], httpReads, hc, ec).map(
+    testResponse.map(
       (response: HttpResponse) => {
         response.status match {
           case NO_CONTENT => Right(EnrolmentCreated)
