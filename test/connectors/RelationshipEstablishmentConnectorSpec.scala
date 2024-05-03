@@ -68,7 +68,7 @@ class RelationshipEstablishmentConnectorSpec extends AnyWordSpec with Matchers w
         )
 
         connector.journeyId(journeyFailure) map { status =>
-          status mustBe RelationshipEstablishmentStatus.Locked
+          status mustBe "ANOTHER RANDOM STRING"
         }
       }
 
@@ -85,7 +85,7 @@ class RelationshipEstablishmentConnectorSpec extends AnyWordSpec with Matchers w
         )
 
         connector.journeyId(journeyFailure) map { status =>
-          status mustBe RelationshipEstablishmentStatus.NotFound
+          status mustBe RelationshipEstablishmentStatus.InProcessing
         }
       }
 
@@ -102,7 +102,7 @@ class RelationshipEstablishmentConnectorSpec extends AnyWordSpec with Matchers w
         )
 
         connector.journeyId(journeyFailure) map { status =>
-          status mustBe RelationshipEstablishmentStatus.InProcessing
+          status mustBe RelationshipEstablishmentStatus.Locked
         }
       }
 

@@ -104,7 +104,7 @@ class TaxEnrolmentsConnectorSpec extends AnyWordSpec with Matchers with WireMock
         )
 
         connector.enrol(TaxEnrolmentsRequest(utr)) map { response =>
-          response mustBe EnrolmentCreated
+          response mustBe Right("A RANDOM STRING")
         }
 
       }
@@ -118,7 +118,7 @@ class TaxEnrolmentsConnectorSpec extends AnyWordSpec with Matchers with WireMock
         )
 
         connector.enrol(TaxEnrolmentsRequest(utr)).value map { response =>
-          response mustBe Left(errors.UpstreamTaxEnrolmentsError)
+          response mustBe EnrolmentCreated
         }
 
       }
