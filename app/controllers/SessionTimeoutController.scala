@@ -19,7 +19,6 @@ package controllers
 import config.FrontendAppConfig
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.api.{Configuration, Environment, Logging}
-import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 import utils.Session
 
@@ -30,7 +29,7 @@ import scala.concurrent.Future
 class SessionTimeoutController @Inject()(val appConfig: FrontendAppConfig,
                                          val config: Configuration,
                                          val env: Environment,
-                                         mcc: MessagesControllerComponents) extends FrontendController(mcc) with AuthRedirects with Logging {
+                                         mcc: MessagesControllerComponents) extends FrontendController(mcc) with Logging {
 
   val keepAlive: Action[AnyContent] = Action.async { implicit request =>
     logger.info(s"[SessionTimeoutController][keepAlive][Session ID: ${Session.id(hc)}]" +

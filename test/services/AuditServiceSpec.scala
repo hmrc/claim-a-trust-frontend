@@ -59,7 +59,7 @@ class AuditServiceSpec (implicit ec: ExecutionContext) extends SpecBase with Moc
 
       val request: DataRequest[AnyContent] = DataRequest(fakeRequest, internalAuthId, Credentials(ggCredId, ggCredType), affinity, UserAnswers(""))
 
-      auditService.audit(event, utr, true)(request, hc)
+      auditService.audit(event, utr, isManagedByAgent = true)(request, hc)
 
       val expectedPayload = ClaimATrustAuditSuccessEvent(
         credentialsId = ggCredId,
@@ -81,7 +81,7 @@ class AuditServiceSpec (implicit ec: ExecutionContext) extends SpecBase with Moc
 
       val request: DataRequest[AnyContent] = DataRequest(fakeRequest, internalAuthId, Credentials(ggCredId, ggCredType), affinity, UserAnswers(""))
 
-      auditService.audit(event, urn, true)(request, hc)
+      auditService.audit(event, urn, isManagedByAgent = true)(request, hc)
 
       val expectedPayload = ClaimATrustAuditSuccessEvent(
         credentialsId = ggCredId,
