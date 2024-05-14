@@ -4,8 +4,6 @@ import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
-lazy val appName: String = "claim-a-trust-frontend"
-
 val excludedPackages = Seq(
   "<empty>",
   ".*Reverse.*",
@@ -33,7 +31,7 @@ val excludedPackages = Seq(
   ".*config.*"
 )
 
-lazy val root = (project in file("."))
+lazy val root = Project("claim-a-trust-frontend", file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(DefaultBuildSettings.scalaSettings)
@@ -41,8 +39,7 @@ lazy val root = (project in file("."))
   .settings(inConfig(Test)(testSettings))
   .settings(majorVersion := 0)
   .settings(
-    scalaVersion := "2.13.12",
-    name := appName,
+    scalaVersion := "2.13.13",
     RoutesKeys.routesImport += "models._",
     TwirlKeys.templateImports ++= Seq(
       "play.twirl.api.HtmlFormat",
@@ -94,4 +91,3 @@ lazy val testSettings: Seq[Def.Setting[?]] = Seq(
 
 addCommandAlias("scalastyleAll", "all scalastyle test:scalastyle")
 
-libraryDependencySchemes ++= Seq("org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always)
