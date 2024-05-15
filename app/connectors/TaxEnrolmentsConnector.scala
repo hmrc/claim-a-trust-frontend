@@ -28,12 +28,12 @@ import utils.TrustEnvelope.TrustEnvelope
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class TaxEnrolmentsConnector @Inject()(http: HttpClient, config : FrontendAppConfig) extends ConnectorErrorResponseHandler {
+class TaxEnrolmentsConnector @Inject()(http: HttpClient, config: FrontendAppConfig) extends ConnectorErrorResponseHandler {
 
   override val className: String = getClass.getSimpleName
 
   def enrol(request: TaxEnrolmentsRequest)
-           (implicit hc : HeaderCarrier, ec : ExecutionContext, writes: Writes[TaxEnrolmentsRequest]): TrustEnvelope[EnrolmentResponse] = EitherT {
+           (implicit hc: HeaderCarrier, ec: ExecutionContext, writes: Writes[TaxEnrolmentsRequest]): TrustEnvelope[EnrolmentResponse] = EitherT {
 
     val url: String = if (IsUTR(request.identifier)) {
       s"${config.taxEnrolmentsUrl}/service/${config.taxableEnrolmentServiceName}/enrolment"
@@ -44,14 +44,20 @@ class TaxEnrolmentsConnector @Inject()(http: HttpClient, config : FrontendAppCon
     val httpReads = HttpReads.Implicits.readRaw
 
     http.PUT[JsValue, HttpResponse](url, Json.toJson(request))(implicitly[Writes[JsValue]], httpReads, hc, ec).map(
-      response =>
-      response.status match {
-        case NO_CONTENT => Right(EnrolmentCreated)
-        case status =>
-          Left(UpstreamTaxEnrolmentsError(s"HTTP response ${status} ${response.body}"))
+      response => {
+        println(response.body)
+        response.status match {
+          case NO_CONTENT => Right(EnrolmentCreated)
+          case status =>
+            Left(UpstreamTaxEnrolmentsError(s"HTTP response ${status} ${response.body}".trim))
+        }
       }
     ).recover {
-      case ex => Left(handleError(ex, "updateTaskStatus", url))
+      case ex => {
+        println("Don't really know what's going on here, Jeff")
+        Left(handleError(ex, "updateTaskStatus", url))
+      }
     }
   }
+
 }
