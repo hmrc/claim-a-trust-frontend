@@ -118,12 +118,13 @@ class TaxEnrolmentsConnectorSpec extends AnyWordSpec with Matchers with WireMock
         wiremock(
           url = taxableEnrolmentUrl,
           payload = taxableRequest,
-          expectedStatus = BAD_REQUEST
+          expectedStatus = BAD_REQUEST,
+          """{"code":"INVALID_CREDENTIAL_ID", "message":"Invalid credential ID given"}"""
         )
 
         val future = connector.enrol(TaxEnrolmentsRequest(utr)).value
         val response = Await.result(future, Duration.create(3, TimeUnit.SECONDS))
-        response mustBe Left(UpstreamTaxEnrolmentsError("HTTP response 400"))
+        response mustBe Left(UpstreamTaxEnrolmentsError("HTTP response 400 INVALID_CREDENTIAL_ID: Invalid credential ID given"))
       }
 
       "returns 401 UNAUTHORIZED" in {
@@ -136,7 +137,7 @@ class TaxEnrolmentsConnectorSpec extends AnyWordSpec with Matchers with WireMock
 
         val future = connector.enrol(TaxEnrolmentsRequest(utr)).value
         val response = Await.result(future, Duration.create(3, TimeUnit.SECONDS))
-        response mustBe Left(UpstreamTaxEnrolmentsError("HTTP response 401"))
+        response mustBe Left(UpstreamTaxEnrolmentsError("HTTP 401: no message or response body"))
       }
 
     }
@@ -166,7 +167,7 @@ class TaxEnrolmentsConnectorSpec extends AnyWordSpec with Matchers with WireMock
 
         val future = connector.enrol(TaxEnrolmentsRequest(urn)).value
         val response = Await.result(future, Duration.create(3, TimeUnit.SECONDS))
-        response mustBe Left(UpstreamTaxEnrolmentsError("HTTP response 400"))
+        response mustBe Left(UpstreamTaxEnrolmentsError("HTTP 400: no message or response body"))
       }
 
       "returns 401 UNAUTHORIZED" in {
@@ -175,9 +176,34 @@ class TaxEnrolmentsConnectorSpec extends AnyWordSpec with Matchers with WireMock
 
         val future = connector.enrol(TaxEnrolmentsRequest(urn)).value
         val response = Await.result(future, Duration.create(3, TimeUnit.SECONDS))
-        response mustBe Left(UpstreamTaxEnrolmentsError("HTTP response 401"))
+        response mustBe Left(UpstreamTaxEnrolmentsError("HTTP 401: no message or response body"))
       }
 
+      "returns 400 with error message" in {
+        wiremock(
+          nonTaxableEnrolmentUrl, nonTaxableRequest, BAD_REQUEST,
+          """{"code":"INVALID_IDENTIFIERS", "message":"Enrolment identifiers not valid innit"}"""
+        )
+
+        val future = connector.enrol(TaxEnrolmentsRequest(urn)).value
+        val response = Await.result(future, Duration.create(3, TimeUnit.SECONDS))
+        response mustBe Left(UpstreamTaxEnrolmentsError("HTTP response 400 INVALID_IDENTIFIERS: Enrolment identifiers not valid innit"))
+      }
+
+      "returns 400 with multiple errors" in {
+        wiremock(
+          nonTaxableEnrolmentUrl, nonTaxableRequest, BAD_REQUEST,
+          """{"code":"MULTIPLE_ERRORS", "message":"Multiple errors have occurred", "errors":[
+            |    {"code": "MULTIPLE_ENROLMENTS_INVALID", "message": "Multiple Enrolments are not valid for this service"},
+            |    {"code": "INVALID_IDENTIFIERS", "message": "The enrolment identifiers provided were invalid"}
+            |  ]}""".stripMargin)
+
+        val future = connector.enrol(TaxEnrolmentsRequest(urn)).value
+        val response = Await.result(future, Duration.create(3, TimeUnit.SECONDS))
+        response mustBe Left(UpstreamTaxEnrolmentsError("HTTP response 400 MULTIPLE_ERRORS: "
+            + "MULTIPLE_ENROLMENTS_INVALID: Multiple Enrolments are not valid for this service, "
+            + "INVALID_IDENTIFIERS: The enrolment identifiers provided were invalid"))
+      }
     }
 
   }
