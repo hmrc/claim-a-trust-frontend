@@ -18,7 +18,8 @@ package connectors
 
 import com.github.tomakehurst.wiremock.client.WireMock._
 import config.FrontendAppConfig
-import models.{EnrolmentCreated, TaxEnrolmentsRequest}
+import errors.{TrustErrors, UpstreamTaxEnrolmentsError}
+import models.{EnrolmentCreated, EnrolmentResponse, TaxEnrolmentsRequest}
 import org.scalatest.RecoverMethods
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
@@ -29,7 +30,10 @@ import play.api.test.Helpers._
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
+import java.util.concurrent.TimeUnit
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, Future}
 
 class TaxEnrolmentsConnectorSpec extends AnyWordSpec with Matchers with WireMockHelper with RecoverMethods {
 
@@ -80,7 +84,7 @@ class TaxEnrolmentsConnectorSpec extends AnyWordSpec with Matchers with WireMock
   ))
 
 
-  private def wiremock(payload: String, expectedStatus: Int, url: String) =
+  private def wiremock(url: String, payload: String, expectedStatus: Int, mockResponseBody: String = ""): Any =
     server.stubFor(
       put(urlEqualTo(url))
         .withHeader(CONTENT_TYPE, containing("application/json"))
@@ -88,6 +92,7 @@ class TaxEnrolmentsConnectorSpec extends AnyWordSpec with Matchers with WireMock
         .willReturn(
           aResponse()
             .withStatus(expectedStatus)
+            .withBody(mockResponseBody)
         )
     )
 
@@ -98,89 +103,109 @@ class TaxEnrolmentsConnectorSpec extends AnyWordSpec with Matchers with WireMock
       "returns 204 NO_CONTENT" in {
 
         wiremock(
+          url = taxableEnrolmentUrl,
           payload = taxableRequest,
-          expectedStatus = NO_CONTENT,
-          url = taxableEnrolmentUrl
+          expectedStatus = NO_CONTENT
         )
 
-        connector.enrol(TaxEnrolmentsRequest(utr)) map { response =>
-          response mustBe EnrolmentCreated
-        }
-
+        val future = connector.enrol(TaxEnrolmentsRequest(utr)).value
+        val response = Await.result(future, Duration.create(3, TimeUnit.SECONDS))
+        response mustBe Right(EnrolmentCreated)
       }
 
       "returns 400 BAD_REQUEST" in {
 
         wiremock(
+          url = taxableEnrolmentUrl,
           payload = taxableRequest,
           expectedStatus = BAD_REQUEST,
-          url = taxableEnrolmentUrl
+          """{"code":"INVALID_CREDENTIAL_ID", "message":"Invalid credential ID given"}"""
         )
 
-        connector.enrol(TaxEnrolmentsRequest(utr)).value map { response =>
-          response mustBe Left(errors.UpstreamTaxEnrolmentsError)
-        }
-
+        val future = connector.enrol(TaxEnrolmentsRequest(utr)).value
+        val response = Await.result(future, Duration.create(3, TimeUnit.SECONDS))
+        response mustBe Left(UpstreamTaxEnrolmentsError("HTTP response 400 INVALID_CREDENTIAL_ID: Invalid credential ID given"))
       }
+
       "returns 401 UNAUTHORIZED" in {
 
         wiremock(
+          url = taxableEnrolmentUrl,
           payload = taxableRequest,
-          expectedStatus = UNAUTHORIZED,
-          url = taxableEnrolmentUrl
+          expectedStatus = UNAUTHORIZED
         )
 
-        connector.enrol(TaxEnrolmentsRequest(utr)).value map { response =>
-          response mustBe Left(errors.UpstreamTaxEnrolmentsError)
-        }
-
-      }
-
-      "non-taxable" must {
-
-        "returns 204 NO_CONTENT" in {
-
-          wiremock(
-            payload = nonTaxableRequest,
-            expectedStatus = NO_CONTENT,
-            url = nonTaxableEnrolmentUrl
-          )
-
-          connector.enrol(TaxEnrolmentsRequest(urn)) map { response =>
-            response mustBe Right(EnrolmentCreated)
-          }
-
-        }
-
-        "returns 400 BAD_REQUEST" in {
-
-          wiremock(
-            payload = nonTaxableRequest,
-            expectedStatus = BAD_REQUEST,
-            url = nonTaxableEnrolmentUrl
-          )
-
-          connector.enrol(TaxEnrolmentsRequest(urn)).value map { response =>
-            response mustBe Left(errors.UpstreamTaxEnrolmentsError)
-          }
-        }
-
-        "returns 401 UNAUTHORIZED" in {
-
-          wiremock(
-            payload = nonTaxableRequest,
-            expectedStatus = UNAUTHORIZED,
-            url = nonTaxableEnrolmentUrl
-          )
-
-          connector.enrol(TaxEnrolmentsRequest(urn)).value map { response =>
-            response mustBe Left(errors.UpstreamTaxEnrolmentsError)
-          }
-
-        }
-
+        val future = connector.enrol(TaxEnrolmentsRequest(utr)).value
+        val response = Await.result(future, Duration.create(3, TimeUnit.SECONDS))
+        response mustBe Left(UpstreamTaxEnrolmentsError("HTTP 401: no message or response body"))
       }
 
     }
+
+    "non-taxable" must {
+
+      "returns 204 NO_CONTENT" in {
+
+        wiremock(
+          url = nonTaxableEnrolmentUrl,
+          payload = nonTaxableRequest,
+          expectedStatus = NO_CONTENT
+        )
+
+        val future:Future[Either[TrustErrors, EnrolmentResponse]] = connector.enrol(TaxEnrolmentsRequest(urn)).value
+        val result = Await.result(future, Duration.create(3, TimeUnit.SECONDS))
+        result mustBe Right(EnrolmentCreated)
+      }
+
+      "returns 400 BAD_REQUEST" in {
+
+        wiremock(
+          url = nonTaxableEnrolmentUrl,
+          payload = nonTaxableRequest,
+          expectedStatus = BAD_REQUEST
+        )
+
+        val future = connector.enrol(TaxEnrolmentsRequest(urn)).value
+        val response = Await.result(future, Duration.create(3, TimeUnit.SECONDS))
+        response mustBe Left(UpstreamTaxEnrolmentsError("HTTP 400: no message or response body"))
+      }
+
+      "returns 401 UNAUTHORIZED" in {
+
+        wiremock(url = nonTaxableEnrolmentUrl, payload = nonTaxableRequest, expectedStatus = UNAUTHORIZED)
+
+        val future = connector.enrol(TaxEnrolmentsRequest(urn)).value
+        val response = Await.result(future, Duration.create(3, TimeUnit.SECONDS))
+        response mustBe Left(UpstreamTaxEnrolmentsError("HTTP 401: no message or response body"))
+      }
+
+      "returns 400 with error message" in {
+        wiremock(
+          nonTaxableEnrolmentUrl, nonTaxableRequest, BAD_REQUEST,
+          """{"code":"INVALID_IDENTIFIERS", "message":"Enrolment identifiers not valid innit"}"""
+        )
+
+        val future = connector.enrol(TaxEnrolmentsRequest(urn)).value
+        val response = Await.result(future, Duration.create(3, TimeUnit.SECONDS))
+        response mustBe Left(UpstreamTaxEnrolmentsError("HTTP response 400 INVALID_IDENTIFIERS: Enrolment identifiers not valid innit"))
+      }
+
+      "returns 400 with multiple errors" in {
+        wiremock(
+          nonTaxableEnrolmentUrl, nonTaxableRequest, BAD_REQUEST,
+          """{"code":"MULTIPLE_ERRORS", "message":"Multiple errors have occurred", "errors":[
+            |    {"code": "MULTIPLE_ENROLMENTS_INVALID", "message": "Multiple Enrolments are not valid for this service"},
+            |    {"code": "INVALID_IDENTIFIERS", "message": "The enrolment identifiers provided were invalid"}
+            |  ]}""".stripMargin)
+
+        val future = connector.enrol(TaxEnrolmentsRequest(urn)).value
+        val response = Await.result(future, Duration.create(3, TimeUnit.SECONDS))
+        response mustBe Left(UpstreamTaxEnrolmentsError("HTTP response 400 MULTIPLE_ERRORS: "
+            + "MULTIPLE_ENROLMENTS_INVALID: Multiple Enrolments are not valid for this service, "
+            + "INVALID_IDENTIFIERS: The enrolment identifiers provided were invalid"))
+      }
+    }
+
   }
+
 }

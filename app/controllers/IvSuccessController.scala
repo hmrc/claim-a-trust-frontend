@@ -107,9 +107,7 @@ class IvSuccessController @Inject()(
       result.value.map {
         case Right(call) => call
         case Left(UpstreamTaxEnrolmentsError(exceptionMessage)) if exceptionMessage.nonEmpty =>
-          handleError(identifier, exceptionMessage, methodName = "onRelationshipFound", sessionId = {
-            Session.id(hc)
-          })
+          handleError(identifier, exceptionMessage, methodName = "onRelationshipFound", sessionId = {Session.id(hc)})
         case Left(ServerError(exceptionMessage)) if exceptionMessage.nonEmpty =>
           handleError(identifier, exceptionMessage, methodName = "onRelationshipFound", sessionId = {Session.id(hc)})
         case _ => val exceptionMessage = s"Encountered an unexpected issue claiming a trust"
