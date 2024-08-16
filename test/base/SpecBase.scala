@@ -62,6 +62,12 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues with Sca
                                     relationshipEstablishment: RelationshipEstablishment = new FakeRelationshipEstablishmentService()
                                   ): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
+      .configure(
+        Seq(
+          "play.filters.disabled" -> List("play.filters.csrf.CSRFFilter", "play.filters.csp.CSPFilter"),
+          "play.http.router" -> "testOnlyDoNotUseInAppConf.Routes"
+        ) :_*
+      )
       .overrides(
         bind[DataRequiredAction].to[DataRequiredActionImpl],
         bind[IdentifierAction].to[FakeIdentifierAction],

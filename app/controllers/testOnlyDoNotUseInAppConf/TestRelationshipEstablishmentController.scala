@@ -48,19 +48,19 @@ class TestRelationshipEstablishmentController @Inject()(
             createRelationship(utr)
           } else {
             logger.info(s"[TestRelationshipEstablishmentController][check][Session ID: ${Session.id(hc)}] UTR did not start with '1', failing IV")
-            Future.successful(Redirect(controllers.routes.FallbackFailureController.onPageLoad))
+            Future.successful(Redirect(controllers.routes.CouldNotConfirmIdentityController.onPageLoad))
           }
         case IdentifierRegex.UrnRegex(urn) =>
           if (urn.toLowerCase.startsWith("nt")) {
             createRelationship(urn)
           } else {
             logger.info(s"[TestRelationshipEstablishmentController][check][Session ID: ${Session.id(hc)}] URN did not start with 'NT', failing IV")
-            Future.successful(Redirect(controllers.routes.FallbackFailureController.onPageLoad))
+            Future.successful(Redirect(controllers.routes.CouldNotConfirmIdentityController.onPageLoad))
           }
         case _ =>
           logger.error(s"[TestRelationshipEstablishmentController][check][Session ID: ${Session.id(hc)}] " +
             s"Identifier provided is not a valid URN or UTR $identifier")
-          Future.successful(Redirect(controllers.routes.FallbackFailureController.onPageLoad))
+          Future.successful(Redirect(controllers.routes.CouldNotConfirmIdentityController.onPageLoad))
       }
   }
 

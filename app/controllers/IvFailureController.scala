@@ -69,7 +69,7 @@ class IvFailureController @Inject()(
       case Right(UnsupportedRelationshipStatus(reason)) =>
         logger.error(s"[IvFailureController][renderFailureReason][Session ID: ${Session.id(hc)}] Unsupported IV failure reason: $reason")
         auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.UNSUPPORTED_RELATIONSHIP_STATUS)
-        Redirect(routes.FallbackFailureController.onPageLoad)
+        Redirect(routes.CouldNotConfirmIdentityController.onPageLoad)
       case Left(UpstreamRelationshipError(response)) =>
         logger.warn(s"[IvFailureController][renderFailureReason][Session ID: ${Session.id(hc)}] HTTP response: $response")
         auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.UPSTREAM_RELATIONSHIP_ERROR)

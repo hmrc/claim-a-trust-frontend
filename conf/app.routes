@@ -11,6 +11,8 @@ GET        /not-found                                   controllers.IvFailureCon
 
 GET        /something-went-wrong                        controllers.FallbackFailureController.onPageLoad
 
+GET        /could-not-confirm-identity                   controllers.CouldNotConfirmIdentityController.onPageLoad
+
 GET        /logout                                      controllers.LogoutController.logout()
 
 GET        /keep-alive                                  controllers.SessionTimeoutController.keepAlive
