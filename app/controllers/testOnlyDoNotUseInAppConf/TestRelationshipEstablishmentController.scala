@@ -55,12 +55,12 @@ class TestRelationshipEstablishmentController @Inject()(
             createRelationship(urn)
           } else {
             logger.info(s"[TestRelationshipEstablishmentController][check][Session ID: ${Session.id(hc)}] URN did not start with 'NT', failing IV")
-            Future.successful(Redirect(controllers.routes.CouldNotConfirmIdentityController.onPageLoad))
+            Future.successful(Redirect(controllers.routes.FallbackFailureController.onPageLoad))
           }
         case _ =>
           logger.error(s"[TestRelationshipEstablishmentController][check][Session ID: ${Session.id(hc)}] " +
             s"Identifier provided is not a valid URN or UTR $identifier")
-          Future.successful(Redirect(controllers.routes.CouldNotConfirmIdentityController.onPageLoad))
+          Future.successful(Redirect(controllers.routes.FallbackFailureController.onPageLoad))
       }
   }
 

@@ -113,7 +113,7 @@ class TestRelationshipEstablishmentControllerSpec extends SpecBase {
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe controllers.routes.CouldNotConfirmIdentityController.onPageLoad.url
+      redirectLocation(result).value mustBe controllers.routes.FallbackFailureController.onPageLoad.url
 
       application.stop()
     }
