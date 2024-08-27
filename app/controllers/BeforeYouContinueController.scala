@@ -68,7 +68,8 @@ class BeforeYouContinueController @Inject()(
   }
 
   def onSubmit: Action[AnyContent] = actions.authWithData.async { implicit request =>
-      val result = for {
+
+    val result = for {
         identifier <- TrustEnvelope.fromOption(request.userAnswers.get(IdentifierPage))
         isManagedByAgent <- TrustEnvelope.fromOption(request.userAnswers.get(IsAgentManagingTrustPage))
         relationshipStatus <- relationship.check(request.internalId, identifier)
