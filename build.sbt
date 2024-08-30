@@ -83,7 +83,10 @@ lazy val root = Project("claim-a-trust-frontend", file("."))
   )
 
 lazy val testSettings: Seq[Def.Setting[?]] = Seq(
-  fork := true,
+  fork        := true,
+  javaOptions ++= Seq(
+    "-Dconfig.resource=test.application.conf"
+  )
 )
 
 addCommandAlias("scalastyleAll", "all scalastyle test:scalastyle")
