@@ -48,7 +48,7 @@ class TestRelationshipEstablishmentController @Inject()(
             createRelationship(utr)
           } else {
             logger.info(s"[TestRelationshipEstablishmentController][check][Session ID: ${Session.id(hc)}] UTR did not start with '1', failing IV")
-            Future.successful(Redirect(controllers.routes.CouldNotConfirmIdentityController.onPageLoad))
+            Future.successful(Redirect(controllers.routes.FallbackFailureController.onPageLoad))
           }
         case IdentifierRegex.UrnRegex(urn) =>
           if (urn.toLowerCase.startsWith("nt")) {

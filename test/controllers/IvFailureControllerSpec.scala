@@ -179,7 +179,7 @@ class IvFailureControllerSpec extends SpecBase with EitherValues {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual routes.CouldNotConfirmIdentityController.onPageLoad.url
+        redirectLocation(result).value mustEqual routes.FallbackFailureController.onPageLoad.url
         verify(mockAuditService).auditFailure(eqTo(CLAIM_A_TRUST_FAILURE), eqTo("1234567890"),
           eqTo(FailureReasons.UNSUPPORTED_RELATIONSHIP_STATUS))(any(), any())
 

@@ -113,15 +113,3 @@ notFound.p3 = If you do not have a unique identifier for the trust, you will nee
 notFound.register.link = register the trust
 notFound.p4 = If you need help with this service
 notFound.link1 = contact the trusts helpline (opens in a new window or tab)
-
-couldNotConfirmIdentity.title = We could not confirm your identity
-couldNotConfirmIdentity.heading = We could not confirm your identity
-couldNotConfirmIdentity.p1 = We need to speak to you to help you to access the trust.
-couldNotConfirmIdentity.p2 = Contact the trusts helpline
-couldNotConfirmIdentity.p3 = Telephone:
-couldNotConfirmIdentity.p4 = 0300 123 1072
-couldNotConfirmIdentity.p5 = Outside UK:
-couldNotConfirmIdentity.p6 = +44 304 123 1472
-couldNotConfirmIdentity.p7 = Opening times:
-couldNotConfirmIdentity.p8 = Monday to Friday: 9am to 5pm
-couldNotConfirmIdentity.p9 = Closed weekends and bank holidays.
