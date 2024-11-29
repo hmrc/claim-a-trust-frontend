@@ -23,7 +23,7 @@
     submitButton: SubmitButton
 )
 
-@(identifier: String)(implicit request: Request[_], messages: Messages)
+@(identifier: String)(implicit request: RequestHeader, messages: Messages)
 
 @mainTemplate(
     title = messages("beforeYouContinue.title"),

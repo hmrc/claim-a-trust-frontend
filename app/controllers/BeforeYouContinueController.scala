@@ -85,7 +85,7 @@ class BeforeYouContinueController @Inject()(
         Redirect(routes.SessionExpiredController.onPageLoad)
       case Left(_) => logger.warn(s"[$className][$functionName][Session ID: ${Session.id(hc)}] " +
         s"Error while storing user answers")
-        InternalServerError(errorHandler.internalServerErrorTemplate)
+        errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
   }
 
   private def handleRelationshipStatus(relationshipStatus: RelationEstablishmentStatus, identifier: String, isManagedByAgent: Boolean)

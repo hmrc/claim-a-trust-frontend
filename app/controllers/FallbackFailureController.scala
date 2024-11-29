@@ -24,11 +24,12 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class FallbackFailureController @Inject()(
                                            val controllerComponents: MessagesControllerComponents,
                                            errorHandler: ErrorHandler
-                                         ) extends FrontendBaseController with I18nSupport with Logging {
+                                         ) (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
 
   def onPageLoad: Action[AnyContent] = Action {
     implicit request =>
@@ -45,6 +46,8 @@ class FallbackFailureController @Inject()(
           s"Trust IV encountered a problem that could not be recovered from")
           // $COVERAGE-ON$
       }
-      InternalServerError(errorHandler.internalServerErrorTemplate)
+//      InternalServerError(errorHandler.internalServerErrorTemplate)
+      errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
   }
+
 }

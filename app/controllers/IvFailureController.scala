@@ -52,7 +52,7 @@ class IvFailureController @Inject()(
 
   private val className = this.getClass.getSimpleName
 
-  private def renderFailureReason(identifier: String, journeyId: String)(implicit hc : HeaderCarrier, request: DataRequest[_]): Future[Result] = {
+  private def renderFailureReason(identifier: String, journeyId: String)(implicit hc : HeaderCarrier, request: DataRequestHeader): Future[Result] = {
     relationshipEstablishmentConnector.journeyId(journeyId).value.map {
       case Right(RelationshipEstablishmentStatus.Locked) =>
         logger.info(s"[IvFailureController][renderFailureReason][Session ID: ${Session.id(hc)}] $identifier is locked")
