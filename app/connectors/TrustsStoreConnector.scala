@@ -38,7 +38,7 @@ class TrustsStoreConnector @Inject()(http: HttpClientV2, config: FrontendAppConf
   def claim(request: TrustsStoreRequest)
            (implicit hc: HeaderCarrier, ec: ExecutionContext, writes: Writes[TrustsStoreRequest]): TrustEnvelope[Boolean] = EitherT {
 
-    http.post(url"url")
+    http.post(url"$url")
       .withBody(Json.toJson(request))
       .execute[HttpResponse]
       .map(_.status match {

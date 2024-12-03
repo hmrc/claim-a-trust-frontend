@@ -37,7 +37,7 @@ class TaxEnrolmentsConnector @Inject()(http: HttpClientV2, config: FrontendAppCo
            (implicit hc: HeaderCarrier, ec: ExecutionContext, writes: Writes[TaxEnrolmentsRequest]): TrustEnvelope[EnrolmentResponse] = EitherT {
 
     val url: String = determineEnrolAndActivateUrl(request)
-    http.put(url"url")
+    http.put(url"$url")
       .withBody(Json.toJson(request))
       .execute[HttpResponse](HttpReads.Implicits.readRaw, ec)
       .map(

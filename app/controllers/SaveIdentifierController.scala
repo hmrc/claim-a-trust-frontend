@@ -52,13 +52,13 @@ class SaveIdentifierController @Inject()(
         _ <- TrustEnvelope(getIdentifier(identifier))
         result <- checkIfAlreadyHaveIvRelationship(identifier)
       } yield result
-    result.value.map{
-      case Right(call) => call
-    case Left(InvalidIdentifier) => Redirect(routes.FallbackFailureController.onPageLoad)
-    case Left(_) => logger.warn(s"[$className][save][Session ID: ${Session.id(hc)}] " +
-      s"Could not save identifier")
-      InternalServerError(errorHandler.internalServerErrorTemplate)
-    }
+      result.value.flatMap {
+        case Right(call) => Future.successful(call)
+        case Left(InvalidIdentifier) => Future.successful(Redirect(routes.FallbackFailureController.onPageLoad))
+        case Left(_) => logger.warn(s"[$className][save][Session ID: ${Session.id(hc)}] " +
+          s"Could not save identifier")
+          errorHandler.internalServerErrorTemplate.map(res => InternalServerError(res))
+      }
   }
 
   def getIdentifier(identifier: String)(implicit request: OptionalDataRequest[AnyContent]): Either[TrustErrors, String] = identifier match {
@@ -67,32 +67,32 @@ class SaveIdentifierController @Inject()(
     case _ =>
       logger.error(s"[$className][getIdentifier][Session ID: ${Session.id(hc)}] " +
         s"Identifier provided is not a valid URN or UTR")
-    Left(InvalidIdentifier)
+      Left(InvalidIdentifier)
   }
 
-  private def checkIfAlreadyHaveIvRelationship(identifier: String)(implicit request: OptionalDataRequest[AnyContent]): TrustEnvelope[Result] = EitherT{
+  private def checkIfAlreadyHaveIvRelationship(identifier: String)(implicit request: OptionalDataRequest[AnyContent]): TrustEnvelope[Result] = EitherT {
     relationship.check(request.internalId, identifier).value flatMap {
       case Right(RelationshipFound) =>
         logger.info(s"[$className][checkIfAlreadyHaveIvRelationship][Session ID: ${Session.id(hc)}] " +
           s"relationship is already established in IV for $identifier sending user to successfully claimed")
 
-      Future.successful(Right(Redirect(routes.IvSuccessController.onPageLoad)))
+        Future.successful(Right(Redirect(routes.IvSuccessController.onPageLoad)))
       case Right(RelationshipNotFound) =>
         saveAndContinue(identifier).value
       case Left(error) => Future.successful(Left(error))
     }
   }
 
-  private def saveAndContinue(identifier: String)(implicit request: OptionalDataRequest[AnyContent]): TrustEnvelope[Result] = EitherT{
+  private def saveAndContinue(identifier: String)(implicit request: OptionalDataRequest[AnyContent]): TrustEnvelope[Result] = EitherT {
     val result = for {
       updatedAnswers <- TrustEnvelope(extractUserAnswers(request.userAnswers, identifier, request.internalId))
-      _              <- sessionRepository.set(updatedAnswers)
+      _ <- sessionRepository.set(updatedAnswers)
     } yield {
       logger.info(s"[$className][saveAndContinue][Session ID: ${Session.id(hc(request))}]" +
         s" user has started the claim a trust journey for $identifier")
       Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode))
     }
-    result.value.map{
+    result.value.map {
       case Right(call) => Right(call)
       case Left(error) => logger.warn(s"[$className][saveAndContinue][Session ID: $sessionId] Error while storing user answers")
         Left(error)

@@ -36,7 +36,7 @@ class RelationshipEstablishmentConnector @Inject()(http: HttpClientV2, config : 
   def journeyId(id: String)(implicit hc : HeaderCarrier, ec : ExecutionContext): TrustEnvelope[RelationshipEstablishmentStatus] = EitherT {
     val fullUrl = s"${config.relationshipEstablishmentUrl}/journey-failure/$id"
 
-    http.get(url"url").execute[HttpResponse].map{response =>
+    http.get(url"$fullUrl").execute[HttpResponse].map{response =>
       response.status match {
       case OK => Right(processRelationshipEstablishmentStatusResponse(response.json))
       case status => logger.warn(s"[RelationshipEstablishmentConnector] [journeyId] Unexpected HTTP response code $status")

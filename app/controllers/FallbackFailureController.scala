@@ -29,24 +29,25 @@ import scala.concurrent.ExecutionContext
 class FallbackFailureController @Inject()(
                                            val controllerComponents: MessagesControllerComponents,
                                            errorHandler: ErrorHandler
-                                         ) (implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+                                         )(implicit ec: ExecutionContext)
+  extends FrontendBaseController with I18nSupport with Logging {
 
-  def onPageLoad: Action[AnyContent] = Action {
+  def onPageLoad: Action[AnyContent] = Action.async {
     implicit request =>
 
       request.headers.get(REFERER) match {
         case Some(referer) =>
           // $COVERAGE-OFF$
           logger.error(s"[FallbackFailureController][onPageLoad][Session ID: ${Session.id(hc)}]" +
-          s" Trust IV encountered a problem that could not be recovered from. referer url: ${referer}")
-          // $COVERAGE-ON$
+            s" Trust IV encountered a problem that could not be recovered from. referer url: ${referer}")
+        // $COVERAGE-ON$
         case _ =>
           // $COVERAGE-OFF$
           logger.warn(s"[FallbackFailureController][onPageLoad][Session ID: ${Session.id(hc)}] " +
-          s"Trust IV encountered a problem that could not be recovered from")
-          // $COVERAGE-ON$
+            s"Trust IV encountered a problem that could not be recovered from")
+        // $COVERAGE-ON$
       }
-//      InternalServerError(errorHandler.internalServerErrorTemplate)
+      //      InternalServerError(errorHandler.internalServerErrorTemplate)
       errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
   }
 

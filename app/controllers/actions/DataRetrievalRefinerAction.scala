@@ -21,12 +21,14 @@ import models.UserAnswers
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 import play.api.mvc.Results.InternalServerError
 import play.api.mvc.{ActionRefiner, Result}
+import play.twirl.api.Html
 import repositories.SessionRepository
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DataRetrievalRefinerAction @Inject()(sessionRepository: SessionRepository, errorHandler: ErrorHandler)(implicit val executionContext: ExecutionContext)
+class DataRetrievalRefinerAction @Inject()(sessionRepository: SessionRepository, errorHandler: ErrorHandler)
+                                          (implicit val executionContext: ExecutionContext)
   extends ActionRefiner[IdentifierRequest, OptionalDataRequest] {
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, OptionalDataRequest[A]]] = {
     sessionRepository.get(request.identifier).map { maybeUserAnswers: Option[UserAnswers] =>
@@ -37,10 +39,26 @@ class DataRetrievalRefinerAction @Inject()(sessionRepository: SessionRepository,
         affinityGroup = request.affinityGroup,
         userAnswers = maybeUserAnswers
       )
-    }.value.map{
-      case Right(optData) => Right(optData)
-      case Left(_) => Left(InternalServerError(errorHandler.internalServerErrorTemplate(request.request))
-      )
+    }.value.flatMap {
+      case Right(optData) => Future.successful(Right(optData))
+      case Left(_) =>
+
+        val errorPageFuture: Future[Html] = errorHandler.internalServerErrorTemplate(request.request)  // Pass `request.request` here
+
+
+        //        Left(InternalServerError(errorHandler.internalServerErrorTemplate(request.request)))
+
+        errorPageFuture.map{
+          ele =>
+            Left(InternalServerError(ele))
+        }
+//        Left(InternalServerError(errorHandler.internalServerErrorTemplate(request.request)))
+//                Future.successful(Left(errorHandler.internalServerErrorTemplate.map(res => InternalServerError(request.request))))
+        //        Future.successful(Left(InternalServerError(errorHandler.internalServerErrorTemplate(request.request))))
+        //        Future.successful(Left(errorHandler.internalServerErrorTemplate(request.request)))
+//        Left(InternalServerError("errorPage"))
+
+
     }
   }
 }
