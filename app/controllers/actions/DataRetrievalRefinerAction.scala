@@ -42,23 +42,11 @@ class DataRetrievalRefinerAction @Inject()(sessionRepository: SessionRepository,
     }.value.flatMap {
       case Right(optData) => Future.successful(Right(optData))
       case Left(_) =>
-
-        val errorPageFuture: Future[Html] = errorHandler.internalServerErrorTemplate(request.request)  // Pass `request.request` here
-
-
-        //        Left(InternalServerError(errorHandler.internalServerErrorTemplate(request.request)))
-
+        val errorPageFuture: Future[Html] = errorHandler.internalServerErrorTemplate(request.request)
         errorPageFuture.map{
           ele =>
             Left(InternalServerError(ele))
         }
-//        Left(InternalServerError(errorHandler.internalServerErrorTemplate(request.request)))
-//                Future.successful(Left(errorHandler.internalServerErrorTemplate.map(res => InternalServerError(request.request))))
-        //        Future.successful(Left(InternalServerError(errorHandler.internalServerErrorTemplate(request.request))))
-        //        Future.successful(Left(errorHandler.internalServerErrorTemplate(request.request)))
-//        Left(InternalServerError("errorPage"))
-
-
     }
   }
 }
