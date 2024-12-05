@@ -85,8 +85,6 @@ class BeforeYouContinueController @Inject()(
         Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
       case Left(_) => logger.warn(s"[$className][$functionName][Session ID: ${Session.id(hc)}] " +
         s"Error while storing user answers")
-//        errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
-//        InternalServerError(errorHandler.internalServerErrorTemplate)
         errorHandler.internalServerErrorTemplate.map(res => InternalServerError(res))
 
   }

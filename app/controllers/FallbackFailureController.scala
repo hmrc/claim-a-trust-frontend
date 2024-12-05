@@ -47,7 +47,6 @@ class FallbackFailureController @Inject()(
             s"Trust IV encountered a problem that could not be recovered from")
         // $COVERAGE-ON$
       }
-      //      InternalServerError(errorHandler.internalServerErrorTemplate)
       errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
   }
 

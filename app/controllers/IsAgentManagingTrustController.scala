@@ -65,7 +65,6 @@ class IsAgentManagingTrustController @Inject()(
         Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
       case Left(_) => logger.warn(s"[$className][onPageLoad][Session ID: ${Session.id(hc)}] " +
         s"Error while loading page")
-//        InternalServerError(errorHandler.internalServerErrorTemplate)
         errorHandler.internalServerErrorTemplate.map(res => InternalServerError(res))
     }
   }
