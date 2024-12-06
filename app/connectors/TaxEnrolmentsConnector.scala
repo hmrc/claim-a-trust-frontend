@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,8 +36,9 @@ class TaxEnrolmentsConnector @Inject()(http: HttpClientV2, config: FrontendAppCo
   def enrol(request: TaxEnrolmentsRequest)
            (implicit hc: HeaderCarrier, ec: ExecutionContext, writes: Writes[TaxEnrolmentsRequest]): TrustEnvelope[EnrolmentResponse] = EitherT {
 
-    val url: String = determineEnrolAndActivateUrl(request)
-    http.put(url"$url")
+    val fullUrl: String = determineEnrolAndActivateUrl(request)
+
+    http.put(url"$fullUrl")
       .withBody(Json.toJson(request))
       .execute[HttpResponse](HttpReads.Implicits.readRaw, ec)
       .map(
@@ -73,7 +74,7 @@ class TaxEnrolmentsConnector @Inject()(http: HttpClientV2, config: FrontendAppCo
         }
       ).recover {
         case ex =>
-          Left(handleError(ex, "updateTaskStatus", url))
+          Left(handleError(ex, "updateTaskStatus", fullUrl))
       }
   }
 

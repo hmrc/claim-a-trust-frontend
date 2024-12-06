@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,19 +33,19 @@ class TrustsStoreConnector @Inject()(http: HttpClientV2, config: FrontendAppConf
 
   override val className: String = getClass.getSimpleName
 
-  val url: String = config.trustsStoreUrl + "/claim"
+  val fullUrl: String = config.trustsStoreUrl + "/claim"
 
   def claim(request: TrustsStoreRequest)
            (implicit hc: HeaderCarrier, ec: ExecutionContext, writes: Writes[TrustsStoreRequest]): TrustEnvelope[Boolean] = EitherT {
 
-    http.post(url"$url")
+    http.post(url"$fullUrl")
       .withBody(Json.toJson(request))
       .execute[HttpResponse]
       .map(_.status match {
         case CREATED => Right(true)
-        case status => Left(handleError(status, "claim", url))
+        case status => Left(handleError(status, "claim", fullUrl))
       }).recover {
-        case ex => Left(handleError(ex, "claim", url))
+        case ex => Left(handleError(ex, "claim", fullUrl))
       }
   }
 

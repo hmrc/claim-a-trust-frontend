@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,13 +39,13 @@ class FallbackFailureController @Inject()(
         case Some(referer) =>
           // $COVERAGE-OFF$
           logger.error(s"[FallbackFailureController][onPageLoad][Session ID: ${Session.id(hc)}]" +
-            s" Trust IV encountered a problem that could not be recovered from. referer url: ${referer}")
-        // $COVERAGE-ON$
+          s" Trust IV encountered a problem that could not be recovered from. referer url: ${referer}")
+          // $COVERAGE-ON$
         case _ =>
           // $COVERAGE-OFF$
           logger.warn(s"[FallbackFailureController][onPageLoad][Session ID: ${Session.id(hc)}] " +
-            s"Trust IV encountered a problem that could not be recovered from")
-        // $COVERAGE-ON$
+          s"Trust IV encountered a problem that could not be recovered from")
+          // $COVERAGE-ON$
       }
       errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
   }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,6 +52,7 @@ class SaveIdentifierController @Inject()(
         _ <- TrustEnvelope(getIdentifier(identifier))
         result <- checkIfAlreadyHaveIvRelationship(identifier)
       } yield result
+
       result.value.flatMap {
         case Right(call) => Future.successful(call)
         case Left(InvalidIdentifier) => Future.successful(Redirect(routes.FallbackFailureController.onPageLoad))
