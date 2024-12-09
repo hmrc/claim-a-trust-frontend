@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,57 +21,61 @@ import config.FrontendAppConfig
 import errors.UpstreamTaxEnrolmentsError
 import models.{EnrolmentCreated, EnrolmentResponse, IsUTR, TaxEnrolmentsRequest}
 import play.api.http.Status.NO_CONTENT
-import play.api.libs.json.{JsValue, Json, Writes}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
+import play.api.libs.json.{Json, Writes}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse, StringContextOps}
 import utils.TrustEnvelope.TrustEnvelope
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class TaxEnrolmentsConnector @Inject()(http: HttpClient, config: FrontendAppConfig) extends ConnectorErrorResponseHandler {
+class TaxEnrolmentsConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) extends ConnectorErrorResponseHandler {
 
   override val className: String = getClass.getSimpleName
 
   def enrol(request: TaxEnrolmentsRequest)
            (implicit hc: HeaderCarrier, ec: ExecutionContext, writes: Writes[TaxEnrolmentsRequest]): TrustEnvelope[EnrolmentResponse] = EitherT {
 
-    val url: String = determineEnrolAndActivateUrl(request)
+    val fullUrl: String = determineEnrolAndActivateUrl(request)
 
-    http.PUT[JsValue, HttpResponse](url, Json.toJson(request))(implicitly[Writes[JsValue]], HttpReads.Implicits.readRaw, hc, ec).map(
-      response => {
-        response.status match {
-          case NO_CONTENT => Right(EnrolmentCreated)
-          case status =>
-            if (response.body.isEmpty) {
-              logger.warn(s"[TaxEnrolmentsConnector][enrol] Received HTTP response code: ${status} with no message or response body.")
-              Left(UpstreamTaxEnrolmentsError(s"HTTP ${status}: no message or response body"))
-            } else {
-              val errorCode: String = (response.json \ "code").asOpt[String].getOrElse("N/A")
-
-              val errorMessageBuilder = new StringBuilder()
-              if (errorCode contains "MULTIPLE_ERRORS") {
-                val multipleErrors = (response.json \ "errors").get.as[List[Map[String, String]]]
-                multipleErrors.foreach(err => {
-                  errorMessageBuilder.append(err.getOrElse("code", "N/A")).append(": ").append(err.getOrElse("message", "N/A")).append(", ")
-                })
-                errorMessageBuilder.setLength(errorMessageBuilder.length() - 2) // chop trailing ", "
-
-                logger.warn("[TaxEnrolmentsConnector][enrol] Received HTTP response code "
-                  + s"${status} with multiple errors: ${errorMessageBuilder}")
+    http.put(url"$fullUrl")
+      .withBody(Json.toJson(request))
+      .execute[HttpResponse](HttpReads.Implicits.readRaw, ec)
+      .map(
+        response => {
+          response.status match {
+            case NO_CONTENT => Right(EnrolmentCreated)
+            case status =>
+              if (response.body.isEmpty) {
+                logger.warn(s"[TaxEnrolmentsConnector][enrol] Received HTTP response code: ${status} with no message or response body.")
+                Left(UpstreamTaxEnrolmentsError(s"HTTP ${status}: no message or response body"))
               } else {
-                val errorMessage = (response.json \ "message").asOpt[String].getOrElse("N/A")
-                errorMessageBuilder.append(errorMessage)
-                logger.warn("[TaxEnrolmentsConnector][enrol] Received HTTP response code "
-                  + s"${status} with error code: ${errorCode} and message: ${errorMessage}")
+                val errorCode: String = (response.json \ "code").asOpt[String].getOrElse("N/A")
+
+                val errorMessageBuilder = new StringBuilder()
+                if (errorCode contains "MULTIPLE_ERRORS") {
+                  val multipleErrors = (response.json \ "errors").get.as[List[Map[String, String]]]
+                  multipleErrors.foreach(err => {
+                    errorMessageBuilder.append(err.getOrElse("code", "N/A")).append(": ").append(err.getOrElse("message", "N/A")).append(", ")
+                  })
+                  errorMessageBuilder.setLength(errorMessageBuilder.length() - 2) // chop trailing ", "
+
+                  logger.warn("[TaxEnrolmentsConnector][enrol] Received HTTP response code "
+                    + s"${status} with multiple errors: ${errorMessageBuilder}")
+                } else {
+                  val errorMessage = (response.json \ "message").asOpt[String].getOrElse("N/A")
+                  errorMessageBuilder.append(errorMessage)
+                  logger.warn("[TaxEnrolmentsConnector][enrol] Received HTTP response code "
+                    + s"${status} with error code: ${errorCode} and message: ${errorMessage}")
+                }
+                Left(UpstreamTaxEnrolmentsError(s"HTTP response ${status} ${errorCode}: ${errorMessageBuilder}"))
               }
-              Left(UpstreamTaxEnrolmentsError(s"HTTP response ${status} ${errorCode}: ${errorMessageBuilder}"))
-            }
+          }
         }
+      ).recover {
+        case ex =>
+          Left(handleError(ex, "updateTaskStatus", fullUrl))
       }
-    ).recover {
-      case ex =>
-        Left(handleError(ex, "updateTaskStatus", url))
-    }
   }
 
   /**

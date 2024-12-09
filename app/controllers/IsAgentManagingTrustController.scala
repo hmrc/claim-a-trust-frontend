@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ import utils.{Session, TrustEnvelope}
 import views.html.IsAgentManagingTrustView
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class IsAgentManagingTrustController @Inject()(
                                                 override val messagesApi: MessagesApi,
@@ -59,13 +59,13 @@ class IsAgentManagingTrustController @Inject()(
       relationshipStatus <- relationship.check(request.internalId, identifier)
       outcome <- TrustEnvelope(relationshipOutcome(identifier, relationshipStatus, mode))
     } yield outcome
-    result.value.map {
-      case Right(call) => call
+    result.value.flatMap {
+      case Right(call) => Future.successful(call)
       case Left(NoData) => logger.warn(s"[$className][onPageLoad][Session ID: ${Session.id(hc)}] unable to retrieve identifier from user answers")
-        Redirect(routes.SessionExpiredController.onPageLoad)
+        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
       case Left(_) => logger.warn(s"[$className][onPageLoad][Session ID: ${Session.id(hc)}] " +
         s"Error while loading page")
-        InternalServerError(errorHandler.internalServerErrorTemplate)
+        errorHandler.internalServerErrorTemplate.map(res => InternalServerError(res))
     }
   }
   def relationshipOutcome(identifier: String, relationStatus: RelationEstablishmentStatus, mode: Mode)
@@ -91,13 +91,13 @@ class IsAgentManagingTrustController @Inject()(
       _ <- sessionRepository.set(updatedAnswers)
     } yield Redirect(navigator.nextPage(IsAgentManagingTrustPage, mode, updatedAnswers))
 
-    result.value.map {
-      case Right(call) => call
-      case Left(TrustFormError(call)) => call
+    result.value.flatMap {
+      case Right(call) => Future.successful(call)
+      case Left(TrustFormError(call)) => Future.successful(call)
       case Left(_) =>
         logger.warn(s"[$className][onSubmit][Session ID: ${Session.id(hc)}] " +
           s"Error while storing user answers")
-        InternalServerError(errorHandler.internalServerErrorTemplate)
+        errorHandler.internalServerErrorTemplate.map(res => InternalServerError(res))
     }
   }
 

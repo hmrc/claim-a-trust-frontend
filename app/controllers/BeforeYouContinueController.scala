@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,14 +78,15 @@ class BeforeYouContinueController @Inject()(
   }
 
   private def handleResult(result: TrustEnvelope[Result], functionName: String)
-                  (implicit request: DataRequest[AnyContent]): Future[Result] = result.value.map {
-      case Right(call) => call
+                  (implicit request: DataRequest[AnyContent]): Future[Result] = result.value.flatMap {
+      case Right(call) => Future.successful(call)
       case Left(NoData) => logger.error(s"[$className][$functionName][Session ID: ${Session.id(hc)}]" +
         s" no identifier available in user answers, cannot continue with claiming the trust")
-        Redirect(routes.SessionExpiredController.onPageLoad)
+        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
       case Left(_) => logger.warn(s"[$className][$functionName][Session ID: ${Session.id(hc)}] " +
         s"Error while storing user answers")
-        InternalServerError(errorHandler.internalServerErrorTemplate)
+        errorHandler.internalServerErrorTemplate.map(res => InternalServerError(res))
+
   }
 
   private def handleRelationshipStatus(relationshipStatus: RelationEstablishmentStatus, identifier: String, isManagedByAgent: Boolean)

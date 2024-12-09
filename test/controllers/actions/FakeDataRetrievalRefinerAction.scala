@@ -29,10 +29,10 @@ class FakeDataRetrievalRefinerAction(dataToReturn: Option[UserAnswers], sessionR
   extends DataRetrievalRefinerAction(sessionRepository, errorHandler) {
 
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, OptionalDataRequest[A]]] = {
-        Future.successful(Right(OptionalDataRequest(request = request.request,
-          internalId = request.identifier,
-          credentials = request.credentials,
-          affinityGroup = request.affinityGroup,
-          userAnswers = dataToReturn)))
+    Future.successful(Right(OptionalDataRequest(request = request.request,
+      internalId = request.identifier,
+      credentials = request.credentials,
+      affinityGroup = request.affinityGroup,
+      userAnswers = dataToReturn)))
   }
 }

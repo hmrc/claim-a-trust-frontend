@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,19 +61,19 @@ class IvSuccessController @Inject()(
       outcome <- TrustEnvelope.fromFuture(relationshipOutcome(identifier, relationshipStatus))
     } yield outcome
 
-    result.value.map {
-      case Right(call) => call
+    result.value.flatMap {
+      case Right(call) => Future.successful(call)
       case Left(NoData) => logger.warn(s"[IvSuccessController][onPageLoad][Session ID: ${Session.id(hc)}] no identifier found in user answers," +
-          s" unable to continue with enrolling credential and claiming the trust on behalf of the user")
-        Redirect(routes.SessionExpiredController.onPageLoad)
+        s" unable to continue with enrolling credential and claiming the trust on behalf of the user")
+        Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
       case Left(_) => logger.warn(s"[$className][onPageLoad][Session ID: ${Session.id(hc)}] " +
         s"Error while loading page")
-        InternalServerError(errorHandler.internalServerErrorTemplate)
+        errorHandler.internalServerErrorTemplate.map(res => InternalServerError(res))
     }
   }
 
   def relationshipOutcome(identifier: String, relationshipStatus: RelationEstablishmentStatus)
-             (implicit request: DataRequest[AnyContent]): Future[Result] = relationshipStatus match {
+                         (implicit request: DataRequest[AnyContent]): Future[Result] = relationshipStatus match {
     case RelationshipFound =>
       logger.info(s"[$className][onPageLoad][Session ID: ${Session.id(hc)}]" +
         s" relationship is already established in IV for $identifier, sending user to successfully claimed")
@@ -104,28 +104,34 @@ class IvSuccessController @Inject()(
 
         Ok(view(isAgentManagingTrust, identifier))
       }
-      result.value.map {
-        case Right(call) => call
+      result.value.flatMap {
+        case Right(call) => Future.successful(call)
         case Left(UpstreamTaxEnrolmentsError(exceptionMessage)) if exceptionMessage.nonEmpty =>
-          handleError(identifier, exceptionMessage, methodName = "onRelationshipFound", sessionId = {Session.id(hc)})
+          handleError(identifier, exceptionMessage, methodName = "onRelationshipFound", sessionId = {
+            Session.id(hc)
+          })
         case Left(ServerError(exceptionMessage)) if exceptionMessage.nonEmpty =>
-          handleError(identifier, exceptionMessage, methodName = "onRelationshipFound", sessionId = {Session.id(hc)})
+          handleError(identifier, exceptionMessage, methodName = "onRelationshipFound", sessionId = {
+            Session.id(hc)
+          })
         case _ => val exceptionMessage = s"Encountered an unexpected issue claiming a trust"
-          handleError(identifier, exceptionMessage, methodName = "onRelationshipFound", sessionId = {Session.id(hc)})
+          handleError(identifier, exceptionMessage, methodName = "onRelationshipFound", sessionId = {
+            Session.id(hc)
+          })
       }
     }
   }
 
   private def handleError(identifier: String, exceptionMessage: String, methodName: String, sessionId: String)
-                            (implicit request: DataRequest[_]): Result = {
+                         (implicit request: DataRequest[_]): Future[Result] = {
     auditService.auditFailure(CLAIM_A_TRUST_ERROR, identifier, exceptionMessage)
     for {
       ua <- TrustEnvelope(request.userAnswers.set(HasEnrolled, false))
       _ <- sessionRepository.set(ua)
-    } yield()
+    } yield ()
     logger.error(s"[$className][handleError][Session ID: ${Session.id(hc)}] failed to create enrolment for " +
       s"$identifier with tax-enrolments, users credential has not been updated, user needs to claim again")
-    InternalServerError(errorHandler.internalServerErrorTemplate)
+    errorHandler.internalServerErrorTemplate.map(res => InternalServerError(res))
   }
 
   def onSubmit: Action[AnyContent] = actions.authWithData {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,28 +20,33 @@ import cats.data.EitherT
 import config.FrontendAppConfig
 import models.TrustsStoreRequest
 import play.api.http.Status.CREATED
-import play.api.libs.json.{JsValue, Json, Writes}
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
-import utils.TrustEnvelope.TrustEnvelope
+import play.api.libs.json.{Json, Writes}
 import uk.gov.hmrc.http.HttpReads.Implicits._
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
+import utils.TrustEnvelope.TrustEnvelope
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class TrustsStoreConnector @Inject()(http: HttpClient, config: FrontendAppConfig) extends ConnectorErrorResponseHandler {
+class TrustsStoreConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) extends ConnectorErrorResponseHandler {
 
   override val className: String = getClass.getSimpleName
 
-  val url: String = config.trustsStoreUrl + "/claim"
+  val fullUrl: String = config.trustsStoreUrl + "/claim"
 
   def claim(request: TrustsStoreRequest)
            (implicit hc: HeaderCarrier, ec: ExecutionContext, writes: Writes[TrustsStoreRequest]): TrustEnvelope[Boolean] = EitherT {
-    http.POST[JsValue, HttpResponse](url, Json.toJson(request)).map ( _.status match {
-      case CREATED => Right(true)
-      case status => Left(handleError(status, "claim", url))
-    }).recover {
-      case ex => Left(handleError(ex, "claim", url))
-    }
+
+    http.post(url"$fullUrl")
+      .withBody(Json.toJson(request))
+      .execute[HttpResponse]
+      .map(_.status match {
+        case CREATED => Right(true)
+        case status => Left(handleError(status, "claim", fullUrl))
+      }).recover {
+        case ex => Left(handleError(ex, "claim", fullUrl))
+      }
   }
 
 }

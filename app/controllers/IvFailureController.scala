@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -115,14 +115,15 @@ class IvFailureController @Inject()(
           Ok(lockedView(identifier))
       }
 
-      result.value.map {
-        case Right(call) => call
+      result.value.flatMap {
+        case Right(call) => Future.successful(call)
         case Left(NoData) => logger.warn(s"[IvFailureController][onTrustIvFailure][Session ID: ${Session.id(hc)}]" +
                   s" unable to determine if trust was locked out from IV")
-          Redirect(routes.SessionExpiredController.onPageLoad)
+          Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
         case Left(_) => logger.warn(s"[$className][onSubmit][Session ID: ${Session.id(hc)}] " +
           s"Error while storing user answers")
-          InternalServerError(errorHandler.internalServerErrorTemplate)
+          errorHandler.internalServerErrorTemplate.map(res => InternalServerError(res))
+
       }
   }
 

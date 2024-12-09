@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,13 +24,15 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.Session
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class FallbackFailureController @Inject()(
                                            val controllerComponents: MessagesControllerComponents,
                                            errorHandler: ErrorHandler
-                                         ) extends FrontendBaseController with I18nSupport with Logging {
+                                         )(implicit ec: ExecutionContext)
+  extends FrontendBaseController with I18nSupport with Logging {
 
-  def onPageLoad: Action[AnyContent] = Action {
+  def onPageLoad: Action[AnyContent] = Action.async {
     implicit request =>
 
       request.headers.get(REFERER) match {
@@ -45,6 +47,7 @@ class FallbackFailureController @Inject()(
           s"Trust IV encountered a problem that could not be recovered from")
           // $COVERAGE-ON$
       }
-      InternalServerError(errorHandler.internalServerErrorTemplate)
+      errorHandler.internalServerErrorTemplate.map(html => InternalServerError(html))
   }
+
 }

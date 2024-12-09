@@ -39,7 +39,7 @@ lazy val root = Project("claim-a-trust-frontend", file("."))
   .settings(inConfig(Test)(testSettings))
   .settings(majorVersion := 0)
   .settings(
-    scalaVersion := "2.13.14",
+    scalaVersion := "2.13.15",
     RoutesKeys.routesImport += "models._",
     TwirlKeys.templateImports ++= Seq(
       "play.twirl.api.HtmlFormat",

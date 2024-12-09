@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,13 +19,15 @@ package controllers.testOnlyDoNotUseInAppConf
 import com.google.inject.Inject
 import config.FrontendAppConfig
 import models.IsUTR
+import play.api.libs.json.Json
 import uk.gov.hmrc.http.HttpReads.Implicits._
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class RelationshipEstablishmentConnector @Inject()(
-                                                    val httpClient: HttpClient,
+                                                    val httpClient: HttpClientV2,
                                                     config: FrontendAppConfig
                                                   )(implicit val ec: ExecutionContext) {
 
@@ -47,13 +49,18 @@ class RelationshipEstablishmentConnector @Inject()(
 
   def createRelationship(credId: String, identifier: String)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] = {
     val ttl = config.relationshipTTL
-    httpClient.POST[RelationshipJson, HttpResponse](relationshipEstablishmentPostUrl, RelationshipJson(newRelationship(credId, identifier), ttl))
+    httpClient.post(url"$relationshipEstablishmentPostUrl")
+      .withBody(Json.toJson(RelationshipJson(newRelationship(credId, identifier), ttl)))
+      .execute[HttpResponse]
   }
 
-  def getRelationship(credId: String)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
-    httpClient.GET[HttpResponse](relationshipEstablishmentGetUrl(credId))
+  def getRelationship(credId: String)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] = {
+    val fullUrl = relationshipEstablishmentGetUrl(credId)
+    httpClient.get(url"$fullUrl").execute[HttpResponse]
+  }
 
-  def deleteRelationship(credId: String)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] =
-    httpClient.DELETE[HttpResponse](relationshipEstablishmentDeleteUrl(credId))
-
+  def deleteRelationship(credId: String)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] = {
+    val fullUrl = relationshipEstablishmentDeleteUrl(credId)
+    httpClient.delete(url"$fullUrl").execute[HttpResponse]
+  }
 }
