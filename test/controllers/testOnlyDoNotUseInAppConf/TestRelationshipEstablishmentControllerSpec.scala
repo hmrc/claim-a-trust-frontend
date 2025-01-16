@@ -18,7 +18,8 @@ package controllers.testOnlyDoNotUseInAppConf
 
 import base.SpecBase
 import org.mockito.ArgumentMatchers._
-import org.mockito.MockitoSugar._
+import org.mockito.Mockito.when
+import org.scalatestplus.mockito.MockitoSugar._
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.{GET, route, status, _}

@@ -21,11 +21,10 @@ import cats.data.EitherT
 import errors.{InvalidIdentifier, NoData, ServerError, TrustErrors}
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchersSugar.eqTo
+import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.when
-import org.mockito.MockitoSugar.mock
 import org.scalatest.EitherValues
+import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.IdentifierPage
 import play.api.inject.bind
 import play.api.test.FakeRequest

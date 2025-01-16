@@ -23,8 +23,9 @@ import forms.IsAgentManagingTrustFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.when
 import org.scalatest.EitherValues
+import org.scalatestplus.mockito.MockitoSugar
 import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.data.Form
 import play.api.inject.bind
@@ -32,7 +33,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.{FakeRelationshipEstablishmentService, RelationEstablishmentStatus, RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
+import services._
 import views.html.IsAgentManagingTrustView
 
 import scala.concurrent.Future

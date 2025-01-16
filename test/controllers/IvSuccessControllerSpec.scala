@@ -24,7 +24,7 @@ import models.auditing.Events.{CLAIM_A_TRUST_ERROR, CLAIM_A_TRUST_SUCCESS}
 import models.{EnrolmentCreated, EnrolmentResponse, NormalMode, TaxEnrolmentsRequest, UserAnswers}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito._
-import org.mockito.MockitoSugar.mock
+import org.scalatestplus.mockito.MockitoSugar.mock
 import org.scalatest.{BeforeAndAfterEach, EitherValues}
 import pages.{HasEnrolled, IdentifierPage, IsAgentManagingTrustPage}
 import play.api.inject.bind

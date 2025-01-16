@@ -18,7 +18,9 @@ package controllers
 
 import base.SpecBase
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.{ArgumentCaptor, MockitoSugar}
+import org.mockito.ArgumentCaptor
+import org.mockito.Mockito.{times, verify}
+import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.EitherValues
 import pages.IdentifierPage
 import play.api.inject.bind
@@ -37,8 +39,8 @@ class LogoutControllerSpec extends SpecBase with MockitoSugar with EitherValues 
     val userAnswers = emptyUserAnswers.set(IdentifierPage, "1234567890").value
 
     val application = applicationBuilder(userAnswers = Some(userAnswers))
-    .overrides(bind[AuditConnector].toInstance(mockAuditConnector))
-    .build()
+      .overrides(bind[AuditConnector].toInstance(mockAuditConnector))
+      .build()
 
     val request = FakeRequest(GET, routes.LogoutController.logout().url)
 
@@ -48,7 +50,7 @@ class LogoutControllerSpec extends SpecBase with MockitoSugar with EitherValues 
 
     redirectLocation(result).value mustBe frontendAppConfig.logoutUrl
 
-    verify(mockAuditConnector, atLeastOnce)
+    verify(mockAuditConnector, times(1))
       .sendExplicitAudit(eqTo("trusts"), captor.capture())(any(), any())
 
     captor.getValue.keys must contain("utr")
@@ -77,7 +79,7 @@ class LogoutControllerSpec extends SpecBase with MockitoSugar with EitherValues 
 
     redirectLocation(result).value mustBe frontendAppConfig.logoutUrl
 
-    verify(mockAuditConnector, atLeastOnce)
+    verify(mockAuditConnector, times(1))
       .sendExplicitAudit(eqTo("trusts"), captor.capture())(any(), any())
 
     captor.getValue.keys must contain("urn")

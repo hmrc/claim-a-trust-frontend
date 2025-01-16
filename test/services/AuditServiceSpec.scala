@@ -22,13 +22,15 @@ import models.UserAnswers
 import models.auditing.{ClaimATrustAuditFailureEvent, ClaimATrustAuditSuccessEvent}
 import models.requests.DataRequest
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.MockitoSugar
+import org.mockito.Mockito.{clearInvocations, verify}
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.auth.core.AffinityGroup
 import uk.gov.hmrc.auth.core.AffinityGroup._
 import uk.gov.hmrc.auth.core.retrieve.Credentials
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
+
 import scala.concurrent.ExecutionContext
 
 class AuditServiceSpec (implicit ec: ExecutionContext) extends SpecBase with MockitoSugar {
@@ -53,7 +55,7 @@ class AuditServiceSpec (implicit ec: ExecutionContext) extends SpecBase with Moc
 
     "build audit success payload from request values for Taxable" when {
 
-      reset(auditConnector)
+      clearInvocations(auditConnector)
 
       val affinity: AffinityGroup = Agent
 
@@ -75,7 +77,7 @@ class AuditServiceSpec (implicit ec: ExecutionContext) extends SpecBase with Moc
 
     "build audit success payload from request values for NonTaxable" when {
 
-      reset(auditConnector)
+      clearInvocations(auditConnector)
 
       val affinity: AffinityGroup = Agent
 
@@ -98,7 +100,7 @@ class AuditServiceSpec (implicit ec: ExecutionContext) extends SpecBase with Moc
 
     "build audit failure payload from request values" in {
 
-      reset(auditConnector)
+      clearInvocations(auditConnector)
 
       val affinity: AffinityGroup = Agent
 
