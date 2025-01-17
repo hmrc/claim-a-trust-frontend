@@ -26,7 +26,7 @@ import models.auditing.FailureReasons
 import models.{RelationshipEstablishmentStatus, TrustsStoreRequest}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{verify, when}
-import org.mockito.MockitoSugar.mock
+import org.scalatestplus.mockito.MockitoSugar.mock
 import org.scalatest.EitherValues
 import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.inject.bind
