@@ -22,7 +22,7 @@ import models.UserAnswers
 import models.auditing.{ClaimATrustAuditFailureEvent, ClaimATrustAuditSuccessEvent}
 import models.requests.DataRequest
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.{clearInvocations, reset, verify}
+import org.mockito.Mockito.{reset, verify}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.AnyContent
 import uk.gov.hmrc.auth.core.AffinityGroup
@@ -100,7 +100,7 @@ class AuditServiceSpec (implicit ec: ExecutionContext) extends SpecBase with Moc
 
     "build audit failure payload from request values" in {
 
-      clearInvocations(auditConnector)
+      reset(auditConnector)
 
       val affinity: AffinityGroup = Agent
 
