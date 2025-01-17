@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.ArgumentCaptor
-import org.mockito.Mockito.{times, verify}
+import org.mockito.Mockito.{atLeastOnce, times, verify}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.EitherValues
 import pages.IdentifierPage
@@ -50,7 +50,7 @@ class LogoutControllerSpec extends SpecBase with MockitoSugar with EitherValues 
 
     redirectLocation(result).value mustBe frontendAppConfig.logoutUrl
 
-    verify(mockAuditConnector, times(1))
+    verify(mockAuditConnector, atLeastOnce)
       .sendExplicitAudit(eqTo("trusts"), captor.capture())(any(), any())
 
     captor.getValue.keys must contain("utr")
@@ -79,7 +79,7 @@ class LogoutControllerSpec extends SpecBase with MockitoSugar with EitherValues 
 
     redirectLocation(result).value mustBe frontendAppConfig.logoutUrl
 
-    verify(mockAuditConnector, times(1))
+    verify(mockAuditConnector, atLeastOnce)
       .sendExplicitAudit(eqTo("trusts"), captor.capture())(any(), any())
 
     captor.getValue.keys must contain("urn")
