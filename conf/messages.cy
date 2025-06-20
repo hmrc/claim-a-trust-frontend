@@ -1,4 +1,4 @@
-service.name = Cofrestru Ymddiriedolaeth a’i Chynnal
+service.name = Rheoli ymddiriedolaeth
 
 date.day = Diwrnod
 date.month = Mis
@@ -33,7 +33,7 @@ urn.subheading = URN yr ymddiriedolaeth: {0}
 session_expired.title = Er eich diogelwch, gwnaethom eich allgofnodi
 session_expired.heading = Er eich diogelwch, gwnaethom eich allgofnodi
 session_expired.guidance = Mae hyn oherwydd eich bod wedi bod yn segur ar y gwasanaeth ers 15 munud.
-session_expired.guidance.2 = Bydd angen i chi fewngofnodi i barhau i gynnal yr ymddiriedolaeth.
+session_expired.guidance.2 = Bydd angen i chi fewngofnodi i barhau i reoli’r ymddiriedolaeth.
 
 site.back = Yn ôl
 site.delete = Tynnu
@@ -43,7 +43,7 @@ site.hidden-edit = Newid {0}
 site.no = Na
 site.yes = Iawn
 site.continue = Yn eich blaen
-site.service_name = Cofrestru Ymddiriedolaeth a’i Chynnal
+site.service_name = Rheoli ymddiriedolaeth
 site.textarea.char_limit = (Y terfyn yw {0} o gymeriadau)
 site.sign_in = Mewngofnodi
 site.sign_out = Allgofnodi
