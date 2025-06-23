@@ -1,4 +1,4 @@
-service.name = Register and Maintain a Trust
+service.name = Manage a trust
 
 date.day = Day
 date.month = Month
@@ -33,7 +33,7 @@ urn.subheading = The trust’s URN: {0}
 session_expired.title = For your security, we signed you out
 session_expired.heading = For your security, we signed you out
 session_expired.guidance = This is because you have been inactive on the service for 15 minutes.
-session_expired.guidance.2 = You will need to sign in to continue maintaining the trust.
+session_expired.guidance.2 = You will need to sign in to continue managing the trust.
 
 site.back = Back
 site.delete = Remove
@@ -43,7 +43,7 @@ site.hidden-edit = Change {0}
 site.no = No
 site.yes = Yes
 site.continue = Continue
-site.service_name = Register and Maintain a Trust
+site.service_name = Manage a trust
 site.textarea.char_limit = (Limit is {0} characters)
 site.sign_in = Sign in
 site.sign_out = Sign out
