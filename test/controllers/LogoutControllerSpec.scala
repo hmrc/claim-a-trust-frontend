@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.ArgumentCaptor
-import org.mockito.Mockito.{atLeastOnce, times, verify}
+import org.mockito.Mockito.{atLeastOnce, verify}
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatest.EitherValues
 import pages.IdentifierPage

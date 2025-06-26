@@ -21,7 +21,6 @@ import models.UserAnswers
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 import play.api.mvc.Results.InternalServerError
 import play.api.mvc.{ActionRefiner, Result}
-import play.twirl.api.Html
 import repositories.SessionRepository
 
 import javax.inject.Inject

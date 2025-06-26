@@ -58,9 +58,6 @@ lazy val root = Project("claim-a-trust-frontend", file("."))
     scalacOptions ++= Seq("-feature"),
     libraryDependencies ++= AppDependencies(),
     retrieveManaged := true,
-    resolvers ++= Seq(
-      Resolver.jcenterRepo
-    ),
     // concatenate js
     Concat.groups := Seq(
       "javascripts/claimatrustfrontend-app.js" ->
