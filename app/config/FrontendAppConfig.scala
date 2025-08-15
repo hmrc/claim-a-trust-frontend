@@ -35,7 +35,7 @@ class FrontendAppConfig @Inject() (val configuration: Configuration,
   val betaFeedbackUrl = s"${contactFrontendConfig.baseUrl.get}/contact/beta-feedback?service=${contactFrontendConfig.serviceId.get}"
 
   lazy val trustsRegistration: String = configuration.get[String]("urls.trustsRegistration")
-  lazy val authUrl: String = configuration.get[Service]("auth").baseUrl
+  lazy val authUrl: String = servicesConfig.baseUrl("auth")
   lazy val loginUrl: String = configuration.get[String]("urls.login")
   lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
   lazy val logoutUrl: String = configuration.get[String]("urls.logout")
@@ -49,12 +49,12 @@ class FrontendAppConfig @Inject() (val configuration: Configuration,
   lazy val languageTranslationEnabled: Boolean =
     configuration.get[Boolean]("microservice.services.features.welsh-translation")
 
-  lazy val trustsStoreUrl: String = configuration.get[Service]("microservice.services.trusts-store").baseUrl + "/trusts-store"
+  lazy val trustsStoreUrl: String = servicesConfig.baseUrl("trusts-store") + "/trusts-store"
 
-  lazy val taxEnrolmentsUrl: String = configuration.get[Service]("microservice.services.tax-enrolments").baseUrl + "/tax-enrolments"
+  lazy val taxEnrolmentsUrl: String = servicesConfig.baseUrl("tax-enrolments") + "/tax-enrolments"
 
   lazy val relationshipEstablishmentUrl: String =
-    configuration.get[Service]("microservice.services.relationship-establishment").baseUrl + "/relationship-establishment"
+    servicesConfig.baseUrl("relationship-establishment") + "/relationship-establishment"
 
   lazy val relationshipName: String =
     configuration.get[String]("microservice.services.self.relationship-establishment.name")

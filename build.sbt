@@ -1,40 +1,14 @@
 import play.sbt.routes.RoutesKeys
 import sbt.Def
-import scoverage.ScoverageKeys
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
-val excludedPackages = Seq(
-  "<empty>",
-  ".*Reverse.*",
-  ".*Routes.*",
-  ".*standardError*.*",
-  ".*main_template*.*",
-  "uk.gov.hmrc.BuildInfo",
-  "app.*",
-  "prod.*",
-  ".*testOnlyDoNotUseInAppConf.*",
-  "views.html.*",
-  "testOnly.*",
-  "com.kenshoo.play.metrics*.*",
-  ".*GuiceInjector",
-  ".*models.Mode",
-  ".*filters.*",
-  ".*handlers.*",
-  ".*components.*",
-  ".*FrontendAuditConnector.*",
-  ".*javascript.*",
-  ".*mapping.Constants.*",
-  ".*pages.*",
-  ".*viewmodels.*",
-  ".*Message.*",
-  ".*config.*"
-)
 
 lazy val root = Project("claim-a-trust-frontend", file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin) //Required to prevent https://github.com/scalatest/scalatest/issues/1427
   .settings(inConfig(Test)(testSettings))
   .settings(majorVersion := 0)
+  .settings(CodeCoverageSettings())
   .settings(
     scalaVersion := "2.13.16",
     RoutesKeys.routesImport += "models._",
@@ -49,10 +23,6 @@ lazy val root = Project("claim-a-trust-frontend", file("."))
       "controllers.routes._"
     ),
     PlayKeys.playDefaultPort := 9785,
-    ScoverageKeys.coverageExcludedFiles := excludedPackages.mkString(";"),
-    ScoverageKeys.coverageMinimumStmtTotal := 81,
-    ScoverageKeys.coverageFailOnMinimum := true,
-    ScoverageKeys.coverageHighlighting := true,
     scalacOptions+= "-Wconf:src=routes/.*:s",
     scalacOptions+= "-Wconf:cat=unused-imports&src=html/.*:s",
     scalacOptions ++= Seq("-feature"),
@@ -80,6 +50,4 @@ lazy val root = Project("claim-a-trust-frontend", file("."))
 lazy val testSettings: Seq[Def.Setting[?]] = Seq(
   fork := true,
 )
-
-addCommandAlias("scalastyleAll", "all scalastyle test:scalastyle")
 
