@@ -20,7 +20,7 @@ import config.FrontendAppConfig
 import controllers.actions._
 import handlers.ErrorHandler
 import models.UserAnswers
-import org.scalatest.TryValues
+import org.scalatest.{EitherValues, TryValues}
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.PlaySpec
 import org.scalatestplus.play.guice._
