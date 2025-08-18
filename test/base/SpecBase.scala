@@ -35,7 +35,7 @@ import services.{FakeRelationshipEstablishmentService, RelationshipEstablishment
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues with ScalaFutures with IntegrationPatience with EitherValues {
+trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues with ScalaFutures with IntegrationPatience {
 
   val userAnswersId = "id"
 
