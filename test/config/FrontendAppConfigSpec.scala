@@ -23,7 +23,6 @@ class FrontendAppConfigSpec extends SpecBase {
 
   private val appConfig = app.injector.instanceOf[FrontendAppConfig]
 
-
   "FrontendAppConfig" must {
 
     "have the correct languageMap" in {

@@ -26,22 +26,27 @@ import repositories.SessionRepository
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DataRetrievalRefinerAction @Inject()(sessionRepository: SessionRepository, errorHandler: ErrorHandler)
-                                          (implicit val executionContext: ExecutionContext)
-  extends ActionRefiner[IdentifierRequest, OptionalDataRequest] {
-  override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, OptionalDataRequest[A]]] = {
-    sessionRepository.get(request.identifier).map { maybeUserAnswers: Option[UserAnswers] =>
-      OptionalDataRequest(
-        request = request.request,
-        internalId = request.identifier,
-        credentials = request.credentials,
-        affinityGroup = request.affinityGroup,
-        userAnswers = maybeUserAnswers
-      )
-    }.value.flatMap {
-      case Right(optData) => Future.successful(Right(optData))
-      case Left(_) =>
-        errorHandler.internalServerErrorTemplate(request.request).map(html => Left(InternalServerError(html)))
-    }
-  }
+class DataRetrievalRefinerAction @Inject() (sessionRepository: SessionRepository, errorHandler: ErrorHandler)(implicit
+  val executionContext: ExecutionContext
+) extends ActionRefiner[IdentifierRequest, OptionalDataRequest] {
+
+  override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, OptionalDataRequest[A]]] =
+    sessionRepository
+      .get(request.identifier)
+      .map { maybeUserAnswers: Option[UserAnswers] =>
+        OptionalDataRequest(
+          request = request.request,
+          internalId = request.identifier,
+          credentials = request.credentials,
+          affinityGroup = request.affinityGroup,
+          userAnswers = maybeUserAnswers
+        )
+      }
+      .value
+      .flatMap {
+        case Right(optData) => Future.successful(Right(optData))
+        case Left(_)        =>
+          errorHandler.internalServerErrorTemplate(request.request).map(html => Left(InternalServerError(html)))
+      }
+
 }

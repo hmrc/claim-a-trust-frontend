@@ -38,9 +38,9 @@ import scala.concurrent.Future
 
 class BeforeYouContinueControllerSpec extends SpecBase with EitherValues {
 
-  val utr = "0987654321"
+  val utr            = "0987654321"
   val managedByAgent = true
-  val trustLocked = false
+  val trustLocked    = false
 
   val fakeEstablishmentServiceFailing = new FakeRelationshipEstablishmentService(Right(RelationshipNotFound))
 
@@ -91,12 +91,16 @@ class BeforeYouContinueControllerSpec extends SpecBase with EitherValues {
 
       val connector = mock[TrustsStoreConnector]
 
-      when(connector.claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any()))
+      when(
+        connector.claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
+      )
         .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(Right(true))))
 
       val answers = emptyUserAnswers
-        .set(IdentifierPage, "0987654321").value
-        .set(IsAgentManagingTrustPage, true).value
+        .set(IdentifierPage, "0987654321")
+        .value
+        .set(IsAgentManagingTrustPage, true)
+        .value
 
       val application = applicationBuilder(userAnswers = Some(answers), fakeEstablishmentServiceFailing)
         .overrides(bind[TrustsStoreConnector].toInstance(connector))
@@ -111,7 +115,8 @@ class BeforeYouContinueControllerSpec extends SpecBase with EitherValues {
 
       redirectLocation(result).value must include("0987654321")
 
-      verify(connector).claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
+      verify(connector)
+        .claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
 
       application.stop()
 
@@ -161,12 +166,17 @@ class BeforeYouContinueControllerSpec extends SpecBase with EitherValues {
 
       "error while storing user answers" in {
         val answers = emptyUserAnswers
-          .set(IdentifierPage, "0987654321").value
-          .set(IsAgentManagingTrustPage, true).value
+          .set(IdentifierPage, "0987654321")
+          .value
+          .set(IsAgentManagingTrustPage, true)
+          .value
 
         val connector = mock[TrustsStoreConnector]
 
-        when(connector.claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any()))
+        when(
+          connector
+            .claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
+        )
           .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(Left(ServerError()))))
 
         val application = applicationBuilder(userAnswers = Some(answers), fakeEstablishmentServiceFailing)
@@ -186,12 +196,17 @@ class BeforeYouContinueControllerSpec extends SpecBase with EitherValues {
 
       "relationship is already established and user is redirected to successfully claimed" in {
         val answers = emptyUserAnswers
-          .set(IdentifierPage, "0987654321").value
-          .set(IsAgentManagingTrustPage, true).value
+          .set(IdentifierPage, "0987654321")
+          .value
+          .set(IsAgentManagingTrustPage, true)
+          .value
 
         val connector = mock[TrustsStoreConnector]
 
-        when(connector.claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any()))
+        when(
+          connector
+            .claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
+        )
           .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(Left(ServerError()))))
 
         val application = applicationBuilder(userAnswers = Some(answers), fakeEstablishmentServiceFound)
@@ -210,4 +225,5 @@ class BeforeYouContinueControllerSpec extends SpecBase with EitherValues {
       }
     }
   }
+
 }

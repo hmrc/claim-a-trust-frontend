@@ -58,20 +58,22 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues with Sca
   val errorHandler: ErrorHandler = injector.instanceOf[ErrorHandler]
 
   protected def applicationBuilder(
-                                    userAnswers: Option[UserAnswers] = None,
-                                    relationshipEstablishment: RelationshipEstablishment = new FakeRelationshipEstablishmentService()
-                                  ): GuiceApplicationBuilder =
+    userAnswers: Option[UserAnswers] = None,
+    relationshipEstablishment: RelationshipEstablishment = new FakeRelationshipEstablishmentService()
+  ): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .configure(
         Seq(
           "play.filters.disabled" -> List("play.filters.csrf.CSRFFilter", "play.filters.csp.CSPFilter"),
-          "play.http.router" -> "testOnlyDoNotUseInAppConf.Routes"
-        ) :_*
+          "play.http.router"      -> "testOnlyDoNotUseInAppConf.Routes"
+        ): _*
       )
       .overrides(
         bind[DataRequiredAction].to[DataRequiredActionImpl],
         bind[IdentifierAction].to[FakeIdentifierAction],
-        bind[DataRetrievalRefinerAction].toInstance(new FakeDataRetrievalRefinerAction(userAnswers, sessionRepository, errorHandler)),
+        bind[DataRetrievalRefinerAction]
+          .toInstance(new FakeDataRetrievalRefinerAction(userAnswers, sessionRepository, errorHandler)),
         bind[RelationshipEstablishment].toInstance(relationshipEstablishment)
       )
+
 }

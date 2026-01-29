@@ -26,8 +26,7 @@ import org.scalatest.wordspec.AnyWordSpec
 
 import play.api.data.validation.{Invalid, Valid}
 
-class ConstraintsSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyChecks with Generators  with Constraints {
-
+class ConstraintsSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyChecks with Generators with Constraints {
 
   "firstError" must {
 
@@ -96,7 +95,7 @@ class ConstraintsSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyC
     }
 
     "return invalid for a number outside the range" in {
-      val result = inRange(1, 3,"error.max").apply(4)
+      val result = inRange(1, 3, "error.max").apply(4)
       result mustEqual Invalid("error.max", 1, 3)
     }
   }
@@ -146,11 +145,10 @@ class ConstraintsSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyC
         date <- datesBetween(LocalDate.of(2000, 1, 1), max)
       } yield (max, date)
 
-      forAll(gen) {
-        case (max, date) =>
+      forAll(gen) { case (max, date) =>
 
-          val result = maxDate(max, "error.future")(date)
-          result mustEqual Valid
+        val result = maxDate(max, "error.future")(date)
+        result mustEqual Valid
       }
     }
 
@@ -161,11 +159,10 @@ class ConstraintsSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyC
         date <- datesBetween(max.plusDays(1), LocalDate.of(3000, 1, 2))
       } yield (max, date)
 
-      forAll(gen) {
-        case (max, date) =>
+      forAll(gen) { case (max, date) =>
 
-          val result = maxDate(max, "error.future", "foo")(date)
-          result mustEqual Invalid("error.future", "foo")
+        val result = maxDate(max, "error.future", "foo")(date)
+        result mustEqual Invalid("error.future", "foo")
       }
     }
   }
@@ -179,11 +176,10 @@ class ConstraintsSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyC
         date <- datesBetween(min, LocalDate.of(3000, 1, 1))
       } yield (min, date)
 
-      forAll(gen) {
-        case (min, date) =>
+      forAll(gen) { case (min, date) =>
 
-          val result = minDate(min, "error.past", "foo")(date)
-          result mustEqual Valid
+        val result = minDate(min, "error.past", "foo")(date)
+        result mustEqual Valid
       }
     }
 
@@ -194,12 +190,12 @@ class ConstraintsSpec extends AnyWordSpec with Matchers with ScalaCheckPropertyC
         date <- datesBetween(LocalDate.of(2000, 1, 1), min.minusDays(1))
       } yield (min, date)
 
-      forAll(gen) {
-        case (min, date) =>
+      forAll(gen) { case (min, date) =>
 
-          val result = minDate(min, "error.past", "foo")(date)
-          result mustEqual Invalid("error.past", "foo")
+        val result = minDate(min, "error.past", "foo")(date)
+        result mustEqual Invalid("error.past", "foo")
       }
     }
   }
+
 }

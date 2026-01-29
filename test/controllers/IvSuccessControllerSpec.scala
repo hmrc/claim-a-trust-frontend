@@ -31,7 +31,9 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.{AuditService, RelationEstablishmentStatus, RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
+import services.{
+  AuditService, RelationEstablishmentStatus, RelationshipEstablishment, RelationshipFound, RelationshipNotFound
+}
 import views.html.IvSuccessView
 
 import scala.concurrent.Future
@@ -41,8 +43,8 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
   private val utr = "0987654321"
   private val urn = "ABTRUST12345678"
 
-  private val connector = mock[TaxEnrolmentsConnector]
-  private val mockRelationshipEstablishment = mock[RelationshipEstablishment]
+  private val connector                      = mock[TaxEnrolmentsConnector]
+  private val mockRelationshipEstablishment  = mock[RelationshipEstablishment]
   private val mockAuditService: AuditService = mock[AuditService]
 
   // Mock mongo repository
@@ -63,8 +65,10 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
       "return OK with the correct view for a GET with no Agent and set hasEnrolled true" in {
 
         val userAnswers = UserAnswers(userAnswersId)
-          .set(IsAgentManagingTrustPage, false).value
-          .set(IdentifierPage, utr).value
+          .set(IsAgentManagingTrustPage, false)
+          .value
+          .set(IdentifierPage, utr)
+          .value
 
         val application = applicationBuilder(
           userAnswers = Some(userAnswers),
@@ -76,7 +80,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
         ).build()
 
         when(connector.enrol(any())(any(), any(), any()))
-          .thenReturn(EitherT[Future, TrustErrors, EnrolmentResponse](Future.successful((Right(EnrolmentCreated)))))
+          .thenReturn(EitherT[Future, TrustErrors, EnrolmentResponse](Future.successful(Right(EnrolmentCreated))))
 
         // Stub a mongo connection
         when(mockRepository.set(any()))
@@ -89,7 +93,9 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
         val viewAsString = view(isAgent = false, utr)(request, messages).toString
 
         when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
-          .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound))))
+          .thenReturn(
+            EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound)))
+          )
 
         val result = route(application, request).value
 
@@ -113,8 +119,10 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
       "when error exception message is nonEmpty" in {
 
         val userAnswers = UserAnswers(userAnswersId)
-          .set(IsAgentManagingTrustPage, true).value
-          .set(IdentifierPage, utr).value
+          .set(IsAgentManagingTrustPage, true)
+          .value
+          .set(IdentifierPage, utr)
+          .value
 
         val application = applicationBuilder(
           userAnswers = Some(userAnswers),
@@ -126,16 +134,24 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
         ).build()
 
         when(connector.enrol(any())(any(), any(), any()))
-          .thenReturn(EitherT[Future, TrustErrors, EnrolmentResponse](Future.successful((Left(ServerError("an exception was returned"))))))
+          .thenReturn(
+            EitherT[Future, TrustErrors, EnrolmentResponse](
+              Future.successful(Left(ServerError("an exception was returned")))
+            )
+          )
 
         // Stub a mongo connection
         when(mockRepository.set(any()))
-          .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful((Left(ServerError("an exception was returned"))))))
+          .thenReturn(
+            EitherT[Future, TrustErrors, Boolean](Future.successful(Left(ServerError("an exception was returned"))))
+          )
 
         val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
         when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
-          .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound))))
+          .thenReturn(
+            EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound)))
+          )
 
         val result = route(application, request).value
 
@@ -147,8 +163,10 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
       "when error exception message is empty" in {
 
         val userAnswers = UserAnswers(userAnswersId)
-          .set(IsAgentManagingTrustPage, true).value
-          .set(IdentifierPage, utr).value
+          .set(IsAgentManagingTrustPage, true)
+          .value
+          .set(IdentifierPage, utr)
+          .value
 
         val application = applicationBuilder(
           userAnswers = Some(userAnswers),
@@ -160,16 +178,18 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
         ).build()
 
         when(connector.enrol(any())(any(), any(), any()))
-          .thenReturn(EitherT[Future, TrustErrors, EnrolmentResponse](Future.successful((Left(ServerError(""))))))
+          .thenReturn(EitherT[Future, TrustErrors, EnrolmentResponse](Future.successful(Left(ServerError("")))))
 
         // Stub a mongo connection
         when(mockRepository.set(any()))
-          .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful((Left(ServerError(""))))))
+          .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(Left(ServerError("")))))
 
         val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
         when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
-          .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound))))
+          .thenReturn(
+            EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound)))
+          )
 
         val result = route(application, request).value
 
@@ -181,8 +201,10 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
       "no relationship found in Trust IV" in {
 
         val userAnswers = UserAnswers(userAnswersId)
-          .set(IsAgentManagingTrustPage, false).value
-          .set(IdentifierPage, utr).value
+          .set(IsAgentManagingTrustPage, false)
+          .value
+          .set(IdentifierPage, utr)
+          .value
 
         val application = applicationBuilder(
           userAnswers = Some(userAnswers),
@@ -194,7 +216,7 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
         ).build()
 
         when(connector.enrol(any())(any(), any(), any()))
-          .thenReturn(EitherT[Future, TrustErrors, EnrolmentResponse](Future.successful((Right(EnrolmentCreated)))))
+          .thenReturn(EitherT[Future, TrustErrors, EnrolmentResponse](Future.successful(Right(EnrolmentCreated))))
 
         // Stub a mongo connection
         when(mockRepository.set(any()))
@@ -203,10 +225,14 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
         val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
         when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
-          .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipNotFound))))
+          .thenReturn(
+            EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipNotFound)))
+          )
 
         when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
-          .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipNotFound))))
+          .thenReturn(
+            EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipNotFound)))
+          )
 
         val result = route(application, request).value
 
@@ -221,8 +247,10 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
       "return OK with the correct view for a GET with Agent and set hasEnrolled true" in {
 
         val userAnswers = UserAnswers(userAnswersId)
-          .set(IsAgentManagingTrustPage, true).value
-          .set(IdentifierPage, utr).value
+          .set(IsAgentManagingTrustPage, true)
+          .value
+          .set(IdentifierPage, utr)
+          .value
 
         val application = applicationBuilder(
           userAnswers = Some(userAnswers),
@@ -243,7 +271,9 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
         val viewAsString = view(isAgent = true, utr)(request, messages).toString
 
         when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
-          .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound))))
+          .thenReturn(
+            EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound)))
+          )
 
         when(connector.enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any()))
           .thenReturn(EitherT[Future, TrustErrors, EnrolmentResponse](Future.successful(Right(EnrolmentCreated))))
@@ -274,9 +304,12 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
       "return OK with the correct view for a GET with no Agent and set hasEnrolled true" in {
 
         val userAnswers = UserAnswers(userAnswersId)
-          .set(IsAgentManagingTrustPage, false).value
-          .set(IdentifierPage, utr).value
-          .set(HasEnrolled, false).value
+          .set(IsAgentManagingTrustPage, false)
+          .value
+          .set(IdentifierPage, utr)
+          .value
+          .set(HasEnrolled, false)
+          .value
 
         val application = applicationBuilder(
           userAnswers = Some(userAnswers),
@@ -298,8 +331,9 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
         val viewAsString = view(isAgent = false, utr)(request, messages).toString
 
         when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
-          .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound))))
-
+          .thenReturn(
+            EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound)))
+          )
 
         when(connector.enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any()))
           .thenReturn(EitherT[Future, TrustErrors, EnrolmentResponse](Future.successful(Right(EnrolmentCreated))))
@@ -327,9 +361,12 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
       "return OK with the correct view for a GET with Agent and set hasEnrolled true" in {
 
         val userAnswers = UserAnswers(userAnswersId)
-          .set(IsAgentManagingTrustPage, true).value
-          .set(IdentifierPage, utr).value
-          .set(HasEnrolled, false).value
+          .set(IsAgentManagingTrustPage, true)
+          .value
+          .set(IdentifierPage, utr)
+          .value
+          .set(HasEnrolled, false)
+          .value
 
         val application = applicationBuilder(
           userAnswers = Some(userAnswers),
@@ -350,12 +387,12 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
         val viewAsString = view(isAgent = true, utr)(request, messages).toString
 
         when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
-          .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound))))
-
+          .thenReturn(
+            EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound)))
+          )
 
         when(connector.enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any()))
           .thenReturn(EitherT[Future, TrustErrors, EnrolmentResponse](Future.successful(Right(EnrolmentCreated))))
-
 
         val result = route(application, request).value
 
@@ -383,9 +420,12 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
       "return OK and the correct view for a GET with no Agent and has enrolled" in {
 
         val userAnswers = UserAnswers(userAnswersId)
-          .set(IsAgentManagingTrustPage, false).value
-          .set(IdentifierPage, utr).value
-          .set(HasEnrolled, true).value
+          .set(IsAgentManagingTrustPage, false)
+          .value
+          .set(IdentifierPage, utr)
+          .value
+          .set(HasEnrolled, true)
+          .value
 
         val application = applicationBuilder(
           userAnswers = Some(userAnswers),
@@ -395,7 +435,8 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
             bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
             bind(classOf[SessionRepository]).toInstance(mockRepository),
             bind(classOf[AuditService]).toInstance(mockAuditService)
-          ).build()
+          )
+          .build()
 
         val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
@@ -404,7 +445,9 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
         val viewAsString = view(isAgent = false, utr)(request, messages).toString
 
         when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
-          .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound))))
+          .thenReturn(
+            EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound)))
+          )
 
         val result = route(application, request).value
 
@@ -426,9 +469,12 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
       "return OK and the correct view for a GET with Agent and has enrolled" in {
 
         val userAnswers = UserAnswers(userAnswersId)
-          .set(IsAgentManagingTrustPage, true).value
-          .set(IdentifierPage, utr).value
-          .set(HasEnrolled, true).value
+          .set(IsAgentManagingTrustPage, true)
+          .value
+          .set(IdentifierPage, utr)
+          .value
+          .set(HasEnrolled, true)
+          .value
 
         val application = applicationBuilder(
           userAnswers = Some(userAnswers),
@@ -446,7 +492,9 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
         val viewAsString = view(isAgent = true, utr)(request, messages).toString
 
         when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
-          .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound))))
+          .thenReturn(
+            EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound)))
+          )
 
         when(connector.enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any()))
           .thenReturn(EitherT[Future, TrustErrors, EnrolmentResponse](Future.successful(Right(EnrolmentCreated))))
@@ -474,8 +522,10 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
       "return OK and the correct view for a GET with no Agent" in {
 
         val userAnswers = UserAnswers(userAnswersId)
-          .set(IsAgentManagingTrustPage, false).value
-          .set(IdentifierPage, urn).value
+          .set(IsAgentManagingTrustPage, false)
+          .value
+          .set(IdentifierPage, urn)
+          .value
 
         val application = applicationBuilder(
           userAnswers = Some(userAnswers),
@@ -496,7 +546,9 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
         val viewAsString = view(isAgent = false, urn)(request, messages).toString
 
         when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(urn))(any()))
-          .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound))))
+          .thenReturn(
+            EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound)))
+          )
 
         when(connector.enrol(eqTo(TaxEnrolmentsRequest(urn)))(any(), any(), any()))
           .thenReturn(EitherT[Future, TrustErrors, EnrolmentResponse](Future.successful(Right(EnrolmentCreated))))
@@ -518,8 +570,10 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
       "return OK and the correct view for a GET with Agent" in {
 
         val userAnswers = UserAnswers(userAnswersId)
-          .set(IsAgentManagingTrustPage, true).value
-          .set(IdentifierPage, urn).value
+          .set(IsAgentManagingTrustPage, true)
+          .value
+          .set(IdentifierPage, urn)
+          .value
 
         val application = applicationBuilder(
           userAnswers = Some(userAnswers),
@@ -540,7 +594,9 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
         val viewAsString = view(isAgent = true, urn)(request, messages).toString
 
         when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(urn))(any()))
-          .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound))))
+          .thenReturn(
+            EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound)))
+          )
 
         when(connector.enrol(eqTo(TaxEnrolmentsRequest(urn)))(any(), any(), any()))
           .thenReturn(EitherT[Future, TrustErrors, EnrolmentResponse](Future.successful(Right(EnrolmentCreated))))
@@ -623,8 +679,10 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
             val utr = "1234567890"
 
             val userAnswers = UserAnswers(userAnswersId)
-              .set(IsAgentManagingTrustPage, true).value
-              .set(IdentifierPage, utr).value
+              .set(IsAgentManagingTrustPage, true)
+              .value
+              .set(IdentifierPage, utr)
+              .value
 
             val application = applicationBuilder(
               userAnswers = Some(userAnswers),
@@ -634,7 +692,8 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
                 bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
                 bind(classOf[SessionRepository]).toInstance(mockRepository),
                 bind(classOf[AuditService]).toInstance(mockAuditService)
-              ).build()
+              )
+              .build()
 
             val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
@@ -643,10 +702,16 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
               .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(Right(true))))
 
             when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
-              .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound))))
+              .thenReturn(
+                EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound)))
+              )
 
             when(connector.enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any()))
-              .thenReturn(EitherT[Future, TrustErrors, EnrolmentResponse](Future.successful(Left(UpstreamTaxEnrolmentsError("Unauthorized")))))
+              .thenReturn(
+                EitherT[Future, TrustErrors, EnrolmentResponse](
+                  Future.successful(Left(UpstreamTaxEnrolmentsError("Unauthorized")))
+                )
+              )
 
             val result = route(application, request).value
 
@@ -658,7 +723,10 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
 
             verify(connector).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
             verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
-            verify(mockAuditService).auditFailure(eqTo(CLAIM_A_TRUST_ERROR), eqTo(utr), eqTo("Unauthorized"))(any(), any())
+            verify(mockAuditService).auditFailure(eqTo(CLAIM_A_TRUST_ERROR), eqTo(utr), eqTo("Unauthorized"))(
+              any(),
+              any()
+            )
 
             application.stop()
 
@@ -669,8 +737,10 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
             val utr = "0987654321"
 
             val userAnswers = UserAnswers(userAnswersId)
-              .set(IsAgentManagingTrustPage, true).value
-              .set(IdentifierPage, utr).value
+              .set(IsAgentManagingTrustPage, true)
+              .value
+              .set(IdentifierPage, utr)
+              .value
 
             val application = applicationBuilder(
               userAnswers = Some(userAnswers),
@@ -680,7 +750,8 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
                 bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
                 bind(classOf[SessionRepository]).toInstance(mockRepository),
                 bind(classOf[AuditService]).toInstance(mockAuditService)
-              ).build()
+              )
+              .build()
 
             val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
@@ -689,10 +760,16 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
               .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(Right(true))))
 
             when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
-              .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound))))
+              .thenReturn(
+                EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipFound)))
+              )
 
             when(connector.enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any()))
-              .thenReturn(EitherT[Future, TrustErrors, EnrolmentResponse](Future.successful(Left(UpstreamTaxEnrolmentsError("BadRequest")))))
+              .thenReturn(
+                EitherT[Future, TrustErrors, EnrolmentResponse](
+                  Future.successful(Left(UpstreamTaxEnrolmentsError("BadRequest")))
+                )
+              )
 
             val result = route(application, request).value
 
@@ -704,7 +781,10 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
 
             verify(connector).enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any())
             verify(mockRelationshipEstablishment).check(eqTo("id"), eqTo(utr))(any())
-            verify(mockAuditService).auditFailure(eqTo(CLAIM_A_TRUST_ERROR), eqTo(utr), eqTo("BadRequest"))(any(), any())
+            verify(mockAuditService).auditFailure(eqTo(CLAIM_A_TRUST_ERROR), eqTo(utr), eqTo("BadRequest"))(
+              any(),
+              any()
+            )
 
             application.stop()
 
@@ -715,17 +795,25 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
             val utr = "0987654321"
 
             val userAnswers = UserAnswers(userAnswersId)
-              .set(IsAgentManagingTrustPage, true).value
-              .set(IdentifierPage, utr).value
+              .set(IsAgentManagingTrustPage, true)
+              .value
+              .set(IdentifierPage, utr)
+              .value
 
             when(mockRepository.set(any()))
               .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(Left(ServerError()))))
 
             when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(utr))(any()))
-              .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Left(ServerError()))))
+              .thenReturn(
+                EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Left(ServerError())))
+              )
 
             when(connector.enrol(eqTo(TaxEnrolmentsRequest(utr)))(any(), any(), any()))
-              .thenReturn(EitherT[Future, TrustErrors, EnrolmentResponse](Future.successful(Left(UpstreamTaxEnrolmentsError("BadRequest")))))
+              .thenReturn(
+                EitherT[Future, TrustErrors, EnrolmentResponse](
+                  Future.successful(Left(UpstreamTaxEnrolmentsError("BadRequest")))
+                )
+              )
 
             val application = applicationBuilder(
               userAnswers = Some(userAnswers),
@@ -735,7 +823,8 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
                 bind(classOf[TaxEnrolmentsConnector]).toInstance(connector),
                 bind(classOf[SessionRepository]).toInstance(mockRepository),
                 bind(classOf[AuditService]).toInstance(mockAuditService)
-              ).build()
+              )
+              .build()
 
             val request = FakeRequest(GET, routes.IvSuccessController.onPageLoad.url)
 
@@ -752,4 +841,5 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
     }
 
   }
+
 }

@@ -32,39 +32,38 @@ import utils.Session
 import scala.concurrent.ExecutionContext
 
 @Singleton
-class LogoutController @Inject()(
-                                  appConfig: FrontendAppConfig,
-                                  actions: Actions,
-                                  val controllerComponents: MessagesControllerComponents,
-                                  auditConnector: AuditConnector
-                                )(implicit val ec: ExecutionContext) extends FrontendBaseController with Logging {
+class LogoutController @Inject() (
+  appConfig: FrontendAppConfig,
+  actions: Actions,
+  val controllerComponents: MessagesControllerComponents,
+  auditConnector: AuditConnector
+)(implicit val ec: ExecutionContext)
+    extends FrontendBaseController with Logging {
 
-  def logout: Action[AnyContent] = actions.authWithData {
-    request =>
+  def logout: Action[AnyContent] = actions.authWithData { request =>
+    implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-      implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
+    logger.info(s"[LogoutController][logout][Session ID: ${Session.id(hc)}] user signed out from the service")
 
-      logger.info(s"[LogoutController][logout][Session ID: ${Session.id(hc)}] user signed out from the service")
+    val auditData = Map(
+      "sessionId" -> Session.id(hc),
+      "event"     -> "signout",
+      "service"   -> "claim-a-trust-frontend",
+      "userGroup" -> request.affinityGroup.toString
+    )
 
-      val auditData = Map(
-        "sessionId" -> Session.id(hc),
-        "event" -> "signout",
-        "service" -> "claim-a-trust-frontend",
-        "userGroup" -> request.affinityGroup.toString
-      )
+    val auditDataWithUtr = request.userAnswers.get(IdentifierPage).fold(auditData) { identifier =>
+      val key = if (IsUTR(identifier)) "utr" else "urn"
 
-      val auditDataWithUtr = request.userAnswers.get(IdentifierPage).fold(auditData) { identifier =>
+      auditData ++ Map(key -> identifier)
+    }
 
-        val key = if(IsUTR(identifier)) "utr" else "urn"
+    auditConnector.sendExplicitAudit(
+      "trusts",
+      auditDataWithUtr
+    )
 
-        auditData ++ Map(key -> identifier)
-      }
-
-      auditConnector.sendExplicitAudit(
-        "trusts",
-        auditDataWithUtr
-      )
-
-      Redirect(appConfig.logoutUrl).withSession(session = ("feedbackId", Session.id(hc)))
+    Redirect(appConfig.logoutUrl).withSession(session = ("feedbackId", Session.id(hc)))
   }
+
 }

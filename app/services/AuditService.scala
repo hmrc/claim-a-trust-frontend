@@ -26,17 +26,23 @@ import models.IsUTR
 
 import scala.concurrent.ExecutionContext
 
-class AuditService @Inject()(auditConnector: AuditConnector,  config : FrontendAppConfig, implicit val ec: ExecutionContext) {
+class AuditService @Inject() (
+  auditConnector: AuditConnector,
+  config: FrontendAppConfig,
+  implicit val ec: ExecutionContext
+) {
 
-  def audit(event: String, identifier: String, isManagedByAgent: Boolean)
-           (implicit request: DataRequest[_], hc: HeaderCarrier): Unit = {
+  def audit(event: String, identifier: String, isManagedByAgent: Boolean)(implicit
+    request: DataRequest[_],
+    hc: HeaderCarrier
+  ): Unit = {
 
     val enrolmentName: String = if (IsUTR(identifier)) {
       config.taxableEnrolmentServiceName
     } else {
       config.nonTaxableEnrolmentServiceName
     }
-    val payload = ClaimATrustAuditSuccessEvent(
+    val payload               = ClaimATrustAuditSuccessEvent(
       credentialsId = request.credentials.providerId,
       credentialsType = request.credentials.providerType,
       internalAuthId = request.internalId,
@@ -48,8 +54,10 @@ class AuditService @Inject()(auditConnector: AuditConnector,  config : FrontendA
     auditConnector.sendExplicitAudit(event, payload)
   }
 
-  def auditFailure(event: String, identifier: String, failureReason: String)
-           (implicit request: DataRequest[_], hc: HeaderCarrier): Unit = {
+  def auditFailure(event: String, identifier: String, failureReason: String)(implicit
+    request: DataRequest[_],
+    hc: HeaderCarrier
+  ): Unit = {
 
     val payload = ClaimATrustAuditFailureEvent(
       credentialsId = request.credentials.providerId,

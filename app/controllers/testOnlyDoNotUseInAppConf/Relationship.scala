@@ -18,10 +18,10 @@ package controllers.testOnlyDoNotUseInAppConf
 
 import play.api.libs.json.{Json, OFormat}
 
-case class BusinessKey(name: String,value: String)
+case class BusinessKey(name: String, value: String)
 
 object BusinessKey {
-  implicit val format : OFormat[BusinessKey] = Json.format[BusinessKey]
+  implicit val format: OFormat[BusinessKey] = Json.format[BusinessKey]
 }
 
 case class Relationship(relationshipName: String, businessKeys: Set[BusinessKey], credId: String)
@@ -29,8 +29,9 @@ case class Relationship(relationshipName: String, businessKeys: Set[BusinessKey]
 object Relationship {
   implicit val format: OFormat[Relationship] = Json.format[Relationship]
 }
+
 case class RelationshipJson(relationship: Relationship, ttlSeconds: Int)
 
 object RelationshipJson {
-  implicit val format : OFormat[RelationshipJson] = Json.format[RelationshipJson]
+  implicit val format: OFormat[RelationshipJson] = Json.format[RelationshipJson]
 }

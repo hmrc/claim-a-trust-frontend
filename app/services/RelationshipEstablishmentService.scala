@@ -35,37 +35,46 @@ sealed trait RelationEstablishmentStatus
 
 case object RelationshipFound extends RelationEstablishmentStatus
 case object RelationshipNotFound extends RelationEstablishmentStatus
-class RelationshipEstablishmentService @Inject()(
-                                                  val authConnector: AuthConnector,
-                                                  relationshipForIdentifier: RelationshipForIdentifier
-                                                )(
-                                                  implicit val config: FrontendAppConfig,
-                                                  implicit val executionContext: ExecutionContext
-                                                )
-  extends RelationshipEstablishment with Logging {
 
-  def check(internalId: String, identifier: String)(implicit request: Request[AnyContent]): TrustEnvelope[RelationEstablishmentStatus] = EitherT{
+class RelationshipEstablishmentService @Inject() (
+  val authConnector: AuthConnector,
+  relationshipForIdentifier: RelationshipForIdentifier
+)(
+  implicit val config: FrontendAppConfig,
+  implicit val executionContext: ExecutionContext
+) extends RelationshipEstablishment with Logging {
+
+  def check(internalId: String, identifier: String)(implicit
+    request: Request[AnyContent]
+  ): TrustEnvelope[RelationEstablishmentStatus] = EitherT {
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    logger.info(s"[RelationshipEstablishmentService][check][Session ID: ${Session.id(hc)}]" +
-      s"HeaderCarrier contained bearer token: ${hc.authorization.isDefined}"
+    logger.info(
+      s"[RelationshipEstablishmentService][check][Session ID: ${Session.id(hc)}]" +
+        s"HeaderCarrier contained bearer token: ${hc.authorization.isDefined}"
     )
 
     val relationshipToCheck = relationshipForIdentifier(identifier)
 
     authorised(relationshipToCheck) {
-      logger.info(s"[RelationshipEstablishmentService][check][Session ID: ${Session.id(hc)}]" +
-        s" Relationship established in Trust IV for user and $identifier")
-        Future.successful(Right(RelationshipFound))
+      logger.info(
+        s"[RelationshipEstablishmentService][check][Session ID: ${Session.id(hc)}]" +
+          s" Relationship established in Trust IV for user and $identifier"
+      )
+      Future.successful(Right(RelationshipFound))
     } recoverWith {
       case FailedRelationship(msg) =>
-        logger.warn(s"[RelationshipEstablishmentService][check][Session ID: ${Session.id(hc)}]" +
-          s" Relationship does not exist in Trust IV for user and $identifier due to error $msg")
+        logger.warn(
+          s"[RelationshipEstablishmentService][check][Session ID: ${Session.id(hc)}]" +
+            s" Relationship does not exist in Trust IV for user and $identifier due to error $msg"
+        )
         Future.successful(Right(RelationshipNotFound))
-      case e : Throwable =>
-        logger.error(s"[RelationshipEstablishmentService][check][Session ID: ${Session.id(hc)}]" +
-          s" Service was unable to determine if an IV relationship existed in Trust IV. Cannot continue with the journey")
+      case e: Throwable            =>
+        logger.error(
+          s"[RelationshipEstablishmentService][check][Session ID: ${Session.id(hc)}]" +
+            s" Service was unable to determine if an IV relationship existed in Trust IV. Cannot continue with the journey"
+        )
         Future.successful(Left(ServerError(e.getMessage)))
     }
   }
@@ -74,6 +83,8 @@ class RelationshipEstablishmentService @Inject()(
 
 trait RelationshipEstablishment extends AuthorisedFunctions {
 
-  def check(internalId: String, utr: String)(implicit request: Request[AnyContent]): TrustEnvelope[RelationEstablishmentStatus]
+  def check(internalId: String, utr: String)(implicit
+    request: Request[AnyContent]
+  ): TrustEnvelope[RelationEstablishmentStatus]
 
 }

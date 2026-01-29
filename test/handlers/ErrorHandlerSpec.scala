@@ -28,25 +28,22 @@ import scala.concurrent.{Await, ExecutionContext, Future}
 
 class ErrorHandlerSpec extends SpecBase {
 
-
-  private val messageApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-  private val errorTemplate: ErrorTemplate = app.injector.instanceOf[ErrorTemplate]
+  private val messageApi: MessagesApi        = app.injector.instanceOf[MessagesApi]
+  private val errorTemplate: ErrorTemplate   = app.injector.instanceOf[ErrorTemplate]
   private val notFoundView: PageNotFoundView = app.injector.instanceOf[PageNotFoundView]
-  implicit val ec: ExecutionContext = app.injector.instanceOf[ExecutionContext]
-  override val errorHandler: ErrorHandler = new ErrorHandler( messageApi,errorTemplate, notFoundView)
-
+  implicit val ec: ExecutionContext          = app.injector.instanceOf[ExecutionContext]
+  override val errorHandler: ErrorHandler    = new ErrorHandler(messageApi, errorTemplate, notFoundView)
 
   "ErrorHandler" when {
     ".notFoundTemplate" should {
       "return a not found template" in {
         implicit val request: RequestHeader = FakeRequest()
-        val resultFuture: Future[Html] = errorHandler.notFoundTemplate(request)
-        val result = Await.result(resultFuture,5.seconds)
-          result.body must include(messageApi("pageNotFound.p1")(Lang("en")))
+        val resultFuture: Future[Html]      = errorHandler.notFoundTemplate(request)
+        val result                          = Await.result(resultFuture, 5.seconds)
+        result.body must include(messageApi("pageNotFound.p1")(Lang("en")))
 
       }
     }
   }
-
 
 }

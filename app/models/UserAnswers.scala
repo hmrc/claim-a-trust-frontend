@@ -25,10 +25,10 @@ import uk.gov.hmrc.mongo.play.json.formats.MongoJavatimeFormats
 import java.time.Instant
 
 final case class UserAnswers(
-                              id: String,
-                              data: JsObject = Json.obj(),
-                              lastUpdated: Instant = Instant.now
-                            ) extends Logging {
+  id: String,
+  data: JsObject = Json.obj(),
+  lastUpdated: Instant = Instant.now
+) extends Logging {
 
   def get[A](page: QuestionPage[A])(implicit rds: Reads[A]): Option[A] =
     Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
@@ -38,15 +38,14 @@ final case class UserAnswers(
     val updatedData = data.setObject(page.path, Json.toJson(value)) match {
       case JsSuccess(jsValue, _) =>
         Right(jsValue)
-      case JsError(errors) =>
+      case JsError(errors)       =>
         logger.error(s"[UserAnswers][set] Unable to set path ${page.path} due to errors")
         Left(ServerError(JsResultException(errors).getMessage))
     }
 
-    updatedData.flatMap {
-      d =>
-        val updatedAnswers = copy (data = d)
-        page.cleanup(updatedAnswers)
+    updatedData.flatMap { d =>
+      val updatedAnswers = copy(data = d)
+      page.cleanup(updatedAnswers)
     }
   }
 
@@ -55,12 +54,13 @@ final case class UserAnswers(
 
     val updatedData = data.setObject(page.path, JsNull) match {
       case JsSuccess(jsValue, _) => jsValue
-      case JsError(_) => data
+      case JsError(_)            => data
     }
 
-    val updatedAnswers = copy (data = updatedData)
+    val updatedAnswers = copy(data = updatedData)
     page.cleanup(updatedAnswers)
   }
+
 }
 
 object UserAnswers {
@@ -73,7 +73,7 @@ object UserAnswers {
       (__ \ "_id").read[String] and
         (__ \ "data").read[JsObject] and
         (__ \ "lastUpdated").read(MongoJavatimeFormats.instantReads)
-      ) (UserAnswers.apply _)
+    )(UserAnswers.apply _)
   }
 
   implicit lazy val writes: OWrites[UserAnswers] = {
@@ -84,6 +84,7 @@ object UserAnswers {
       (__ \ "_id").write[String] and
         (__ \ "data").write[JsObject] and
         (__ \ "lastUpdated").write(MongoJavatimeFormats.instantWrites)
-      ) (unlift(UserAnswers.unapply))
+    )(unlift(UserAnswers.unapply))
   }
+
 }

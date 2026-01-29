@@ -16,7 +16,6 @@
 
 package repositories
 
-
 import base.SpecBase
 import models.UserAnswers
 import org.mongodb.scala.bson.BsonDocument
@@ -34,13 +33,13 @@ class SessionRepositorySpec extends SpecBase with MongoSupport with BeforeAndAft
 
   private val internalId1: String = "Int-074d0597107e-557e-4559-96ba-328969d0"
   private val internalId2: String = "Int-074d0597107e-557e-4559-96ba-328969d1"
-  private val user1 = UserAnswers(internalId1, Json.obj("test" -> "123"))
-  private val user2 = UserAnswers(internalId2, Json.obj("test" -> "456"))
-  private val user1Updated = UserAnswers(internalId1, Json.obj("test" -> "321"))
-  private val user2Updated = UserAnswers(internalId2, Json.obj("test" -> "654"))
+  private val user1               = UserAnswers(internalId1, Json.obj("test" -> "123"))
+  private val user2               = UserAnswers(internalId2, Json.obj("test" -> "456"))
+  private val user1Updated        = UserAnswers(internalId1, Json.obj("test" -> "321"))
+  private val user2Updated        = UserAnswers(internalId2, Json.obj("test" -> "654"))
 
   private def checkAnswers(actual: Option[UserAnswers], expected: UserAnswers): Unit = {
-    actual.value.id mustBe expected.id
+    actual.value.id   mustBe expected.id
     actual.value.data mustBe expected.data
   }
 
@@ -56,45 +55,45 @@ class SessionRepositorySpec extends SpecBase with MongoSupport with BeforeAndAft
     }
 
     "must be able to store data" in {
-      //store
+      // store
       repository.collection.countDocuments().toFuture().futureValue mustBe 0
-      repository.set(user1).value.futureValue mustBe Right(true)
-      repository.set(user2).value.futureValue mustBe Right(true)
+      repository.set(user1).value.futureValue                       mustBe Right(true)
+      repository.set(user2).value.futureValue                       mustBe Right(true)
 
-      //retrieve
+      // retrieve
       checkAnswers(repository.get(internalId1).value.futureValue.value, user1)
       checkAnswers(repository.get(internalId2).value.futureValue.value, user2)
       repository.collection.countDocuments().toFuture().futureValue mustBe 2
     }
 
     "must be able to retrieve data" in {
-      //store
+      // store
       repository.collection.countDocuments().toFuture().futureValue mustBe 0
       await(repository.collection.insertOne(user1).toFuture())
       await(repository.collection.insertOne(user2).toFuture())
 
-      //retrieve
+      // retrieve
       checkAnswers(repository.get(internalId1).value.futureValue.value, user1)
       checkAnswers(repository.get(internalId2).value.futureValue.value, user2)
       repository.collection.countDocuments().toFuture().futureValue mustBe 2
     }
 
     "must be able to update data" in {
-      //store
+      // store
       repository.collection.countDocuments().toFuture().futureValue mustBe 0
-      repository.set(user1).value.futureValue mustBe Right(true)
-      repository.set(user2).value.futureValue mustBe Right(true)
+      repository.set(user1).value.futureValue                       mustBe Right(true)
+      repository.set(user2).value.futureValue                       mustBe Right(true)
 
-      //retrieve
+      // retrieve
       checkAnswers(repository.get(internalId1).value.futureValue.value, user1)
       checkAnswers(repository.get(internalId2).value.futureValue.value, user2)
       repository.collection.countDocuments().toFuture().futureValue mustBe 2
 
-      //update
+      // update
       repository.set(user1Updated).value.futureValue mustBe Right(true)
       repository.set(user2Updated).value.futureValue mustBe Right(true)
 
-      //retrieve updated
+      // retrieve updated
       checkAnswers(repository.get(internalId1).value.futureValue.value, user1Updated)
       checkAnswers(repository.get(internalId2).value.futureValue.value, user2Updated)
       repository.collection.countDocuments().toFuture().futureValue mustBe 2

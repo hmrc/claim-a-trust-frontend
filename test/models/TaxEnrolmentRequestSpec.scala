@@ -24,11 +24,10 @@ class TaxEnrolmentRequestSpec extends SpecBase {
   ".writes" must {
 
     "construct json for claiming a UTR" in {
-      val utr = "1234567890"
+      val utr     = "1234567890"
       val request = TaxEnrolmentsRequest(utr)
 
-      Json.toJson(request) mustBe Json.parse(
-        """
+      Json.toJson(request) mustBe Json.parse("""
           |{
           | "identifiers": [
           |   {
@@ -48,11 +47,10 @@ class TaxEnrolmentRequestSpec extends SpecBase {
     }
 
     "construct json for claiming a URN" in {
-      val urn = "ABTRUST12345678"
+      val urn     = "ABTRUST12345678"
       val request = TaxEnrolmentsRequest(urn)
 
-      Json.toJson(request) mustBe Json.parse(
-        """
+      Json.toJson(request) mustBe Json.parse("""
           |{
           | "identifiers": [
           |   {

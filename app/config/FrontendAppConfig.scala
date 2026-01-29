@@ -25,26 +25,31 @@ import uk.gov.hmrc.hmrcfrontend.config.ContactFrontendConfig
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
-class FrontendAppConfig @Inject() (val configuration: Configuration,
-                                   contactFrontendConfig: ContactFrontendConfig,
-                                   servicesConfig: ServicesConfig) {
+class FrontendAppConfig @Inject() (
+  val configuration: Configuration,
+  contactFrontendConfig: ContactFrontendConfig,
+  servicesConfig: ServicesConfig
+) {
 
-  lazy val taxableEnrolmentServiceName: String = configuration.get[String]("microservice.services.tax-enrolments.taxable.serviceName")
-  lazy val nonTaxableEnrolmentServiceName: String = configuration.get[String]("microservice.services.tax-enrolments.non-taxable.serviceName")
+  lazy val taxableEnrolmentServiceName: String    =
+    configuration.get[String]("microservice.services.tax-enrolments.taxable.serviceName")
 
-  val betaFeedbackUrl = s"${contactFrontendConfig.baseUrl.get}/contact/beta-feedback?service=${contactFrontendConfig.serviceId.get}"
+  lazy val nonTaxableEnrolmentServiceName: String =
+    configuration.get[String]("microservice.services.tax-enrolments.non-taxable.serviceName")
+
+  val betaFeedbackUrl =
+    s"${contactFrontendConfig.baseUrl.get}/contact/beta-feedback?service=${contactFrontendConfig.serviceId.get}"
 
   lazy val trustsRegistration: String = configuration.get[String]("urls.trustsRegistration")
-  lazy val authUrl: String = servicesConfig.baseUrl("auth")
-  lazy val loginUrl: String = configuration.get[String]("urls.login")
-  lazy val loginContinueUrl: String = configuration.get[String]("urls.loginContinue")
-  lazy val logoutUrl: String = configuration.get[String]("urls.logout")
+  lazy val authUrl: String            = servicesConfig.baseUrl("auth")
+  lazy val loginUrl: String           = configuration.get[String]("urls.login")
+  lazy val loginContinueUrl: String   = configuration.get[String]("urls.loginContinue")
+  lazy val logoutUrl: String          = configuration.get[String]("urls.logout")
 
   lazy val appName: String = configuration.get[String]("appName")
 
-  lazy val trustsContinueUrl: String = {
+  lazy val trustsContinueUrl: String =
     configuration.get[String]("urls.maintainContinue")
-  }
 
   lazy val languageTranslationEnabled: Boolean =
     configuration.get[Boolean]("microservice.services.features.welsh-translation")
@@ -83,13 +88,12 @@ class FrontendAppConfig @Inject() (val configuration: Configuration,
   lazy val relationshipEstablishmentStubbed: Boolean =
     configuration.get[Boolean]("microservice.services.features.stubRelationshipEstablishment")
 
-  def relationshipEstablishmentFrontendUrl(identifier: String): String = {
+  def relationshipEstablishmentFrontendUrl(identifier: String): String =
     if (relationshipEstablishmentStubbed) {
-      s"${stubbedRelationshipEstablishmentFrontendHost}/${stubbedRelationshipEstablishmentFrontendPath(identifier)}"
+      s"$stubbedRelationshipEstablishmentFrontendHost/${stubbedRelationshipEstablishmentFrontendPath(identifier)}"
     } else {
-      s"${relationshipEstablishmentFrontendHost}/${relationshipEstablishmentFrontendPath(identifier)}"
+      s"$relationshipEstablishmentFrontendHost/${relationshipEstablishmentFrontendPath(identifier)}"
     }
-  }
 
   def relationshipEstablishmentBaseUrl: String = servicesConfig.baseUrl("test.relationship-establishment")
 
@@ -100,12 +104,12 @@ class FrontendAppConfig @Inject() (val configuration: Configuration,
     configuration.get[String]("microservice.services.self.relationship-establishment.failureUrl")
 
   lazy val countdownLength: Int = configuration.get[Int]("timeout.countdown")
-  lazy val timeoutLength: Int = configuration.get[Int]("timeout.length")
+  lazy val timeoutLength: Int   = configuration.get[Int]("timeout.length")
 
   def helplineUrl(implicit messages: Messages): String = {
     val path = messages.lang.code match {
       case "cy" => "urls.welshHelpline"
-      case _ => "urls.trustsHelpline"
+      case _    => "urls.trustsHelpline"
     }
     configuration.get[String](path)
   }
@@ -120,6 +124,7 @@ class FrontendAppConfig @Inject() (val configuration: Configuration,
 
   lazy val cachettlInSeconds: Long = configuration.get[Long]("mongodb.timeToLiveInSeconds")
 
-  lazy val dropIndexes: Boolean = configuration.getOptional[Boolean]("microservice.services.features.mongo.dropIndexes").getOrElse(false)
+  lazy val dropIndexes: Boolean =
+    configuration.getOptional[Boolean]("microservice.services.features.mongo.dropIndexes").getOrElse(false)
 
 }

@@ -42,9 +42,9 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar with
 
   def onwardRoute: Call = Call("GET", "/foo")
 
-  val formProvider = new IsAgentManagingTrustFormProvider()
+  val formProvider        = new IsAgentManagingTrustFormProvider()
   val form: Form[Boolean] = formProvider()
-  val identifier = "0987654321"
+  val identifier          = "0987654321"
 
   lazy val isAgentManagingTrustRoute: String = routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
 
@@ -60,15 +60,16 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar with
 
       val mockService = mock[RelationshipEstablishment]
       when(mockService.check(any(), any())(any()))
-        .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipNotFound))))
+        .thenReturn(
+          EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Right(RelationshipNotFound)))
+        )
 
       val userAnswers = emptyUserAnswers
         .set(IdentifierPage, identifier)
         .value
 
-      val application = applicationBuilder(
-        userAnswers = Some(userAnswers),
-        relationshipEstablishment = mockService).build()
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = mockService).build()
 
       val request = FakeRequest(GET, isAgentManagingTrustRoute)
 
@@ -91,7 +92,8 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar with
 
       val application = applicationBuilder(
         userAnswers = Some(userAnswers),
-        relationshipEstablishment = fakeEstablishmentServiceNotFound).build()
+        relationshipEstablishment = fakeEstablishmentServiceNotFound
+      ).build()
 
       val request = FakeRequest(GET, isAgentManagingTrustRoute)
 
@@ -115,9 +117,9 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar with
         .set(IdentifierPage, identifier)
         .value
 
-      val application = applicationBuilder(
-        userAnswers = Some(userAnswers),
-        relationshipEstablishment = fakeEstablishmentServiceFound).build()
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = fakeEstablishmentServiceFound)
+          .build()
 
       val request = FakeRequest(GET, isAgentManagingTrustRoute)
 
@@ -138,9 +140,9 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar with
         .set(IdentifierPage, identifier)
         .value
 
-      val application = applicationBuilder(
-        userAnswers = Some(userAnswers),
-        relationshipEstablishment = fakeEstablishmentServiceFailing).build()
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers), relationshipEstablishment = fakeEstablishmentServiceFailing)
+          .build()
 
       val request = FakeRequest(GET, isAgentManagingTrustRoute)
 
@@ -161,7 +163,10 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar with
         .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(Left(ServerError()))))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), relationshipEstablishment = fakeEstablishmentServiceNotFound)
+        applicationBuilder(
+          userAnswers = Some(emptyUserAnswers),
+          relationshipEstablishment = fakeEstablishmentServiceNotFound
+        )
           .overrides(
             bind[SessionRepository].toInstance(repository)
           )
@@ -186,7 +191,10 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar with
         EitherT[Future, TrustErrors, Boolean](Future.successful(Right(true)))
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers), relationshipEstablishment = fakeEstablishmentServiceNotFound)
+        applicationBuilder(
+          userAnswers = Some(emptyUserAnswers),
+          relationshipEstablishment = fakeEstablishmentServiceNotFound
+        )
           .overrides(
             bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository)
@@ -212,8 +220,10 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar with
         .set(IdentifierPage, identifier)
         .value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers),
-        relationshipEstablishment = fakeEstablishmentServiceNotFound)
+      val application = applicationBuilder(
+        userAnswers = Some(userAnswers),
+        relationshipEstablishment = fakeEstablishmentServiceNotFound
+      )
         .build()
 
       val request =
@@ -251,7 +261,8 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar with
 
     "redirect to Session Expired for a GET if identifier is not found" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), fakeEstablishmentServiceNotFound).build()
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers), fakeEstablishmentServiceNotFound).build()
 
       val request = FakeRequest(GET, isAgentManagingTrustRoute)
 
@@ -283,7 +294,8 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar with
 
     "redirect to Session Expired for a POST if identifier is not found" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), fakeEstablishmentServiceNotFound).build()
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers), fakeEstablishmentServiceNotFound).build()
 
       val request =
         FakeRequest(POST, isAgentManagingTrustRoute)
@@ -298,4 +310,5 @@ class IsAgentManagingTrustControllerSpec extends SpecBase with MockitoSugar with
       application.stop()
     }
   }
+
 }

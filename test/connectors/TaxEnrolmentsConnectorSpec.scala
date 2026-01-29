@@ -39,50 +39,52 @@ class TaxEnrolmentsConnectorSpec extends AnyWordSpec with Matchers with WireMock
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
-  lazy val config: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
+  lazy val config: FrontendAppConfig         = app.injector.instanceOf[FrontendAppConfig]
   lazy val connector: TaxEnrolmentsConnector = app.injector.instanceOf[TaxEnrolmentsConnector]
 
   lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(Seq(
-      "microservice.services.tax-enrolments.port" -> server.port(),
-      "auditing.enabled" -> false): _*
-    )
+    .configure(Seq("microservice.services.tax-enrolments.port" -> server.port(), "auditing.enabled" -> false): _*)
     .build()
 
-  lazy val taxableEnrolmentUrl: String = s"/tax-enrolments/service/HMRC-TERS-ORG/enrolment"
+  lazy val taxableEnrolmentUrl: String    = s"/tax-enrolments/service/HMRC-TERS-ORG/enrolment"
   lazy val nonTaxableEnrolmentUrl: String = s"/tax-enrolments/service/HMRC-TERSNT-ORG/enrolment"
 
   val utr = "1234567890"
   val urn = "ABTRUST12345678"
 
-  val taxableRequest: String = Json.stringify(Json.obj(
-    "identifiers" -> Json.arr(
-      Json.obj(
-        "key" -> "SAUTR",
-        "value" -> utr
-      )),
-    "verifiers" -> Json.arr(
-      Json.obj(
-        "key" -> "SAUTR1",
-        "value" -> utr
+  val taxableRequest: String = Json.stringify(
+    Json.obj(
+      "identifiers" -> Json.arr(
+        Json.obj(
+          "key"   -> "SAUTR",
+          "value" -> utr
+        )
+      ),
+      "verifiers"   -> Json.arr(
+        Json.obj(
+          "key"   -> "SAUTR1",
+          "value" -> utr
+        )
       )
     )
-  ))
+  )
 
-  val nonTaxableRequest: String = Json.stringify(Json.obj(
-    "identifiers" -> Json.arr(
-      Json.obj(
-        "key" -> "URN",
-        "value" -> urn
-      )),
-    "verifiers" -> Json.arr(
-      Json.obj(
-        "key" -> "URN1",
-        "value" -> urn
+  val nonTaxableRequest: String = Json.stringify(
+    Json.obj(
+      "identifiers" -> Json.arr(
+        Json.obj(
+          "key"   -> "URN",
+          "value" -> urn
+        )
+      ),
+      "verifiers"   -> Json.arr(
+        Json.obj(
+          "key"   -> "URN1",
+          "value" -> urn
+        )
       )
     )
-  ))
-
+  )
 
   private def wiremock(url: String, payload: String, expectedStatus: Int, mockResponseBody: String = ""): Any =
     server.stubFor(
@@ -108,7 +110,7 @@ class TaxEnrolmentsConnectorSpec extends AnyWordSpec with Matchers with WireMock
           expectedStatus = NO_CONTENT
         )
 
-        val future = connector.enrol(TaxEnrolmentsRequest(utr)).value
+        val future   = connector.enrol(TaxEnrolmentsRequest(utr)).value
         val response = Await.result(future, Duration.create(3, TimeUnit.SECONDS))
         response mustBe Right(EnrolmentCreated)
       }
@@ -122,9 +124,11 @@ class TaxEnrolmentsConnectorSpec extends AnyWordSpec with Matchers with WireMock
           """{"code":"INVALID_CREDENTIAL_ID", "message":"Invalid credential ID given"}"""
         )
 
-        val future = connector.enrol(TaxEnrolmentsRequest(utr)).value
+        val future   = connector.enrol(TaxEnrolmentsRequest(utr)).value
         val response = Await.result(future, Duration.create(3, TimeUnit.SECONDS))
-        response mustBe Left(UpstreamTaxEnrolmentsError("HTTP response 400 INVALID_CREDENTIAL_ID: Invalid credential ID given"))
+        response mustBe Left(
+          UpstreamTaxEnrolmentsError("HTTP response 400 INVALID_CREDENTIAL_ID: Invalid credential ID given")
+        )
       }
 
       "returns 401 UNAUTHORIZED" in {
@@ -135,7 +139,7 @@ class TaxEnrolmentsConnectorSpec extends AnyWordSpec with Matchers with WireMock
           expectedStatus = UNAUTHORIZED
         )
 
-        val future = connector.enrol(TaxEnrolmentsRequest(utr)).value
+        val future   = connector.enrol(TaxEnrolmentsRequest(utr)).value
         val response = Await.result(future, Duration.create(3, TimeUnit.SECONDS))
         response mustBe Left(UpstreamTaxEnrolmentsError("HTTP 401: no message or response body"))
       }
@@ -152,8 +156,8 @@ class TaxEnrolmentsConnectorSpec extends AnyWordSpec with Matchers with WireMock
           expectedStatus = NO_CONTENT
         )
 
-        val future:Future[Either[TrustErrors, EnrolmentResponse]] = connector.enrol(TaxEnrolmentsRequest(urn)).value
-        val result = Await.result(future, Duration.create(3, TimeUnit.SECONDS))
+        val future: Future[Either[TrustErrors, EnrolmentResponse]] = connector.enrol(TaxEnrolmentsRequest(urn)).value
+        val result                                                 = Await.result(future, Duration.create(3, TimeUnit.SECONDS))
         result mustBe Right(EnrolmentCreated)
       }
 
@@ -165,7 +169,7 @@ class TaxEnrolmentsConnectorSpec extends AnyWordSpec with Matchers with WireMock
           expectedStatus = BAD_REQUEST
         )
 
-        val future = connector.enrol(TaxEnrolmentsRequest(urn)).value
+        val future   = connector.enrol(TaxEnrolmentsRequest(urn)).value
         val response = Await.result(future, Duration.create(3, TimeUnit.SECONDS))
         response mustBe Left(UpstreamTaxEnrolmentsError("HTTP 400: no message or response body"))
       }
@@ -174,35 +178,46 @@ class TaxEnrolmentsConnectorSpec extends AnyWordSpec with Matchers with WireMock
 
         wiremock(url = nonTaxableEnrolmentUrl, payload = nonTaxableRequest, expectedStatus = UNAUTHORIZED)
 
-        val future = connector.enrol(TaxEnrolmentsRequest(urn)).value
+        val future   = connector.enrol(TaxEnrolmentsRequest(urn)).value
         val response = Await.result(future, Duration.create(3, TimeUnit.SECONDS))
         response mustBe Left(UpstreamTaxEnrolmentsError("HTTP 401: no message or response body"))
       }
 
       "returns 400 with error message" in {
         wiremock(
-          nonTaxableEnrolmentUrl, nonTaxableRequest, BAD_REQUEST,
+          nonTaxableEnrolmentUrl,
+          nonTaxableRequest,
+          BAD_REQUEST,
           """{"code":"INVALID_IDENTIFIERS", "message":"Enrolment identifiers not valid innit"}"""
         )
 
-        val future = connector.enrol(TaxEnrolmentsRequest(urn)).value
+        val future   = connector.enrol(TaxEnrolmentsRequest(urn)).value
         val response = Await.result(future, Duration.create(3, TimeUnit.SECONDS))
-        response mustBe Left(UpstreamTaxEnrolmentsError("HTTP response 400 INVALID_IDENTIFIERS: Enrolment identifiers not valid innit"))
+        response mustBe Left(
+          UpstreamTaxEnrolmentsError("HTTP response 400 INVALID_IDENTIFIERS: Enrolment identifiers not valid innit")
+        )
       }
 
       "returns 400 with multiple errors" in {
         wiremock(
-          nonTaxableEnrolmentUrl, nonTaxableRequest, BAD_REQUEST,
+          nonTaxableEnrolmentUrl,
+          nonTaxableRequest,
+          BAD_REQUEST,
           """{"code":"MULTIPLE_ERRORS", "message":"Multiple errors have occurred", "errors":[
             |    {"code": "MULTIPLE_ENROLMENTS_INVALID", "message": "Multiple Enrolments are not valid for this service"},
             |    {"code": "INVALID_IDENTIFIERS", "message": "The enrolment identifiers provided were invalid"}
-            |  ]}""".stripMargin)
+            |  ]}""".stripMargin
+        )
 
-        val future = connector.enrol(TaxEnrolmentsRequest(urn)).value
+        val future   = connector.enrol(TaxEnrolmentsRequest(urn)).value
         val response = Await.result(future, Duration.create(3, TimeUnit.SECONDS))
-        response mustBe Left(UpstreamTaxEnrolmentsError("HTTP response 400 MULTIPLE_ERRORS: "
-            + "MULTIPLE_ENROLMENTS_INVALID: Multiple Enrolments are not valid for this service, "
-            + "INVALID_IDENTIFIERS: The enrolment identifiers provided were invalid"))
+        response mustBe Left(
+          UpstreamTaxEnrolmentsError(
+            "HTTP response 400 MULTIPLE_ERRORS: "
+              + "MULTIPLE_ENROLMENTS_INVALID: Multiple Enrolments are not valid for this service, "
+              + "INVALID_IDENTIFIERS: The enrolment identifiers provided were invalid"
+          )
+        )
       }
     }
 

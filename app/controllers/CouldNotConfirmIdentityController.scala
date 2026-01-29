@@ -24,13 +24,13 @@ import views.html.CouldNotConfirmIdentityView
 
 import javax.inject.Inject
 
-class CouldNotConfirmIdentityController @Inject()(
-                                                   val controllerComponents: MessagesControllerComponents,
-                                                   view: CouldNotConfirmIdentityView
-                                                 ) extends FrontendBaseController with I18nSupport with Logging {
+class CouldNotConfirmIdentityController @Inject() (
+  val controllerComponents: MessagesControllerComponents,
+  view: CouldNotConfirmIdentityView
+) extends FrontendBaseController with I18nSupport with Logging {
 
-  def onPageLoad: Action[AnyContent] = Action {
-    implicit request =>
-      Ok(view())
+  def onPageLoad: Action[AnyContent] = Action { implicit request =>
+    Ok(view())
   }
+
 }

@@ -26,13 +26,13 @@ class RelationshipForIdentifierSpec extends SpecBase {
   ".apply" must {
 
     "must return a relationship for a UTR identifier" in {
-      val identifier = "1234567890"
+      val identifier   = "1234567890"
       val relationship = relationshipForIdentifier.apply(identifier)
       relationship mustBe Relationship("Trusts", Set(BusinessKey("utr", "1234567890")))
     }
 
     "must return a relationship for a URN identifier" in {
-      val identifier = "ABTRUST12345678"
+      val identifier   = "ABTRUST12345678"
       val relationship = relationshipForIdentifier.apply(identifier)
       relationship mustBe Relationship("Trusts", Set(BusinessKey("urn", "ABTRUST12345678")))
     }

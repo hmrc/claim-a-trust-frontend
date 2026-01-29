@@ -30,7 +30,7 @@ class TrustStillProcessingViewSpec extends ViewBehaviours {
 
     def applyView(id: String) = view.apply(id)(fakeRequest, messages)
 
-    behave like normalPageWithCaption(applyView(utr), "stillProcessing", "utr", utr,"p2")
+    behave like normalPageWithCaption(applyView(utr), "stillProcessing", "utr", utr, "p2")
 
     "display the correct subheading for a utr" in {
       val doc = asDocument(applyView(utr))

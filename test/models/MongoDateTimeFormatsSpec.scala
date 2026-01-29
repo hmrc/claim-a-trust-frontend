@@ -49,6 +49,6 @@ class MongoDateTimeFormatsSpec extends AnyFreeSpec with Matchers with OptionValu
       result mustEqual date
     }
 
-    
   }
+
 }

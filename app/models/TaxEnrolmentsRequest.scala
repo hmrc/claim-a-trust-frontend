@@ -24,16 +24,15 @@ object TaxEnrolmentsRequest {
 
   object Taxable {
     val IDENTIFIER = "SAUTR"
-    val VERIFIER = "SAUTR1"
+    val VERIFIER   = "SAUTR1"
   }
 
   object NonTaxable {
     val IDENTIFIER = "URN"
-    val VERIFIER = "URN1"
+    val VERIFIER   = "URN1"
   }
 
-  implicit val writes: Writes[TaxEnrolmentsRequest] = Writes { self => {
-
+  implicit val writes: Writes[TaxEnrolmentsRequest] = Writes { self =>
     case class Values(identifier: String, verifier: String)
 
     val identifierAndVerifierKey = if (IsUTR(self.identifier)) {
@@ -45,17 +44,17 @@ object TaxEnrolmentsRequest {
     Json.obj(
       "identifiers" -> Json.arr(
         Json.obj(
-          "key" -> identifierAndVerifierKey.identifier,
+          "key"   -> identifierAndVerifierKey.identifier,
           "value" -> self.identifier
-        )),
-      "verifiers" -> Json.arr(
+        )
+      ),
+      "verifiers"   -> Json.arr(
         Json.obj(
-          "key" -> identifierAndVerifierKey.verifier,
+          "key"   -> identifierAndVerifierKey.verifier,
           "value" -> self.identifier
         )
       )
     )
-  }
 
   }
 

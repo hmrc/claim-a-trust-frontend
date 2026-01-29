@@ -29,7 +29,7 @@ class PageNotFoundViewSpec extends ViewBehaviours {
 
     val applyView = view.apply()(fakeRequest, messages)
 
-    behave like normalPage(applyView, "pageNotFound", "p1","p2")
+    behave like normalPage(applyView, "pageNotFound", "p1", "p2")
   }
 
 }

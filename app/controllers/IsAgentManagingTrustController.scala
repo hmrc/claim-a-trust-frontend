@@ -37,17 +37,18 @@ import views.html.IsAgentManagingTrustView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IsAgentManagingTrustController @Inject()(
-                                                override val messagesApi: MessagesApi,
-                                                sessionRepository: SessionRepository,
-                                                navigator: Navigator,
-                                                formProvider: IsAgentManagingTrustFormProvider,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                view: IsAgentManagingTrustView,
-                                                errorHandler: ErrorHandler,
-                                                relationship: RelationshipEstablishment,
-                                                actions: Actions
-                                              )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport with Logging {
+class IsAgentManagingTrustController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  navigator: Navigator,
+  formProvider: IsAgentManagingTrustFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: IsAgentManagingTrustView,
+  errorHandler: ErrorHandler,
+  relationship: RelationshipEstablishment,
+  actions: Actions
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
 
   private val form: Form[Boolean] = formProvider()
 
@@ -55,62 +56,77 @@ class IsAgentManagingTrustController @Inject()(
 
   def onPageLoad(mode: Mode): Action[AnyContent] = actions.authWithData.async { implicit request =>
     val result = for {
-      identifier <- TrustEnvelope.fromOption(request.userAnswers.get(IdentifierPage))
+      identifier         <- TrustEnvelope.fromOption(request.userAnswers.get(IdentifierPage))
       relationshipStatus <- relationship.check(request.internalId, identifier)
-      outcome <- TrustEnvelope(relationshipOutcome(identifier, relationshipStatus, mode))
+      outcome            <- TrustEnvelope(relationshipOutcome(identifier, relationshipStatus, mode))
     } yield outcome
     result.value.flatMap {
-      case Right(call) => Future.successful(call)
-      case Left(NoData) => logger.warn(s"[$className][onPageLoad][Session ID: ${Session.id(hc)}] unable to retrieve identifier from user answers")
+      case Right(call)  => Future.successful(call)
+      case Left(NoData) =>
+        logger.warn(
+          s"[$className][onPageLoad][Session ID: ${Session.id(hc)}] unable to retrieve identifier from user answers"
+        )
         Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
-      case Left(_) => logger.warn(s"[$className][onPageLoad][Session ID: ${Session.id(hc)}] " +
-        s"Error while loading page")
+      case Left(_)      =>
+        logger.warn(
+          s"[$className][onPageLoad][Session ID: ${Session.id(hc)}] " +
+            s"Error while loading page"
+        )
         errorHandler.internalServerErrorTemplate.map(res => InternalServerError(res))
     }
   }
-  def relationshipOutcome(identifier: String, relationStatus: RelationEstablishmentStatus, mode: Mode)
-                 (implicit request: DataRequest[AnyContent]): Result = relationStatus match {
+
+  def relationshipOutcome(identifier: String, relationStatus: RelationEstablishmentStatus, mode: Mode)(implicit
+    request: DataRequest[AnyContent]
+  ): Result = relationStatus match {
     case RelationshipFound =>
-      logger.info(s"[$className][onPageLoad][Session ID: ${Session.id(hc)}]" +
-        s" user has recently passed IV for $identifier, sending user to successfully claimed")
+      logger.info(
+        s"[$className][onPageLoad][Session ID: ${Session.id(hc)}]" +
+          s" user has recently passed IV for $identifier, sending user to successfully claimed"
+      )
       Redirect(routes.IvSuccessController.onPageLoad)
 
     case RelationshipNotFound =>
       val preparedForm = request.userAnswers.get(IsAgentManagingTrustPage) match {
-        case None => form
+        case None        => form
         case Some(value) => form.fill(value)
       }
-          Ok(view(preparedForm, mode, identifier))
+      Ok(view(preparedForm, mode, identifier))
   }
-
 
   def onSubmit(mode: Mode): Action[AnyContent] = actions.authWithData.async { implicit request =>
     val result = for {
-      value <- TrustEnvelope(validateForm(mode))
+      value          <- TrustEnvelope(validateForm(mode))
       updatedAnswers <- TrustEnvelope(request.userAnswers.set(IsAgentManagingTrustPage, value))
-      _ <- sessionRepository.set(updatedAnswers)
+      _              <- sessionRepository.set(updatedAnswers)
     } yield Redirect(navigator.nextPage(IsAgentManagingTrustPage, mode, updatedAnswers))
 
     result.value.flatMap {
-      case Right(call) => Future.successful(call)
+      case Right(call)                => Future.successful(call)
       case Left(TrustFormError(call)) => Future.successful(call)
-      case Left(_) =>
-        logger.warn(s"[$className][onSubmit][Session ID: ${Session.id(hc)}] " +
-          s"Error while storing user answers")
+      case Left(_)                    =>
+        logger.warn(
+          s"[$className][onSubmit][Session ID: ${Session.id(hc)}] " +
+            s"Error while storing user answers"
+        )
         errorHandler.internalServerErrorTemplate.map(res => InternalServerError(res))
     }
   }
 
-  def validateForm(mode: Mode) (implicit request:DataRequest[AnyContent]): Either[TrustFormError, Boolean] = {
-    form.bindFromRequest ().fold (
-      formWithErrors => {
-        request.userAnswers.get(IdentifierPage) map { utr =>
-          Left(TrustFormError(BadRequest(view(formWithErrors, mode, utr))))
-        } getOrElse {
-          logger.warn(s"[$className][onSubmit][Session ID: ${Session.id(hc)}] unable to retrieve identifier from user answers")
-          Left(TrustFormError(Redirect(routes.SessionExpiredController.onPageLoad)))
-        }
-      }, value => Right(value)
-    )
-  }
+  def validateForm(mode: Mode)(implicit request: DataRequest[AnyContent]): Either[TrustFormError, Boolean] =
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors =>
+          request.userAnswers.get(IdentifierPage) map { utr =>
+            Left(TrustFormError(BadRequest(view(formWithErrors, mode, utr))))
+          } getOrElse {
+            logger.warn(
+              s"[$className][onSubmit][Session ID: ${Session.id(hc)}] unable to retrieve identifier from user answers"
+            )
+            Left(TrustFormError(Redirect(routes.SessionExpiredController.onPageLoad)))
+          },
+        value => Right(value)
+      )
+
 }

@@ -40,4 +40,5 @@ class FallbackFailureControllerSpec extends SpecBase {
     }
 
   }
+
 }

@@ -21,14 +21,18 @@ import play.api.mvc.{Request, WrappedRequest}
 import uk.gov.hmrc.auth.core.AffinityGroup
 import uk.gov.hmrc.auth.core.retrieve.Credentials
 
-case class OptionalDataRequest[A](request: Request[A],
-                                  internalId: String,
-                                  credentials: Credentials,
-                                  affinityGroup: AffinityGroup,
-                                  userAnswers: Option[UserAnswers]) extends WrappedRequest[A](request)
+case class OptionalDataRequest[A](
+  request: Request[A],
+  internalId: String,
+  credentials: Credentials,
+  affinityGroup: AffinityGroup,
+  userAnswers: Option[UserAnswers]
+) extends WrappedRequest[A](request)
 
-case class DataRequest[A](request: Request[A],
-                          internalId: String,
-                          credentials: Credentials,
-                          affinityGroup: AffinityGroup,
-                          userAnswers: UserAnswers) extends WrappedRequest[A](request)
+case class DataRequest[A](
+  request: Request[A],
+  internalId: String,
+  credentials: Credentials,
+  affinityGroup: AffinityGroup,
+  userAnswers: UserAnswers
+) extends WrappedRequest[A](request)

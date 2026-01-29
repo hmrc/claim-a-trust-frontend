@@ -20,34 +20,36 @@ import base.SpecBase
 import play.api.i18n.{Lang, Messages, MessagesApi, MessagesImpl}
 import play.api.test.Helpers.stubMessagesApi
 
-class DateErrorFormatterSpec extends SpecBase{
+class DateErrorFormatterSpec extends SpecBase {
 
   "DateErrorFormatter.formatArgs" should {
 
-    val messagesApi: MessagesApi = stubMessagesApi(
-      Map("en" -> Map(
-        "date.day" -> "Day",
-        "date.month" -> "Month",
-        "date.year" -> "Year"
-      ))
+    val messagesApi: MessagesApi    = stubMessagesApi(
+      Map(
+        "en" -> Map(
+          "date.day"   -> "Day",
+          "date.month" -> "Month",
+          "date.year"  -> "Year"
+        )
+      )
     )
     implicit val messages: Messages = MessagesImpl(Lang("en"), messagesApi)
 
     "Convert date args to lowercase strings" in {
       val inputArgs = Seq("day", "month", "year")
-      val result = DateErrorFormatter.formatArgs(inputArgs)
+      val result    = DateErrorFormatter.formatArgs(inputArgs)
       result mustBe Seq("day", "month", "year")
     }
 
     "Leave non-date args unchanged as strings" in {
       val inputArgs = Seq("test", 123, "tests")
-      val result = DateErrorFormatter.formatArgs(inputArgs)
+      val result    = DateErrorFormatter.formatArgs(inputArgs)
       result mustBe Seq("test", "123", "tests")
     }
 
     "Handle a mix of date and non-date args" in {
       val inputArgs = Seq("day", "test", "year", 42)
-      val result = DateErrorFormatter.formatArgs(inputArgs)
+      val result    = DateErrorFormatter.formatArgs(inputArgs)
       result mustBe Seq("day", "test", "year", "42")
     }
   }

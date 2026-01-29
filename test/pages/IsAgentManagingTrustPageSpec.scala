@@ -28,4 +28,5 @@ class IsAgentManagingTrustPageSpec extends PageBehaviours {
 
     beRemovable[Boolean](IsAgentManagingTrustPage)
   }
+
 }

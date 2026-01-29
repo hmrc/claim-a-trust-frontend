@@ -48,7 +48,7 @@ class RelationshipEstablishmentServiceSpec extends SpecBase with ScalaFutures {
           val service = new RelationshipEstablishmentService(auth, relationshipForIdentifier)
 
           val result = Await.result(service.check(fakeInternalId, utr).value, Duration(5, TimeUnit.SECONDS))
-            result mustBe Left(ServerError("Bearer token not supplied"))
+          result mustBe Left(ServerError("Bearer token not supplied"))
         }
       }
 
@@ -64,9 +64,8 @@ class RelationshipEstablishmentServiceSpec extends SpecBase with ScalaFutures {
 
             val result = service.check(fakeInternalId, utr).value
 
-            whenReady(result) {
-              s =>
-                s mustBe Right(RelationshipNotFound)
+            whenReady(result) { s =>
+              s mustBe Right(RelationshipNotFound)
             }
           }
 
@@ -82,9 +81,8 @@ class RelationshipEstablishmentServiceSpec extends SpecBase with ScalaFutures {
 
             val result = service.check(fakeInternalId, utr).value
 
-            whenReady(result) {
-              s =>
-                s mustBe Right(RelationshipFound)
+            whenReady(result) { s =>
+              s mustBe Right(RelationshipFound)
             }
 
           }
@@ -122,9 +120,8 @@ class RelationshipEstablishmentServiceSpec extends SpecBase with ScalaFutures {
 
             val result = service.check(fakeInternalId, urn).value
 
-            whenReady(result) {
-              s =>
-                s mustBe Right(RelationshipNotFound)
+            whenReady(result) { s =>
+              s mustBe Right(RelationshipNotFound)
             }
           }
 
@@ -140,9 +137,8 @@ class RelationshipEstablishmentServiceSpec extends SpecBase with ScalaFutures {
 
             val result = service.check(fakeInternalId, urn).value
 
-            whenReady(result) {
-              s =>
-                s mustBe Right(RelationshipFound)
+            whenReady(result) { s =>
+              s mustBe Right(RelationshipFound)
             }
 
           }

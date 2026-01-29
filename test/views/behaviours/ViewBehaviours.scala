@@ -21,9 +21,7 @@ import views.ViewSpecBase
 
 trait ViewBehaviours extends ViewSpecBase {
 
-  def normalPage(view: HtmlFormat.Appendable,
-                 messageKeyPrefix: String,
-                 expectedGuidanceKeys: String*): Unit = {
+  def normalPage(view: HtmlFormat.Appendable, messageKeyPrefix: String, expectedGuidanceKeys: String*): Unit =
 
     "behave like a normal page" when {
 
@@ -54,13 +52,14 @@ trait ViewBehaviours extends ViewSpecBase {
         }
       }
     }
-  }
 
-  def normalPageWithCaption(view: HtmlFormat.Appendable,
-                            messageKeyPrefix: String,
-                            captionKey: String,
-                            captionParam: String,
-                            expectedGuidanceKeys: String*): Unit = {
+  def normalPageWithCaption(
+    view: HtmlFormat.Appendable,
+    messageKeyPrefix: String,
+    captionKey: String,
+    captionParam: String,
+    expectedGuidanceKeys: String*
+  ): Unit =
 
     "behave like a normal page" when {
 
@@ -75,7 +74,8 @@ trait ViewBehaviours extends ViewSpecBase {
         "display the correct page title" in {
 
           val doc = asDocument(view)
-          assertPageTitleWithCaptionEqualsMessages(doc,
+          assertPageTitleWithCaptionEqualsMessages(
+            doc,
             expectedCaptionMessageKey = s"$captionKey.subheading",
             captionParam = captionParam,
             expectedMessageKey = s"$messageKeyPrefix.heading"
@@ -95,9 +95,8 @@ trait ViewBehaviours extends ViewSpecBase {
         }
       }
     }
-  }
 
-  def pageWithBackLink(view: HtmlFormat.Appendable): Unit = {
+  def pageWithBackLink(view: HtmlFormat.Appendable): Unit =
 
     "behave like a page with a back link" must {
 
@@ -107,5 +106,5 @@ trait ViewBehaviours extends ViewSpecBase {
         assertRenderedById(doc, "back-link")
       }
     }
-  }
+
 }
