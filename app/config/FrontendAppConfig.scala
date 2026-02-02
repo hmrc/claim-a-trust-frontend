@@ -31,7 +31,7 @@ class FrontendAppConfig @Inject() (
   servicesConfig: ServicesConfig
 ) {
 
-  lazy val taxableEnrolmentServiceName: String    =
+  lazy val taxableEnrolmentServiceName: String =
     configuration.get[String]("microservice.services.tax-enrolments.taxable.serviceName")
 
   lazy val nonTaxableEnrolmentServiceName: String =
