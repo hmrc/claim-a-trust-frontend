@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import config.FrontendAppConfig
 import uk.gov.hmrc.auth.core.{BusinessKey, Relationship}
 
-class RelationshipForIdentifier @Inject()(config: FrontendAppConfig) {
+class RelationshipForIdentifier @Inject() (config: FrontendAppConfig) {
 
   def apply(identifier: String): Relationship = {
     val businessKey = if (IsUTR(identifier)) {

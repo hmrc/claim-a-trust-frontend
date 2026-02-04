@@ -37,50 +37,59 @@ import views.html.IvSuccessView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IvSuccessController @Inject()(
-                                     override val messagesApi: MessagesApi,
-                                     actions: Actions,
-                                     val controllerComponents: MessagesControllerComponents,
-                                     taxEnrolmentsConnector: TaxEnrolmentsConnector,
-                                     view: IvSuccessView,
-                                     errorHandler: ErrorHandler,
-                                     sessionRepository: SessionRepository,
-                                     auditService: AuditService,
-                                     relationship: RelationshipEstablishment
-                                   )(implicit ec: ExecutionContext,
-                                     val config: FrontendAppConfig)
-  extends FrontendBaseController with I18nSupport
-    with AuthPartialFunctions with Logging {
+class IvSuccessController @Inject() (
+  override val messagesApi: MessagesApi,
+  actions: Actions,
+  val controllerComponents: MessagesControllerComponents,
+  taxEnrolmentsConnector: TaxEnrolmentsConnector,
+  view: IvSuccessView,
+  errorHandler: ErrorHandler,
+  sessionRepository: SessionRepository,
+  auditService: AuditService,
+  relationship: RelationshipEstablishment
+)(implicit ec: ExecutionContext, val config: FrontendAppConfig)
+    extends FrontendBaseController with I18nSupport with AuthPartialFunctions with Logging {
 
   private val className = this.getClass.getSimpleName
 
   def onPageLoad: Action[AnyContent] = actions.authWithData.async { implicit request =>
     val result = for {
-      identifier <- TrustEnvelope.fromOption(request.userAnswers.get(IdentifierPage))
+      identifier         <- TrustEnvelope.fromOption(request.userAnswers.get(IdentifierPage))
       relationshipStatus <- relationship.check(request.internalId, identifier)
-      outcome <- TrustEnvelope.fromFuture(relationshipOutcome(identifier, relationshipStatus))
+      outcome            <- TrustEnvelope.fromFuture(relationshipOutcome(identifier, relationshipStatus))
     } yield outcome
 
     result.value.flatMap {
-      case Right(call) => Future.successful(call)
-      case Left(NoData) => logger.warn(s"[IvSuccessController][onPageLoad][Session ID: ${Session.id(hc)}] no identifier found in user answers," +
-        s" unable to continue with enrolling credential and claiming the trust on behalf of the user")
+      case Right(call)  => Future.successful(call)
+      case Left(NoData) =>
+        logger.warn(
+          s"[IvSuccessController][onPageLoad][Session ID: ${Session.id(hc)}] no identifier found in user answers," +
+            s" unable to continue with enrolling credential and claiming the trust on behalf of the user"
+        )
         Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
-      case Left(_) => logger.warn(s"[$className][onPageLoad][Session ID: ${Session.id(hc)}] " +
-        s"Error while loading page")
+      case Left(_)      =>
+        logger.warn(
+          s"[$className][onPageLoad][Session ID: ${Session.id(hc)}] " +
+            s"Error while loading page"
+        )
         errorHandler.internalServerErrorTemplate.map(res => InternalServerError(res))
     }
   }
 
-  def relationshipOutcome(identifier: String, relationshipStatus: RelationEstablishmentStatus)
-                         (implicit request: DataRequest[AnyContent]): Future[Result] = relationshipStatus match {
-    case RelationshipFound =>
-      logger.info(s"[$className][onPageLoad][Session ID: ${Session.id(hc)}]" +
-        s" relationship is already established in IV for $identifier, sending user to successfully claimed")
+  def relationshipOutcome(identifier: String, relationshipStatus: RelationEstablishmentStatus)(implicit
+    request: DataRequest[AnyContent]
+  ): Future[Result] = relationshipStatus match {
+    case RelationshipFound    =>
+      logger.info(
+        s"[$className][onPageLoad][Session ID: ${Session.id(hc)}]" +
+          s" relationship is already established in IV for $identifier, sending user to successfully claimed"
+      )
       onRelationshipFound(identifier)
     case RelationshipNotFound =>
-      logger.warn(s"[$className][onPageLoad][Session ID: ${Session.id(hc)}] no relationship found in Trust IV," +
-        s"cannot continue with enrolling the credential, sending the user back to the start of Trust IV")
+      logger.warn(
+        s"[$className][onPageLoad][Session ID: ${Session.id(hc)}] no relationship found in Trust IV," +
+          s"cannot continue with enrolling the credential, sending the user back to the start of Trust IV"
+      )
       Future.successful(Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode)))
   }
 
@@ -93,49 +102,49 @@ class IvSuccessController @Inject()(
       Future.successful(Ok(view(isAgentManagingTrust, identifier)))
     } else {
       val result = for {
-        _ <- taxEnrolmentsConnector.enrol(TaxEnrolmentsRequest(identifier)) // Does have an exception
-        ua <- TrustEnvelope(request.userAnswers.set(HasEnrolled, true))
-        _ <- sessionRepository.set(ua)
+        _                   <- taxEnrolmentsConnector.enrol(TaxEnrolmentsRequest(identifier)) // Does have an exception
+        ua                  <- TrustEnvelope(request.userAnswers.set(HasEnrolled, true))
+        _                   <- sessionRepository.set(ua)
         isAgentManagingTrust = request.userAnswers.get(IsAgentManagingTrustPage).getOrElse(false)
-        _ = auditService.audit(CLAIM_A_TRUST_SUCCESS, identifier, isAgentManagingTrust)
+        _                    = auditService.audit(CLAIM_A_TRUST_SUCCESS, identifier, isAgentManagingTrust)
       } yield {
-        logger.info(s"[$className][onRelationshipFound][Session ID: ${Session.id(hc)}] successfully enrolled $identifier to users" +
-          s"credential after passing Trust IV, user can now maintain the trust")
+        logger.info(
+          s"[$className][onRelationshipFound][Session ID: ${Session.id(hc)}] successfully enrolled $identifier to users" +
+            s"credential after passing Trust IV, user can now maintain the trust"
+        )
 
         Ok(view(isAgentManagingTrust, identifier))
       }
       result.value.flatMap {
-        case Right(call) => Future.successful(call)
+        case Right(call)                                                                     => Future.successful(call)
         case Left(UpstreamTaxEnrolmentsError(exceptionMessage)) if exceptionMessage.nonEmpty =>
-          handleError(identifier, exceptionMessage, methodName = "onRelationshipFound", sessionId = {
-            Session.id(hc)
-          })
-        case Left(ServerError(exceptionMessage)) if exceptionMessage.nonEmpty =>
-          handleError(identifier, exceptionMessage, methodName = "onRelationshipFound", sessionId = {
-            Session.id(hc)
-          })
-        case _ => val exceptionMessage = s"Encountered an unexpected issue claiming a trust"
-          handleError(identifier, exceptionMessage, methodName = "onRelationshipFound", sessionId = {
-            Session.id(hc)
-          })
+          handleError(identifier, exceptionMessage, methodName = "onRelationshipFound", sessionId = Session.id(hc))
+        case Left(ServerError(exceptionMessage)) if exceptionMessage.nonEmpty                =>
+          handleError(identifier, exceptionMessage, methodName = "onRelationshipFound", sessionId = Session.id(hc))
+        case _                                                                               =>
+          val exceptionMessage = s"Encountered an unexpected issue claiming a trust"
+          handleError(identifier, exceptionMessage, methodName = "onRelationshipFound", sessionId = Session.id(hc))
       }
     }
   }
 
-  private def handleError(identifier: String, exceptionMessage: String, methodName: String, sessionId: String)
-                         (implicit request: DataRequest[_]): Future[Result] = {
+  private def handleError(identifier: String, exceptionMessage: String, methodName: String, sessionId: String)(implicit
+    request: DataRequest[_]
+  ): Future[Result] = {
     auditService.auditFailure(CLAIM_A_TRUST_ERROR, identifier, exceptionMessage)
     for {
       ua <- TrustEnvelope(request.userAnswers.set(HasEnrolled, false))
-      _ <- sessionRepository.set(ua)
+      _  <- sessionRepository.set(ua)
     } yield ()
-    logger.error(s"[$className][handleError][Session ID: ${Session.id(hc)}] failed to create enrolment for " +
-      s"$identifier with tax-enrolments, users credential has not been updated, user needs to claim again")
+    logger.error(
+      s"[$className][handleError][Session ID: ${Session.id(hc)}] failed to create enrolment for " +
+        s"$identifier with tax-enrolments, users credential has not been updated, user needs to claim again"
+    )
     errorHandler.internalServerErrorTemplate.map(res => InternalServerError(res))
   }
 
-  def onSubmit: Action[AnyContent] = actions.authWithData {
-    _ =>
-      Redirect(config.trustsContinueUrl)
+  def onSubmit: Action[AnyContent] = actions.authWithData { _ =>
+    Redirect(config.trustsContinueUrl)
   }
+
 }

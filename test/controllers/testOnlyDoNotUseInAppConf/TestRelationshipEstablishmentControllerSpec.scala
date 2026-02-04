@@ -35,8 +35,7 @@ class TestRelationshipEstablishmentControllerSpec extends SpecBase {
 
       val mockConnector = mock[RelationshipEstablishmentConnector]
 
-      val application = applicationBuilder(
-        userAnswers = Some(emptyUserAnswers))
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(
           bind(classOf[RelationshipEstablishmentConnector]).toInstance(mockConnector)
         )
@@ -44,9 +43,13 @@ class TestRelationshipEstablishmentControllerSpec extends SpecBase {
 
       val identifier = "1234567890"
 
-      when(mockConnector.createRelationship(any(), any())(any())).thenReturn(Future.successful(HttpResponse.apply(OK, "")))
+      when(mockConnector.createRelationship(any(), any())(any()))
+        .thenReturn(Future.successful(HttpResponse.apply(OK, "")))
 
-      val request = FakeRequest(GET, controllers.testOnlyDoNotUseInAppConf.routes.TestRelationshipEstablishmentController.check(identifier).url)
+      val request = FakeRequest(
+        GET,
+        controllers.testOnlyDoNotUseInAppConf.routes.TestRelationshipEstablishmentController.check(identifier).url
+      )
 
       val result = route(application, request).value
 
@@ -58,13 +61,15 @@ class TestRelationshipEstablishmentControllerSpec extends SpecBase {
     }
 
     "not stub IV relationship for a UTR starting with anything but 1" in {
-      val application = applicationBuilder(
-        userAnswers = Some(emptyUserAnswers))
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .build()
 
       val identifier = "2234567890"
 
-      val request = FakeRequest(GET, controllers.testOnlyDoNotUseInAppConf.routes.TestRelationshipEstablishmentController.check(identifier).url)
+      val request = FakeRequest(
+        GET,
+        controllers.testOnlyDoNotUseInAppConf.routes.TestRelationshipEstablishmentController.check(identifier).url
+      )
 
       val result = route(application, request).value
 
@@ -79,8 +84,7 @@ class TestRelationshipEstablishmentControllerSpec extends SpecBase {
 
       val mockConnector = mock[RelationshipEstablishmentConnector]
 
-      val application = applicationBuilder(
-        userAnswers = Some(emptyUserAnswers))
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(
           bind(classOf[RelationshipEstablishmentConnector]).toInstance(mockConnector)
         )
@@ -88,9 +92,13 @@ class TestRelationshipEstablishmentControllerSpec extends SpecBase {
 
       val identifier = "NTTRUST12345678"
 
-      when(mockConnector.createRelationship(any(), any())(any())).thenReturn(Future.successful(HttpResponse.apply(OK, "")))
+      when(mockConnector.createRelationship(any(), any())(any()))
+        .thenReturn(Future.successful(HttpResponse.apply(OK, "")))
 
-      val request = FakeRequest(GET, controllers.testOnlyDoNotUseInAppConf.routes.TestRelationshipEstablishmentController.check(identifier).url)
+      val request = FakeRequest(
+        GET,
+        controllers.testOnlyDoNotUseInAppConf.routes.TestRelationshipEstablishmentController.check(identifier).url
+      )
 
       val result = route(application, request).value
 
@@ -102,13 +110,15 @@ class TestRelationshipEstablishmentControllerSpec extends SpecBase {
     }
 
     "not stub IV relationship for a URN starting with anything but NT" in {
-      val application = applicationBuilder(
-        userAnswers = Some(emptyUserAnswers))
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .build()
 
       val identifier = "BBTRUST12345678"
 
-      val request = FakeRequest(GET, controllers.testOnlyDoNotUseInAppConf.routes.TestRelationshipEstablishmentController.check(identifier).url)
+      val request = FakeRequest(
+        GET,
+        controllers.testOnlyDoNotUseInAppConf.routes.TestRelationshipEstablishmentController.check(identifier).url
+      )
 
       val result = route(application, request).value
 

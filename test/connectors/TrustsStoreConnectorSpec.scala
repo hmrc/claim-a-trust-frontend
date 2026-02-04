@@ -37,18 +37,15 @@ class TrustsStoreConnectorSpec extends AnyWordSpec with Matchers with WireMockHe
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
   lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(Seq(
-      "microservice.services.trusts-store.port" -> server.port(),
-      "auditing.enabled" -> false): _*
-    )
+    .configure(Seq("microservice.services.trusts-store.port" -> server.port(), "auditing.enabled" -> false): _*)
     .build()
 
   lazy val connector: TrustsStoreConnector = app.injector.instanceOf[TrustsStoreConnector]
 
   lazy val url: String = "/trusts-store/claim"
 
-  val utr = "1234567890"
-  val internalId = "some-authenticated-internal-id"
+  val utr            = "1234567890"
+  val internalId     = "some-authenticated-internal-id"
   val managedByAgent = true
 
   val request: TrustsStoreRequest = TrustsStoreRequest(
@@ -83,7 +80,6 @@ class TrustsStoreConnectorSpec extends AnyWordSpec with Matchers with WireMockHe
             |  "id": "a string representing the tax reference to associate with this internalId",
             |  "managedByAgent": "boolean derived from answers in the claim a trust journey"
             |}""".stripMargin
-
 
         wiremock(
           payload = json,

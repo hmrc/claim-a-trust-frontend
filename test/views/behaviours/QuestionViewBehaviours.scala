@@ -22,29 +22,30 @@ import views.ViewUtils
 
 trait QuestionViewBehaviours[A] extends ViewBehaviours {
 
-  val errorKey = "value"
+  val errorKey     = "value"
   val errorMessage = "error.number"
-  val error = FormError(errorKey, errorMessage)
+  val error        = FormError(errorKey, errorMessage)
 
   val form: Form[A]
 
-  def pageWithTextFields(form: Form[A],
-                         createView: Form[A] => HtmlFormat.Appendable,
-                         messageKeyPrefix: String,
-                         expectedFormAction: String,
-                         fields: String*) = {
+  def pageWithTextFields(
+    form: Form[A],
+    createView: Form[A] => HtmlFormat.Appendable,
+    messageKeyPrefix: String,
+    expectedFormAction: String,
+    fields: String*
+  ) =
 
     "behave like a question page" when {
 
       "rendered" must {
 
-        for (field <- fields) {
+        for (field <- fields)
 
           s"contain an input for $field" in {
             val doc = asDocument(createView(form))
             assertRenderedById(doc, field)
           }
-        }
 
         "not render an error summary" in {
 
@@ -58,11 +59,17 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
         "show an error prefix in the browser title" in {
 
           val doc = asDocument(createView(form.withError(error)))
-          assertEqualsValue(doc, "title", ViewUtils.breadcrumbTitle(s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title")}"""))
+          assertEqualsValue(
+            doc,
+            "title",
+            ViewUtils.breadcrumbTitle(
+              s"""${messages("error.browser.title.prefix")} ${messages(s"$messageKeyPrefix.title")}"""
+            )
+          )
         }
       }
 
-      for (field <- fields) {
+      for (field <- fields)
 
         s"rendered with an error with field '$field'" must {
 
@@ -74,14 +81,14 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
 
           s"show an error in the label for field '$field'" in {
 
-            val doc = asDocument(createView(form.withError(FormError(field, "error"))))
+            val doc       = asDocument(createView(form.withError(FormError(field, "error"))))
             val errorSpan = doc.getElementsByClass("govuk-error-message").first
             errorSpan.parent.attr("for") mustBe field
           }
 
           s"show an error associated with the field '$field'" in {
 
-            val fieldId = if(field.contains("_")) {
+            val fieldId = if (field.contains("_")) {
               field.replace("_", ".")
             } else {
               field
@@ -92,7 +99,7 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
             val errorSpan = doc.getElementsByClass("govuk-error-message").first
 
             // error id is that of the input field
-            errorSpan.attr("id") must include(field)
+            errorSpan.attr("id")                                           must include(field)
             errorSpan.getElementsByClass("visually-hidden").first().text() must include("Error:")
 
             // input is described by error to screen readers
@@ -102,7 +109,6 @@ trait QuestionViewBehaviours[A] extends ViewBehaviours {
             errorSpan.parent().getElementsByAttributeValue("for", field).get(0).attr("for") mustBe field
           }
         }
-      }
     }
-  }
+
 }

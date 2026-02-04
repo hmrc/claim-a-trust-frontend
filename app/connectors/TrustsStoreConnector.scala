@@ -29,24 +29,29 @@ import utils.TrustEnvelope.TrustEnvelope
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class TrustsStoreConnector @Inject()(http: HttpClientV2, config: FrontendAppConfig) extends ConnectorErrorResponseHandler {
+class TrustsStoreConnector @Inject() (http: HttpClientV2, config: FrontendAppConfig)
+    extends ConnectorErrorResponseHandler {
 
   override val className: String = getClass.getSimpleName
 
   val fullUrl: String = config.trustsStoreUrl + "/claim"
 
-  def claim(request: TrustsStoreRequest)
-           (implicit hc: HeaderCarrier, ec: ExecutionContext, writes: Writes[TrustsStoreRequest]): TrustEnvelope[Boolean] = EitherT {
+  def claim(
+    request: TrustsStoreRequest
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext, writes: Writes[TrustsStoreRequest]): TrustEnvelope[Boolean] =
+    EitherT {
 
-    http.post(url"$fullUrl")
-      .withBody(Json.toJson(request))
-      .execute[HttpResponse]
-      .map(_.status match {
-        case CREATED => Right(true)
-        case status => Left(handleError(status, "claim", fullUrl))
-      }).recover {
-        case ex => Left(handleError(ex, "claim", fullUrl))
-      }
-  }
+      http
+        .post(url"$fullUrl")
+        .withBody(Json.toJson(request))
+        .execute[HttpResponse]
+        .map(_.status match {
+          case CREATED => Right(true)
+          case status  => Left(handleError(status, "claim", fullUrl))
+        })
+        .recover { case ex =>
+          Left(handleError(ex, "claim", fullUrl))
+        }
+    }
 
 }

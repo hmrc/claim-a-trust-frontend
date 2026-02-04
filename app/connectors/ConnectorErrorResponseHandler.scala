@@ -19,17 +19,18 @@ package connectors
 import errors.{ServerError, TrustErrors}
 import play.api.Logging
 
-trait ConnectorErrorResponseHandler extends Logging  {
+trait ConnectorErrorResponseHandler extends Logging {
 
   val className: String
 
   def handleError(statusCode: Int, methodName: String, url: String): TrustErrors = {
     logger.error(s"[$className][$methodName] Error with status: $statusCode")
-    ServerError(s"HTTP response ${statusCode} for ${url}")
+    ServerError(s"HTTP response $statusCode for $url")
   }
 
   def handleError(ex: Throwable, methodName: String, url: String): TrustErrors = {
     logger.error(s"[$className][$methodName] Exception thrown with message ${ex.getMessage}")
-    ServerError(s"Error occurred when calling ${url} with exception ${ex.getMessage}")
+    ServerError(s"Error occurred when calling $url with exception ${ex.getMessage}")
   }
+
 }

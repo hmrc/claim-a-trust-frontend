@@ -24,7 +24,6 @@ import play.api.Application
 import play.api.http.Status._
 import play.api.inject.guice.GuiceApplicationBuilder
 
-
 class ConnectorErrorResponseHandlerSpec extends AnyWordSpec with Matchers with RecoverMethods {
 
   object TestConnectorErrorResponseHandler extends ConnectorErrorResponseHandler {
@@ -32,9 +31,8 @@ class ConnectorErrorResponseHandlerSpec extends AnyWordSpec with Matchers with R
   }
 
   lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(Seq(
-      "auditing.enabled" -> false): _*
-    ).build()
+    .configure(Seq("auditing.enabled" -> false): _*)
+    .build()
 
   "ConnectorErrorResponseHandler" must {
 
@@ -50,4 +48,5 @@ class ConnectorErrorResponseHandlerSpec extends AnyWordSpec with Matchers with R
       }
     }
   }
+
 }

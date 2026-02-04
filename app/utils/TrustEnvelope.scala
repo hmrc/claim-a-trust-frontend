@@ -21,7 +21,6 @@ import errors.{NoData, TrustErrors}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-
 object TrustEnvelope {
   type TrustEnvelope[T] = EitherT[Future, TrustErrors, T]
 
@@ -32,8 +31,7 @@ object TrustEnvelope {
   def apply[T](eitherArg: Either[TrustErrors, T])(implicit ec: ExecutionContext): TrustEnvelope[T] =
     EitherT.fromEither[Future](eitherArg)
 
-  def fromOption[T](optT: Option[T])(implicit ec: ExecutionContext) : TrustEnvelope[T] = {
+  def fromOption[T](optT: Option[T])(implicit ec: ExecutionContext): TrustEnvelope[T] =
     EitherT.fromOption[Future](optT, NoData)
-  }
-}
 
+}

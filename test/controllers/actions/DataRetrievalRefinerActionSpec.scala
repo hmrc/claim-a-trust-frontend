@@ -37,7 +37,9 @@ import scala.concurrent.Future
 class DataRetrievalRefinerActionSpec extends SpecBase with MockitoSugar with ScalaFutures with EitherValues {
 
   private val mockErrorHandler = mock[ErrorHandler]
-  class Harness(sessionRepository: SessionRepository) extends DataRetrievalRefinerAction(sessionRepository, mockErrorHandler) {
+
+  class Harness(sessionRepository: SessionRepository)
+      extends DataRetrievalRefinerAction(sessionRepository, mockErrorHandler) {
     def callRefine[A](request: IdentifierRequest[A]): Future[Either[Result, OptionalDataRequest[A]]] = refine(request)
   }
 
@@ -50,9 +52,10 @@ class DataRetrievalRefinerActionSpec extends SpecBase with MockitoSugar with Sca
         val sessionRepository = mock[SessionRepository]
         when(sessionRepository.get("id"))
           .thenReturn(EitherT[Future, TrustErrors, Option[UserAnswers]](Future.successful(Right(None))))
-        val action = new Harness(sessionRepository)
+        val action            = new Harness(sessionRepository)
 
-        val futureResult = action.callRefine(new IdentifierRequest(fakeRequest, "id", Credentials("providerId", "GG"), Organisation))
+        val futureResult =
+          action.callRefine(new IdentifierRequest(fakeRequest, "id", Credentials("providerId", "GG"), Organisation))
 
         whenReady(futureResult) { result =>
           result.value.userAnswers.isEmpty mustBe true
@@ -66,10 +69,13 @@ class DataRetrievalRefinerActionSpec extends SpecBase with MockitoSugar with Sca
 
         val sessionRepository = mock[SessionRepository]
         when(sessionRepository.get("id"))
-        .thenReturn(EitherT[Future, TrustErrors, Option[UserAnswers]](Future.successful(Right(Some(new UserAnswers("id"))))))
-        val action = new Harness(sessionRepository)
+          .thenReturn(
+            EitherT[Future, TrustErrors, Option[UserAnswers]](Future.successful(Right(Some(new UserAnswers("id")))))
+          )
+        val action            = new Harness(sessionRepository)
 
-        val futureResult = action.callRefine(new IdentifierRequest(fakeRequest, "id", Credentials("providerId", "GG"), Organisation))
+        val futureResult =
+          action.callRefine(new IdentifierRequest(fakeRequest, "id", Credentials("providerId", "GG"), Organisation))
 
         whenReady(futureResult) { result =>
           result.value.userAnswers.isDefined mustBe true
@@ -77,4 +83,5 @@ class DataRetrievalRefinerActionSpec extends SpecBase with MockitoSugar with Sca
       }
     }
   }
+
 }

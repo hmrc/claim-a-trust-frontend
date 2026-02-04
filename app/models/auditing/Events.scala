@@ -20,5 +20,5 @@ object Events {
 
   val CLAIM_A_TRUST_SUCCESS = "ClaimATrustSuccess"
   val CLAIM_A_TRUST_FAILURE = "ClaimATrustFailure"
-  val CLAIM_A_TRUST_ERROR = "ClaimATrustError"
+  val CLAIM_A_TRUST_ERROR   = "ClaimATrustError"
 }

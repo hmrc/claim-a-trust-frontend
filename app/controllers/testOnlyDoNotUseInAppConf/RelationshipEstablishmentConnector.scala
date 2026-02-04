@@ -26,12 +26,13 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class RelationshipEstablishmentConnector @Inject()(
-                                                    val httpClient: HttpClientV2,
-                                                    config: FrontendAppConfig
-                                                  )(implicit val ec: ExecutionContext) {
+class RelationshipEstablishmentConnector @Inject() (
+  val httpClient: HttpClientV2,
+  config: FrontendAppConfig
+)(implicit val ec: ExecutionContext) {
 
-  private val relationshipEstablishmentPostUrl: String = s"${config.relationshipEstablishmentBaseUrl}/relationship-establishment/relationship/"
+  private val relationshipEstablishmentPostUrl: String =
+    s"${config.relationshipEstablishmentBaseUrl}/relationship-establishment/relationship/"
 
   private def relationshipEstablishmentGetUrl(credId: String): String =
     s"${config.relationshipEstablishmentBaseUrl}/relationship-establishment/relationship/$credId"
@@ -39,17 +40,23 @@ class RelationshipEstablishmentConnector @Inject()(
   private def relationshipEstablishmentDeleteUrl(credId: String): String =
     s"${config.relationshipEstablishmentBaseUrl}/test/relationship/$credId"
 
-  private def newRelationship(credId: String, identifier: String): Relationship = {
+  private def newRelationship(credId: String, identifier: String): Relationship =
     if (IsUTR(identifier)) {
       Relationship(config.relationshipName, Set(BusinessKey(config.relationshipTaxableIdentifier, identifier)), credId)
     } else {
-      Relationship(config.relationshipName, Set(BusinessKey(config.relationshipNonTaxableIdentifier, identifier)), credId)
+      Relationship(
+        config.relationshipName,
+        Set(BusinessKey(config.relationshipNonTaxableIdentifier, identifier)),
+        credId
+      )
     }
-  }
 
-  def createRelationship(credId: String, identifier: String)(implicit headerCarrier: HeaderCarrier): Future[HttpResponse] = {
+  def createRelationship(credId: String, identifier: String)(implicit
+    headerCarrier: HeaderCarrier
+  ): Future[HttpResponse] = {
     val ttl = config.relationshipTTL
-    httpClient.post(url"$relationshipEstablishmentPostUrl")
+    httpClient
+      .post(url"$relationshipEstablishmentPostUrl")
       .withBody(Json.toJson(RelationshipJson(newRelationship(credId, identifier), ttl)))
       .execute[HttpResponse]
   }
@@ -63,4 +70,5 @@ class RelationshipEstablishmentConnector @Inject()(
     val fullUrl = relationshipEstablishmentDeleteUrl(credId)
     httpClient.delete(url"$fullUrl").execute[HttpResponse]
   }
+
 }

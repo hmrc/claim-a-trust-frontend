@@ -33,20 +33,20 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 import scala.concurrent.ExecutionContext
 
-class AuditServiceSpec (implicit ec: ExecutionContext) extends SpecBase with MockitoSugar {
+class AuditServiceSpec(implicit ec: ExecutionContext) extends SpecBase with MockitoSugar {
 
   private val auditConnector: AuditConnector = mock[AuditConnector]
-  lazy val config: FrontendAppConfig = app.injector.instanceOf[FrontendAppConfig]
-  private val auditService: AuditService = new AuditService(auditConnector, config, ec)
+  lazy val config: FrontendAppConfig         = app.injector.instanceOf[FrontendAppConfig]
+  private val auditService: AuditService     = new AuditService(auditConnector, config, ec)
 
-  private val event: String = "event"
-  private val utr: String = "1234567890"
-  private val urn: String = "NTTRUST0000001"
-  private val ggCredId = "ggCredId"
-  private val ggCredType = "GG"
+  private val event: String  = "event"
+  private val utr: String    = "1234567890"
+  private val urn: String    = "NTTRUST0000001"
+  private val ggCredId       = "ggCredId"
+  private val ggCredType     = "GG"
   private val internalAuthId = "internalAuthId"
 
-  lazy val taxableEnrolmentServiceName: String = s"HMRC-TERS-ORG"
+  lazy val taxableEnrolmentServiceName: String    = s"HMRC-TERS-ORG"
   lazy val nonTaxableEnrolmentServiceName: String = "HMRC-TERSNT-ORG"
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
@@ -59,7 +59,8 @@ class AuditServiceSpec (implicit ec: ExecutionContext) extends SpecBase with Moc
 
       val affinity: AffinityGroup = Agent
 
-      val request: DataRequest[AnyContent] = DataRequest(fakeRequest, internalAuthId, Credentials(ggCredId, ggCredType), affinity, UserAnswers(""))
+      val request: DataRequest[AnyContent] =
+        DataRequest(fakeRequest, internalAuthId, Credentials(ggCredId, ggCredType), affinity, UserAnswers(""))
 
       auditService.audit(event, utr, isManagedByAgent = true)(request, hc)
 
@@ -81,7 +82,8 @@ class AuditServiceSpec (implicit ec: ExecutionContext) extends SpecBase with Moc
 
       val affinity: AffinityGroup = Agent
 
-      val request: DataRequest[AnyContent] = DataRequest(fakeRequest, internalAuthId, Credentials(ggCredId, ggCredType), affinity, UserAnswers(""))
+      val request: DataRequest[AnyContent] =
+        DataRequest(fakeRequest, internalAuthId, Credentials(ggCredId, ggCredType), affinity, UserAnswers(""))
 
       auditService.audit(event, urn, isManagedByAgent = true)(request, hc)
 
@@ -104,8 +106,9 @@ class AuditServiceSpec (implicit ec: ExecutionContext) extends SpecBase with Moc
 
       val affinity: AffinityGroup = Agent
 
-      val failureReason = "Error message"
-      val request: DataRequest[AnyContent] = DataRequest(fakeRequest, internalAuthId, Credentials(ggCredId, ggCredType), affinity, UserAnswers(""))
+      val failureReason                    = "Error message"
+      val request: DataRequest[AnyContent] =
+        DataRequest(fakeRequest, internalAuthId, Credentials(ggCredId, ggCredType), affinity, UserAnswers(""))
 
       auditService.auditFailure(event, utr, failureReason)(request, hc)
 

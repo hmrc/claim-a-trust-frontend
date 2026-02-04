@@ -33,4 +33,5 @@ class BeforeYouContinueViewSpec extends ViewBehaviours {
 
     behave like pageWithBackLink(applyView)
   }
+
 }

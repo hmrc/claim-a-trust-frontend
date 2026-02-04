@@ -21,10 +21,11 @@ import play.api.mvc.{ActionBuilder, AnyContent}
 
 import javax.inject.Inject
 
-class Actions @Inject()(
-                         identify: IdentifierAction,
-                         getData: DataRetrievalRefinerAction,
-                         requireData: DataRequiredAction) {
+class Actions @Inject() (
+  identify: IdentifierAction,
+  getData: DataRetrievalRefinerAction,
+  requireData: DataRequiredAction
+) {
 
   def authWithData: ActionBuilder[DataRequest, AnyContent] = identify andThen getData andThen requireData
 

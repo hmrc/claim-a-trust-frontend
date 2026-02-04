@@ -18,11 +18,13 @@ package models.auditing
 
 import play.api.libs.json.{Format, Json}
 
-case class ClaimATrustAuditFailureEvent(credentialsId: String,
-                                        credentialsType: String,
-                                        internalAuthId: String,
-                                        identifier: String,
-                                        failureReason: String)
+case class ClaimATrustAuditFailureEvent(
+  credentialsId: String,
+  credentialsType: String,
+  internalAuthId: String,
+  identifier: String,
+  failureReason: String
+)
 
 object ClaimATrustAuditFailureEvent {
   implicit val formats: Format[ClaimATrustAuditFailureEvent] = Json.format[ClaimATrustAuditFailureEvent]

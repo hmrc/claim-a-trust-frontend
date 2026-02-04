@@ -24,12 +24,13 @@ import play.api.mvc.Call
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class Navigator @Inject()() {
+class Navigator @Inject() () {
 
-  private val normalRoutes: Page => UserAnswers => Call = {
-    case _ => _ => routes.BeforeYouContinueController.onPageLoad
+  private val normalRoutes: Page => UserAnswers => Call = { case _ =>
+    _ => routes.BeforeYouContinueController.onPageLoad
   }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-      normalRoutes(page)(userAnswers)
+    normalRoutes(page)(userAnswers)
+
 }

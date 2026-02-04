@@ -30,7 +30,9 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import services.{FakeRelationshipEstablishmentService, RelationEstablishmentStatus, RelationshipEstablishment, RelationshipNotFound}
+import services.{
+  FakeRelationshipEstablishmentService, RelationEstablishmentStatus, RelationshipEstablishment, RelationshipNotFound
+}
 
 import scala.concurrent.Future
 
@@ -40,7 +42,7 @@ class SaveIdentifierControllerSpec extends SpecBase with EitherValues {
   val urn = "ABTRUST12345678"
 
   val fakeEstablishmentServiceFailing = new FakeRelationshipEstablishmentService(Right(RelationshipNotFound))
-  val fakeEstablishmentServiceError = new FakeRelationshipEstablishmentService(Left(ServerError()))
+  val fakeEstablishmentServiceError   = new FakeRelationshipEstablishmentService(Left(ServerError()))
 
   "SaveIdentifierController" when {
 
@@ -68,15 +70,17 @@ class SaveIdentifierControllerSpec extends SpecBase with EitherValues {
 
       "render an error page" in {
 
-        val mockSessionRepository = mock[SessionRepository]
-        val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
+        val mockSessionRepository         = mock[SessionRepository]
+        val captor                        = ArgumentCaptor.forClass(classOf[UserAnswers])
         val mockRelationshipEstablishment = mock[RelationshipEstablishment]
 
         when(mockSessionRepository.set(captor.capture()))
-                  .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(Left(NoData))))
+          .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(Left(NoData))))
 
         when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(urn))(any()))
-          .thenReturn(EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Left(InvalidIdentifier))))
+          .thenReturn(
+            EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Left(InvalidIdentifier)))
+          )
 
         val application = applicationBuilder(userAnswers = None, fakeEstablishmentServiceFailing)
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
@@ -230,7 +234,8 @@ class SaveIdentifierControllerSpec extends SpecBase with EitherValues {
           val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
           val answers = emptyUserAnswers
-            .set(IdentifierPage, "0987654321").value
+            .set(IdentifierPage, "0987654321")
+            .value
 
           val mockSessionRepository = mock[SessionRepository]
 
@@ -271,8 +276,7 @@ class SaveIdentifierControllerSpec extends SpecBase with EitherValues {
           val mockSessionRepository = mock[SessionRepository]
 
           val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), fakeEstablishmentServiceError)
-            .overrides(
-              bind[SessionRepository].toInstance(mockSessionRepository))
+            .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
             .build()
 
           val request = FakeRequest(GET, routes.SaveIdentifierController.save(utr).url)
@@ -288,4 +292,5 @@ class SaveIdentifierControllerSpec extends SpecBase with EitherValues {
       }
     }
   }
+
 }

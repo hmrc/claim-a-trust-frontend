@@ -24,22 +24,27 @@ import play.api.mvc.{ActionRefiner, Result}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DataRequiredActionImpl @Inject()(implicit val executionContext: ExecutionContext) extends DataRequiredAction {
+class DataRequiredActionImpl @Inject() (implicit val executionContext: ExecutionContext) extends DataRequiredAction {
 
-  override protected def refine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] = {
+  override protected def refine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] =
 
     request.userAnswers match {
-      case None =>
+      case None       =>
         Future.successful(Left(Redirect(routes.SessionExpiredController.onPageLoad)))
       case Some(data) =>
-        Future.successful(Right(DataRequest(
-          request = request.request,
-          internalId = request.internalId,
-          credentials = request.credentials,
-          affinityGroup = request.affinityGroup,
-          userAnswers = data)))
+        Future.successful(
+          Right(
+            DataRequest(
+              request = request.request,
+              internalId = request.internalId,
+              credentials = request.credentials,
+              affinityGroup = request.affinityGroup,
+              userAnswers = data
+            )
+          )
+        )
     }
-  }
+
 }
 
 trait DataRequiredAction extends ActionRefiner[OptionalDataRequest, DataRequest]

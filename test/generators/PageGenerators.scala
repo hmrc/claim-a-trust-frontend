@@ -23,4 +23,5 @@ trait PageGenerators {
 
   implicit lazy val arbitraryIsAgentManagingTrustPage: Arbitrary[IsAgentManagingTrustPage.type] =
     Arbitrary(IsAgentManagingTrustPage)
+
 }

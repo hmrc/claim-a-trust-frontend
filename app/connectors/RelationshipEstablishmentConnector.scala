@@ -19,7 +19,9 @@ package connectors
 import cats.data.EitherT
 import config.FrontendAppConfig
 import errors.UpstreamRelationshipError
-import models.RelationshipEstablishmentStatus.{RelationshipEstablishmentStatus, processRelationshipEstablishmentStatusResponse}
+import models.RelationshipEstablishmentStatus.{
+  RelationshipEstablishmentStatus, processRelationshipEstablishmentStatusResponse
+}
 import play.api.http.Status.OK
 import uk.gov.hmrc.http.HttpReads.Implicits._
 import uk.gov.hmrc.http.client.HttpClientV2
@@ -29,21 +31,30 @@ import utils.TrustEnvelope.TrustEnvelope
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-class RelationshipEstablishmentConnector @Inject()(http: HttpClientV2, config : FrontendAppConfig) extends ConnectorErrorResponseHandler {
+class RelationshipEstablishmentConnector @Inject() (http: HttpClientV2, config: FrontendAppConfig)
+    extends ConnectorErrorResponseHandler {
 
   override val className: String = getClass.getSimpleName
 
-  def journeyId(id: String)(implicit hc : HeaderCarrier, ec : ExecutionContext): TrustEnvelope[RelationshipEstablishmentStatus] = EitherT {
+  def journeyId(
+    id: String
+  )(implicit hc: HeaderCarrier, ec: ExecutionContext): TrustEnvelope[RelationshipEstablishmentStatus] = EitherT {
     val fullUrl = s"${config.relationshipEstablishmentUrl}/journey-failure/$id"
 
-    http.get(url"$fullUrl").execute[HttpResponse].map{response =>
-      response.status match {
-      case OK => Right(processRelationshipEstablishmentStatusResponse(response.json))
-      case status => logger.warn(s"[RelationshipEstablishmentConnector] [journeyId] Unexpected HTTP response code $status")
-        Left(UpstreamRelationshipError(s"Unexpected HTTP response code $status"))
+    http
+      .get(url"$fullUrl")
+      .execute[HttpResponse]
+      .map { response =>
+        response.status match {
+          case OK     => Right(processRelationshipEstablishmentStatusResponse(response.json))
+          case status =>
+            logger.warn(s"[RelationshipEstablishmentConnector] [journeyId] Unexpected HTTP response code $status")
+            Left(UpstreamRelationshipError(s"Unexpected HTTP response code $status"))
+        }
       }
-    }.recover {
-      case ex => Left(handleError(ex, "journeyId", fullUrl))
-    }
+      .recover { case ex =>
+        Left(handleError(ex, "journeyId", fullUrl))
+      }
   }
+
 }
