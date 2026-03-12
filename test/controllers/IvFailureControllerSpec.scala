@@ -193,6 +193,46 @@ class IvFailureControllerSpec extends SpecBase with EitherValues {
         application.stop()
       }
 
+      "redirect to trust registration page  for Question Tamper flow" in {
+
+        val answers = emptyUserAnswers
+          .set(IdentifierPage, "1234567890")
+          .value
+          .set(IsAgentManagingTrustPage, true)
+          .value
+
+        val application = applicationBuilder(userAnswers = Some(answers))
+          .overrides(
+            bind[RelationshipEstablishmentConnector].toInstance(connector),
+            bind[AuditService].toInstance(mockAuditService)
+          )
+          .build()
+
+        when(connector.journeyId(any[String])(any(), any()))
+          .thenReturn(
+            EitherT[Future, TrustErrors, RelationshipEstablishmentStatus](
+              Future.successful(Right(RelationshipEstablishmentStatus.QuestionTamper))
+            )
+          )
+
+        val onIvFailureRoute = routes.IvFailureController.onTrustIvFailure.url
+
+        val request = FakeRequest(GET, s"$onIvFailureRoute?journeyId=47a8a543-6961-4221-86e8-d22e2c3c91de")
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual routes.IvSuccessController.questionTamper.url
+        verify(mockAuditService).auditFailure(
+          eqTo(CLAIM_A_TRUST_FAILURE),
+          eqTo("1234567890"),
+          eqTo(FailureReasons.QUESTION_TAMPER)
+        )(any(), any())
+
+        application.stop()
+      }
+
       "redirect to trust utr Unsupported Relationship status page when the utr is processing" in {
 
         val answers = emptyUserAnswers

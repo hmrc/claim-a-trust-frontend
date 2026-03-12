@@ -840,6 +840,24 @@ class IvSuccessControllerSpec extends SpecBase with BeforeAndAfterEach with Eith
       }
     }
 
+    "redirect to trusts registration page" when {
+
+      "user has followed a bookmark or manipluated the URL" in {
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+        val request = FakeRequest(GET, controllers.routes.IvSuccessController.questionTamper.url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual frontendAppConfig.trustsRegistration
+
+        application.stop()
+
+      }
+    }
   }
 
 }

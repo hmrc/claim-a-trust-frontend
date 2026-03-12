@@ -26,4 +26,6 @@ object FailureReasons {
   val IV_TECHNICAL_PROBLEM_NO_JOURNEY_ID = "IV technical problem: No journeyId"
   val UNSUPPORTED_RELATIONSHIP_STATUS    = "Unsupported relationship status"
   val UPSTREAM_RELATIONSHIP_ERROR        = "Upstream relationship error"
+  val QUESTION_TAMPER                    = "User followed a bookmark URL"
+
 }

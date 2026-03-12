@@ -27,12 +27,14 @@ object RelationshipEstablishmentStatus {
   case object InProcessing extends RelationshipEstablishmentStatus
   case class UnsupportedRelationshipStatus(reason: String) extends RelationshipEstablishmentStatus
   case object NoRelationshipStatus extends RelationshipEstablishmentStatus
+  case object QuestionTamper extends RelationshipEstablishmentStatus
 
   def processRelationshipEstablishmentStatusResponse(responseJson: JsValue): RelationshipEstablishmentStatus =
     (responseJson \ "errorKey").asOpt[String] match {
       case Some("TRUST_LOCKED")        => Locked
       case Some("TRUST_NOT_FOUND")     => NotFound
       case Some("TRUST_IN_PROCESSING") => InProcessing
+      case Some("QUESTION_TAMPER")     => QuestionTamper
       case Some(unsupported)           => UnsupportedRelationshipStatus(unsupported)
       case _                           => NoRelationshipStatus
     }

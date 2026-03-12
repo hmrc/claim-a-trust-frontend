@@ -147,4 +147,8 @@ class IvSuccessController @Inject() (
     Redirect(config.trustsContinueUrl)
   }
 
+  def questionTamper: Action[AnyContent] = actions.authWithData { _ =>
+    Redirect(config.trustsRegistration)
+  }
+
 }

@@ -20,6 +20,8 @@ GET        /timeout                                     controllers.SessionTimeo
 
 GET        /claimed                                     controllers.IvSuccessController.onPageLoad
 POST       /claimed                                     controllers.IvSuccessController.onSubmit
+GET        /invalid-journey                             controllers.IvSuccessController.questionTamper
+
 
 GET        /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
 
