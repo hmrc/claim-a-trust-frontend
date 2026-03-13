@@ -62,8 +62,6 @@ class IvFailureControllerSpec extends SpecBase with EitherValues {
 
       "redirect to IV FallbackFailure when no journeyId is provided" in {
 
-        val onIvFailureRoute = routes.IvFailureController.onTrustIvFailure.url
-
         val request = FakeRequest(GET, s"$onIvFailureRoute")
 
         val result = route(application, request).value
@@ -112,8 +110,6 @@ class IvFailureControllerSpec extends SpecBase with EitherValues {
               Future.successful(Right(RelationshipEstablishmentStatus.NotFound))
             )
           )
-
-        val onIvFailureRoute = routes.IvFailureController.onTrustIvFailure.url
 
         val request = FakeRequest(GET, s"$onIvFailureRoute?journeyId=47a8a543-6961-4221-86e8-d22e2c3c91de")
 
@@ -188,8 +184,6 @@ class IvFailureControllerSpec extends SpecBase with EitherValues {
               Future.successful(Right(RelationshipEstablishmentStatus.UnsupportedRelationshipStatus("")))
             )
           )
-
-        val onIvFailureRoute = routes.IvFailureController.onTrustIvFailure.url
 
         val request = FakeRequest(GET, s"$onIvFailureRoute?journeyId=47a8a543-6961-4221-86e8-d22e2c3c91de")
 
