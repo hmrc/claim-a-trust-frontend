@@ -26,8 +26,8 @@ import models.auditing.FailureReasons
 import models.{RelationshipEstablishmentStatus, TrustsStoreRequest, UserAnswers}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{verify, when}
-import org.scalatestplus.mockito.MockitoSugar.mock
 import org.scalatest.EitherValues
+import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.{IdentifierPage, IsAgentManagingTrustPage}
 import play.api.Application
 import play.api.inject.bind
@@ -41,7 +41,6 @@ class IvFailureControllerSpec extends SpecBase with EitherValues {
 
   lazy val connector: RelationshipEstablishmentConnector = mock[RelationshipEstablishmentConnector]
   private val mockAuditService: AuditService             = mock[AuditService]
-  val onIvFailureRoute: String = routes.IvFailureController.onTrustIvFailure.url
 
   val answers: UserAnswers = emptyUserAnswers
     .set(IdentifierPage, "1234567890")
@@ -55,6 +54,8 @@ class IvFailureControllerSpec extends SpecBase with EitherValues {
       bind[AuditService].toInstance(mockAuditService)
     )
     .build()
+
+  val onIvFailureRoute = routes.IvFailureController.onTrustIvFailure.url
 
   "IvFailure Controller" must {
 
@@ -250,27 +251,39 @@ class IvFailureControllerSpec extends SpecBase with EitherValues {
 
         application.stop()
       }
+    }
 
+    "redirect to FallbackFailureController when unable to retrieve identifier" in {
 
-      "redirect to FallbackFailureController when unable to retrieve identifier" in {
+      val answers = emptyUserAnswers
+        .set(IsAgentManagingTrustPage, true)
+        .value
 
-        when(connector.journeyId(any[String])(any(), any()))
-          .thenReturn(
-            EitherT[Future, TrustErrors, RelationshipEstablishmentStatus](
-              Future.successful(Right(RelationshipEstablishmentStatus.NoRelationshipStatus))
-            )
+      val application = applicationBuilder(userAnswers = Some(answers))
+        .overrides(
+          bind[RelationshipEstablishmentConnector].toInstance(connector),
+          bind[AuditService].toInstance(mockAuditService)
+        )
+        .build()
+
+      when(connector.journeyId(any[String])(any(), any()))
+        .thenReturn(
+          EitherT[Future, TrustErrors, RelationshipEstablishmentStatus](
+            Future.successful(Right(RelationshipEstablishmentStatus.NoRelationshipStatus))
           )
+        )
 
-        val request = FakeRequest(GET, s"$onIvFailureRoute?journeyId=47a8a543-6961-4221-86e8-d22e2c3c91de")
+      val onIvFailureRoute = routes.IvFailureController.onTrustIvFailure.url
 
-        val result = route(application, request).value
+      val request = FakeRequest(GET, s"$onIvFailureRoute?journeyId=47a8a543-6961-4221-86e8-d22e2c3c91de")
 
-        status(result) mustEqual SEE_OTHER
+      val result = route(application, request).value
 
-        redirectLocation(result).value mustEqual routes.FallbackFailureController.onPageLoad.url
+      status(result) mustEqual SEE_OTHER
 
-        application.stop()
-      }
+      redirectLocation(result).value mustEqual routes.FallbackFailureController.onPageLoad.url
+
+      application.stop()
     }
   }
 
