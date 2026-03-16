@@ -58,35 +58,41 @@ class IvFailureController @Inject() (
     request: DataRequest[_]
   ): Future[Result] =
     relationshipEstablishmentConnector.journeyId(journeyId).value.map {
-      case Right(RelationshipEstablishmentStatus.Locked)       =>
+      case Right(RelationshipEstablishmentStatus.Locked)         =>
         logger.info(s"[IvFailureController][renderFailureReason][Session ID: ${Session.id(hc)}] $identifier is locked")
         auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.LOCKED)
         Redirect(routes.IvFailureController.trustLocked)
-      case Right(RelationshipEstablishmentStatus.NotFound)     =>
+      case Right(RelationshipEstablishmentStatus.NotFound)       =>
         logger.info(
           s"[IvFailureController][renderFailureReason][Session ID: ${Session.id(hc)}] $identifier was not found"
         )
         auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.IDENTIFIER_NOT_FOUND)
         Redirect(routes.IvFailureController.trustNotFound)
-      case Right(RelationshipEstablishmentStatus.InProcessing) =>
+      case Right(RelationshipEstablishmentStatus.InProcessing)   =>
         logger.info(
           s"[IvFailureController][renderFailureReason][Session ID: ${Session.id(hc)}] $identifier is processing"
         )
         auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.TRUST_STILL_PROCESSING)
         Redirect(routes.IvFailureController.trustStillProcessing)
-      case Right(UnsupportedRelationshipStatus(reason))        =>
+      case Right(RelationshipEstablishmentStatus.QuestionTamper) =>
+        logger.info(
+          s"[IvFailureController][renderFailureReason][Session ID: ${Session.id(hc)}] User has followed a bookmark or otherwise manipulated the url for $identifier"
+        )
+        auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.QUESTION_TAMPER)
+        Redirect(routes.IvSuccessController.questionTamper)
+      case Right(UnsupportedRelationshipStatus(reason))          =>
         logger.error(
           s"[IvFailureController][renderFailureReason][Session ID: ${Session.id(hc)}] Unsupported IV failure reason: $reason"
         )
         auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.UNSUPPORTED_RELATIONSHIP_STATUS)
         Redirect(routes.CouldNotConfirmIdentityController.onPageLoad)
-      case Left(UpstreamRelationshipError(response))           =>
+      case Left(UpstreamRelationshipError(response))             =>
         logger.warn(
           s"[IvFailureController][renderFailureReason][Session ID: ${Session.id(hc)}] HTTP response: $response"
         )
         auditService.auditFailure(CLAIM_A_TRUST_FAILURE, identifier, FailureReasons.UPSTREAM_RELATIONSHIP_ERROR)
         Redirect(routes.FallbackFailureController.onPageLoad)
-      case _                                                   =>
+      case _                                                     =>
         logger.warn(
           s"[IvFailureController][renderFailureReason][Session ID: ${Session.id(hc)}] No errorKey in HTTP response"
         )
