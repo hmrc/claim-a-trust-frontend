@@ -18,6 +18,7 @@ package config
 
 import base.SpecBase
 import play.api.i18n.Lang
+import play.api.i18n.{Lang, Messages, MessagesImpl}
 
 class FrontendAppConfigSpec extends SpecBase {
 
@@ -44,6 +45,19 @@ class FrontendAppConfigSpec extends SpecBase {
     }
     "return correct loginContinueUrl" in {
       appConfig.loginContinueUrl mustBe "http://localhost:9785/claim-a-trust"
+    }
+
+    "return the English helpline URL" in {
+      implicit val messages: Messages =
+        MessagesImpl(Lang("en"), app.injector.instanceOf[play.api.i18n.MessagesApi])
+
+      appConfig.helplineUrl mustBe appConfig.configuration.get[String]("urls.trustsHelpline")
+    }
+    "return the Welsh helpline URL" in {
+      implicit val messages: Messages =
+        MessagesImpl(Lang("cy"), app.injector.instanceOf[play.api.i18n.MessagesApi])
+
+      appConfig.helplineUrl mustBe appConfig.configuration.get[String]("urls.welshHelpline")
     }
   }
 
