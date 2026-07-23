@@ -18,6 +18,8 @@ package config
 
 import base.SpecBase
 import play.api.i18n.Lang
+import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.test.Helpers.running
 
 class FrontendAppConfigSpec extends SpecBase {
 
@@ -45,6 +47,42 @@ class FrontendAppConfigSpec extends SpecBase {
     "return correct loginContinueUrl" in {
       appConfig.loginContinueUrl mustBe "http://localhost:9785/claim-a-trust"
     }
+    "return the real relationship establishment URL when stubbing is disabled" in {
+
+      val testApp = new GuiceApplicationBuilder()
+        .configure(
+          "microservice.services.features.stubRelationshipEstablishment"   -> false,
+          "microservice.services.relationship-establishment-frontend.host" -> "http://real-host",
+          "microservice.services.relationship-establishment-frontend.path" -> "relationship-establishment"
+        )
+        .build()
+
+      running(testApp) {
+        val config = testApp.injector.instanceOf[FrontendAppConfig]
+
+        config.relationshipEstablishmentFrontendUrl("1234567890") mustBe
+          "http://real-host/relationship-establishment/1234567890"
+      }
+    }
+
+    "return the stubbed relationship establishment URL when stubbing is enabled" in {
+
+      val testApp = new GuiceApplicationBuilder()
+        .configure(
+          "microservice.services.features.stubRelationshipEstablishment"        -> true,
+          "microservice.services.test.relationship-establishment-frontend.host" -> "http://stub-host",
+          "microservice.services.test.relationship-establishment-frontend.path" -> "stub-relationship-establishment"
+        )
+        .build()
+
+      running(testApp) {
+        val config = testApp.injector.instanceOf[FrontendAppConfig]
+
+        config.relationshipEstablishmentFrontendUrl("1234567890") mustBe
+          "http://stub-host/stub-relationship-establishment/1234567890"
+      }
+    }
+
   }
 
 }
