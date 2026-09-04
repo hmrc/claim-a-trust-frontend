@@ -17,10 +17,8 @@
 package config
 
 import com.google.inject.{Inject, Singleton}
-import controllers.routes
 import play.api.Configuration
 import play.api.i18n.{Lang, Messages}
-import play.api.mvc.Call
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
@@ -44,9 +42,6 @@ class FrontendAppConfig @Inject() (
 
   lazy val trustsContinueUrl: String =
     configuration.get[String]("urls.maintainContinue")
-
-  lazy val languageTranslationEnabled: Boolean =
-    configuration.get[Boolean]("microservice.services.features.welsh-translation")
 
   lazy val trustsStoreUrl: String = servicesConfig.baseUrl("trusts-store") + "/trusts-store"
 
@@ -112,9 +107,6 @@ class FrontendAppConfig @Inject() (
     "english" -> Lang("en"),
     "cymraeg" -> Lang("cy")
   )
-
-  def routeToSwitchLanguage: String => Call =
-    (lang: String) => routes.LanguageSwitchController.switchToLanguage(lang)
 
   lazy val cachettlInSeconds: Long = configuration.get[Long]("mongodb.timeToLiveInSeconds")
 

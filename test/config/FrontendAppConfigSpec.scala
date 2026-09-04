@@ -34,16 +34,6 @@ class FrontendAppConfigSpec extends SpecBase {
       )
     }
 
-    "return the correct route to switch language - CY" in {
-      val cyCall = appConfig.routeToSwitchLanguage("cy")
-      cyCall.url mustBe "/claim-a-trust/language/cy"
-    }
-
-    "return the correct route to switch language - EN" in {
-      val enCall = appConfig.routeToSwitchLanguage("en")
-      enCall.url mustBe "/claim-a-trust/language/en"
-    }
-
     "return the correct loginUrl" in {
       appConfig.loginUrl mustBe "http://localhost:9949/auth-login-stub/gg-sign-in"
     }
