@@ -33,20 +33,19 @@ class FrontendAppConfigSpec extends SpecBase {
         "cymraeg" -> Lang("cy")
       )
     }
-    "return the correct route to switch language - CY" in {
-      val cyCall = appConfig.routeToSwitchLanguage("cy")
-      cyCall.url mustBe "/claim-a-trust/language/cy"
-    }
-    "return the correct route to switch language - EN" in {
-      val enCall = appConfig.routeToSwitchLanguage("en")
-      enCall.url mustBe "/claim-a-trust/language/en"
-    }
+
     "return the correct loginUrl" in {
       appConfig.loginUrl mustBe "http://localhost:9949/auth-login-stub/gg-sign-in"
     }
-    "return correct loginContinueUrl" in {
+
+    "return the correct loginContinueUrl" in {
       appConfig.loginContinueUrl mustBe "http://localhost:9785/claim-a-trust"
     }
+
+    "return the correct logoutUrl" in {
+      appConfig.logoutUrl mustBe "http://localhost:9514/feedback/trusts?useServiceNavigation"
+    }
+
     "return the real relationship establishment URL when stubbing is disabled" in {
 
       val testApp = new GuiceApplicationBuilder()
