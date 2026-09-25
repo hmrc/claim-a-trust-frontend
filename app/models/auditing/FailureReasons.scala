@@ -19,7 +19,6 @@ package models.auditing
 object FailureReasons {
 
   val LOCKED                             = "Failed 3 times, cred locked for 30 minutes"
-  val SERVICE_UNAVAILABLE                = "Service Unavailable (Trust IV)"
   val IDENTIFIER_NOT_FOUND               = "Identifier not found"
   val TRUST_STILL_PROCESSING             = "Trust is still processing"
   val IV_TECHNICAL_PROBLEM_NO_ERROR_KEY  = "IV technical problem: No error key"

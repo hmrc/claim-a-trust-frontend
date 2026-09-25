@@ -84,7 +84,7 @@ object UserAnswers {
       (__ \ "_id").write[String] and
         (__ \ "data").write[JsObject] and
         (__ \ "lastUpdated").write(MongoJavatimeFormats.instantWrites)
-    )(unlift(UserAnswers.unapply))
+    )(ua => (ua.id, ua.data, ua.lastUpdated))
   }
 
 }

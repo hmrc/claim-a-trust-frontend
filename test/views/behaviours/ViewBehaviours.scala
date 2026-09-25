@@ -27,29 +27,20 @@ trait ViewBehaviours extends ViewSpecBase {
 
       "rendered" must {
 
-        "display the correct browser title" in {
+        val doc = asDocument(view)
 
-          val doc = asDocument(view)
+        "display the correct browser title" in
           assertEqualsMessage(doc, "title", s"$messageKeyPrefix.title")
-        }
 
-        "display the correct page title" in {
-
-          val doc = asDocument(view)
+        "display the correct page title" in
           assertPageTitleEqualsMessage(doc, s"$messageKeyPrefix.heading")
-        }
 
         "display the correct guidance" in {
-
-          val doc = asDocument(view)
           for (key <- expectedGuidanceKeys) assertContainsText(doc, messages(s"$messageKeyPrefix.$key"))
         }
 
-        "display language toggles" in {
-
-          val doc = asDocument(view)
+        "display language toggles" in
           assertRenderedByCssSelector(doc, "a[lang=cy]")
-        }
       }
     }
 
@@ -64,35 +55,25 @@ trait ViewBehaviours extends ViewSpecBase {
     "behave like a normal page" when {
 
       "rendered" must {
+        val doc = asDocument(view)
 
-        "display the correct browser title" in {
-
-          val doc = asDocument(view)
+        "display the correct browser title" in
           assertEqualsMessage(doc, "title", s"$messageKeyPrefix.title")
-        }
 
-        "display the correct page title" in {
-
-          val doc = asDocument(view)
+        "display the correct page title" in
           assertPageTitleWithCaptionEqualsMessages(
             doc,
             expectedCaptionMessageKey = s"$captionKey.subheading",
             captionParam = captionParam,
             expectedMessageKey = s"$messageKeyPrefix.heading"
           )
-        }
 
         "display the correct guidance" in {
-
-          val doc = asDocument(view)
           for (key <- expectedGuidanceKeys) assertContainsText(doc, messages(s"$messageKeyPrefix.$key"))
         }
 
-        "display language toggles" in {
-
-          val doc = asDocument(view)
+        "display language toggles" in
           assertRenderedByCssSelector(doc, "a[lang=cy]")
-        }
       }
     }
 

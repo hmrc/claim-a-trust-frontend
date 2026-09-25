@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import controllers.routes._
 @import models.Mode
 @import views.html.components.{ErrorSummary, InputYesNo, SubmitButton}
 
@@ -33,7 +32,7 @@
     showBackLink = true
     ) {
 
-    @formHelper(action = IsAgentManagingTrustController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.IsAgentManagingTrustController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

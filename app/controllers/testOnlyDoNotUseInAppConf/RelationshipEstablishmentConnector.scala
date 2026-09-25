@@ -26,6 +26,8 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
 
 import scala.concurrent.{ExecutionContext, Future}
 
+import play.api.libs.ws.writeableOf_JsValue
+
 class RelationshipEstablishmentConnector @Inject() (
   val httpClient: HttpClientV2,
   config: FrontendAppConfig

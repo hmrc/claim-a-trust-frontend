@@ -16,7 +16,6 @@
 
 package forms.behaviours
 
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.data.{Form, FormError}
 
 trait StringFieldBehaviours extends FieldBehaviours {
@@ -26,7 +25,7 @@ trait StringFieldBehaviours extends FieldBehaviours {
     s"not bind strings longer than $maxLength characters" in
       forAll(stringsLongerThan(maxLength) -> "longString") { string =>
         val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-        result.errors shouldEqual Seq(lengthError)
+        result.errors mustEqual Seq(lengthError)
       }
 
 }

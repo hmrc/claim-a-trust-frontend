@@ -18,8 +18,9 @@ package controllers.actions
 
 import base.SpecBase
 import controllers.routes
+import models.requests.IdentifierRequest
 import play.api.mvc.Results.Redirect
-import play.api.mvc.{BodyParsers, Results}
+import play.api.mvc.{AnyContent, BodyParsers, Results}
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core._
 
@@ -28,7 +29,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class AuthActionSpec extends SpecBase {
 
   class Harness(authAction: IdentifierAction) {
-    def onPageLoad = authAction(_ => Results.Ok)
+    def onPageLoad = authAction((_: IdentifierRequest[AnyContent]) => Results.Ok)
   }
 
   "Auth Action" when {

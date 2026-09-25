@@ -137,7 +137,7 @@ class IvSuccessController @Inject() (
       _  <- sessionRepository.set(ua)
     } yield ()
     logger.error(
-      s"[$className][handleError][Session ID: ${Session.id(hc)}] failed to create enrolment for " +
+      s"[$className][$methodName][Session ID: $sessionId] failed to create enrolment for " +
         s"$identifier with tax-enrolments, users credential has not been updated, user needs to claim again"
     )
     errorHandler.internalServerErrorTemplate.map(res => InternalServerError(res))

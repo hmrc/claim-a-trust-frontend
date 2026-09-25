@@ -165,7 +165,7 @@ class IvFailureController @Inject() (
         s"[IvFailureController][trustNotFound][Session ID: ${Session.id(hc)}]" +
           s" IV was unable to find the trust for $identifier"
       )
-      Future.successful(Ok(notFoundView(identifier)))
+      Future.successful(Ok(notFoundView()))
     } getOrElse {
       logger.warn(
         s"[IvFailureController][trustNotFound][Session ID: ${Session.id(hc)}]" +

@@ -20,7 +20,6 @@ import org.scalatest.OptionValues
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.data.{Form, FormError}
-import models.Enumerable
 
 object MappingsSpec {
 
@@ -29,12 +28,7 @@ object MappingsSpec {
   case object Baz extends Foo
 
   object Foo {
-
     val values: Set[Foo] = Set(Bar, Baz)
-
-    implicit val fooEnumerable: Enumerable[Foo] =
-      Enumerable(values.toSeq.map(v => v.toString -> v): _*)
-
   }
 
 }
@@ -145,28 +139,6 @@ class MappingsSpec extends AnyWordSpec with Matchers with OptionValues with Mapp
     "unbind a valid value" in {
       val result = testForm.fill(123)
       result.apply("value").value.value mustEqual "123"
-    }
-  }
-
-  "enumerable" must {
-
-    val testForm = Form(
-      "value" -> enumerable[Foo]()
-    )
-
-    "bind a valid option" in {
-      val result = testForm.bind(Map("value" -> "Bar"))
-      result.get mustEqual Bar
-    }
-
-    "not bind an invalid option" in {
-      val result = testForm.bind(Map("value" -> "Not Bar"))
-      result.errors must contain(FormError("value", "error.invalid"))
-    }
-
-    "not bind an empty map" in {
-      val result = testForm.bind(Map.empty[String, String])
-      result.errors must contain(FormError("value", "error.required"))
     }
   }
 

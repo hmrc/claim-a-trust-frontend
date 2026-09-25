@@ -19,7 +19,6 @@ package forms.behaviours
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import org.scalacheck.Gen
-import org.scalatest.matchers.should.Matchers.convertToAnyShouldWrapper
 import play.api.data.{Form, FormError}
 
 class DateBehaviours extends FieldBehaviours {
@@ -36,7 +35,7 @@ class DateBehaviours extends FieldBehaviours {
 
         val result = form.bind(data)
 
-        result.value.value shouldEqual date
+        result.value.value mustEqual date
       }
 
   def dateFieldWithMax(form: Form[_], key: String, max: LocalDate, formError: FormError): Unit =
@@ -54,7 +53,7 @@ class DateBehaviours extends FieldBehaviours {
 
         val result = form.bind(data)
 
-        result.errors should contain only formError
+        result.errors must contain only formError
       }
     }
 
@@ -73,7 +72,7 @@ class DateBehaviours extends FieldBehaviours {
 
         val result = form.bind(data)
 
-        result.errors should contain only formError
+        result.errors must contain only formError
       }
     }
 
@@ -83,7 +82,7 @@ class DateBehaviours extends FieldBehaviours {
 
       val result = form.bind(Map.empty[String, String])
 
-      result.errors should contain only FormError(key, requiredAllKey, errorArgs)
+      result.errors must contain only FormError(key, requiredAllKey, errorArgs)
     }
 
 }

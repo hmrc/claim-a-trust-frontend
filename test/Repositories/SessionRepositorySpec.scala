@@ -25,6 +25,8 @@ import play.api.test.Helpers.{await, defaultAwaitTimeout}
 import repositories.DefaultSessionRepository
 import uk.gov.hmrc.mongo.test.MongoSupport
 
+import org.mongodb.scala.SingleObservableFuture
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class SessionRepositorySpec extends SpecBase with MongoSupport with BeforeAndAfterEach with EitherValues {
