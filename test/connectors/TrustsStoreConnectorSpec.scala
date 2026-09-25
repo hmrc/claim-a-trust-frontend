@@ -16,23 +16,25 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import errors.ServerError
 import models.TrustsStoreRequest
 import org.scalatest.RecoverMethods
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.WireMockHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class TrustsStoreConnectorSpec extends AnyWordSpec with Matchers with WireMockHelper with RecoverMethods {
+class TrustsStoreConnectorSpec
+    extends AnyWordSpec with Matchers with WireMockHelper with RecoverMethods with ScalaFutures {
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
@@ -87,10 +89,7 @@ class TrustsStoreConnectorSpec extends AnyWordSpec with Matchers with WireMockHe
           expectedResponse = response
         )
 
-        connector.claim(request).value map { response =>
-          response mustBe Right(true)
-        }
-
+        connector.claim(request).value.futureValue mustBe Right(true)
       }
 
       "returns 400 BAD_REQUEST" in {

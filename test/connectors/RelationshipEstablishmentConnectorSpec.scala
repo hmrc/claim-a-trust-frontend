@@ -16,20 +16,25 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock._
+import com.github.tomakehurst.wiremock.client.WireMock.*
+import ch.qos.logback.classic.Level
+import com.github.tomakehurst.wiremock.http.Fault
 import config.FrontendAppConfig
+import errors.{ServerError, UpstreamRelationshipError}
 import models.RelationshipEstablishmentStatus
-import org.scalatest.RecoverMethods
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import play.api.Application
+import play.api.{Application, Logger}
 import play.api.inject.guice.GuiceApplicationBuilder
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.tools.LogCapturing
 import utils.WireMockHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class RelationshipEstablishmentConnectorSpec extends AnyWordSpec with Matchers with WireMockHelper with RecoverMethods {
+class RelationshipEstablishmentConnectorSpec
+    extends AnyWordSpec with Matchers with WireMockHelper with ScalaFutures with IntegrationPatience with LogCapturing {
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
@@ -45,83 +50,132 @@ class RelationshipEstablishmentConnectorSpec extends AnyWordSpec with Matchers w
   val journeyFailure = s"47a8a543-6961-4221-86e8-d22e2c3c91de"
   val url            = s"/relationship-establishment/journey-failure/$journeyFailure"
 
-  private def wiremock(expectedJourneyFailureReason: String) =
+  private def setupStubGet(expectedJourneyFailureReason: String) =
     server.stubFor(
       get(urlEqualTo(url))
         .willReturn(okJson(expectedJourneyFailureReason))
     )
+
+  private def setupStubGetWithStatus(status: Int) =
+    server.stubFor(
+      get(urlEqualTo(url))
+        .willReturn(aResponse().withStatus(status))
+    )
+
+  private def setupStubGetWithFault(fault: Fault) =
+    server.stubFor(
+      get(urlEqualTo(url))
+        .willReturn(aResponse().withFault(fault))
+    )
+
+  private val connectorLogger: Logger = Logger(classOf[RelationshipEstablishmentConnector])
+
+  def formatErrorReason(reason: String): String = s"""{ "errorKey": "$reason" }"""
 
   "RelationshipEstablishmentConnector" must {
 
     "Calling GET /" which {
 
       "returns 200 OK with a locked response" in {
+        setupStubGet(expectedJourneyFailureReason = formatErrorReason("TRUST_LOCKED"))
 
-        val expectedJourneyFailureReason =
-          """
-            |{
-            | "errorKey": "TRUST_LOCKED"
-            |}""".stripMargin
-
-        wiremock(
-          expectedJourneyFailureReason = expectedJourneyFailureReason
-        )
-
-        connector.journeyId(journeyFailure) map { status =>
-          status mustBe RelationshipEstablishmentStatus.Locked
-        }
+        connector.journeyId(journeyFailure).value.futureValue mustBe Right(RelationshipEstablishmentStatus.Locked)
       }
 
       "returns 200 OK with a not found response" in {
+        setupStubGet(expectedJourneyFailureReason = formatErrorReason("TRUST_NOT_FOUND"))
 
-        val expectedJourneyFailureReason =
-          """
-            |{
-            | "errorKey": "TRUST_NOT_FOUND"
-            |}""".stripMargin
-
-        wiremock(
-          expectedJourneyFailureReason = expectedJourneyFailureReason
-        )
-
-        connector.journeyId(journeyFailure) map { status =>
-          status mustBe RelationshipEstablishmentStatus.NotFound
-        }
+        connector.journeyId(journeyFailure).value.futureValue mustBe Right(RelationshipEstablishmentStatus.NotFound)
       }
 
       "returns 200 OK with an InProcessing response" in {
+        setupStubGet(expectedJourneyFailureReason = formatErrorReason("TRUST_IN_PROCESSING"))
 
-        val expectedJourneyFailureReason =
-          """
-            |{
-            | "errorKey": "TRUST_IN_PROCESSING"
-            |}""".stripMargin
+        connector.journeyId(journeyFailure).value.futureValue mustBe Right(RelationshipEstablishmentStatus.InProcessing)
+      }
 
-        wiremock(
-          expectedJourneyFailureReason = expectedJourneyFailureReason
+      "returns 200 OK with a question tamper response" in {
+        setupStubGet(expectedJourneyFailureReason = formatErrorReason("QUESTION_TAMPER"))
+
+        connector.journeyId(journeyFailure).value.futureValue mustBe Right(
+          RelationshipEstablishmentStatus.QuestionTamper
         )
-
-        connector.journeyId(journeyFailure) map { status =>
-          status mustBe RelationshipEstablishmentStatus.InProcessing
-        }
       }
 
       "returns 200 OK with an unsupported status" in {
+        setupStubGet(expectedJourneyFailureReason = formatErrorReason("UNSUPPORTED"))
 
-        val expectedJourneyFailureReason =
-          """
-            |{
-            | "errorKey": "UNSUPPORTED"
-            |}""".stripMargin
-
-        wiremock(
-          expectedJourneyFailureReason = expectedJourneyFailureReason
+        connector.journeyId(journeyFailure).value.futureValue mustBe Right(
+          RelationshipEstablishmentStatus.UnsupportedRelationshipStatus("UNSUPPORTED")
         )
-
-        connector.journeyId(journeyFailure) map { status =>
-          status mustBe a[RelationshipEstablishmentStatus.UnsupportedRelationshipStatus]
-        }
       }
+
+      "returns 200 OK with no errorKey" in {
+        setupStubGet(expectedJourneyFailureReason = "{}")
+
+        connector.journeyId(journeyFailure).value.futureValue mustBe Right(
+          RelationshipEstablishmentStatus.NoRelationshipStatus
+        )
+      }
+
+      "returns 404 NOT_FOUND" in
+        withCaptureOfLoggingFrom(connectorLogger) { logs =>
+          setupStubGetWithStatus(404)
+
+          connector.journeyId(journeyFailure).value.futureValue mustBe Left(
+            UpstreamRelationshipError("Unexpected HTTP response code 404")
+          )
+
+          logs.map(e => (e.getLevel, e.getMessage)) mustBe List(
+            Level.WARN -> "[RelationshipEstablishmentConnector] [journeyId] Unexpected HTTP response code 404"
+          )
+        }
+
+      "returns 500 INTERNAL_SERVER_ERROR" in
+        withCaptureOfLoggingFrom(connectorLogger) { logs =>
+          setupStubGetWithStatus(500)
+
+          connector.journeyId(journeyFailure).value.futureValue mustBe Left(
+            UpstreamRelationshipError("Unexpected HTTP response code 500")
+          )
+
+          logs.map(e => (e.getLevel, e.getMessage)) mustBe List(
+            Level.WARN -> "[RelationshipEstablishmentConnector] [journeyId] Unexpected HTTP response code 500"
+          )
+        }
+
+      "fails with a connection reset" in
+        withCaptureOfLoggingFrom(connectorLogger) { logs =>
+          setupStubGetWithFault(Fault.CONNECTION_RESET_BY_PEER)
+
+          connector.journeyId(journeyFailure).value.futureValue match {
+            case Left(ServerError(message)) =>
+              message must include(url)
+              message must include("with exception")
+            case other                      =>
+              fail(s"Expected Left(ServerError), got $other")
+          }
+
+          logs.map(_.getLevel) mustBe List(Level.ERROR)
+          logs.head.getMessage   must startWith(
+            "[RelationshipEstablishmentConnector][journeyId] Exception thrown with message"
+          )
+        }
+
+      "returns 200 OK with a body that is not valid JSON" in
+        withCaptureOfLoggingFrom(connectorLogger) { logs =>
+          setupStubGet(expectedJourneyFailureReason = "not json")
+
+          connector.journeyId(journeyFailure).value.futureValue match {
+            case Left(ServerError(message)) => message must include(url)
+            case other                      => fail(s"Expected Left(ServerError), got $other")
+          }
+
+          logs.map(_.getLevel) mustBe List(Level.ERROR)
+          logs.head.getMessage   must startWith(
+            "[RelationshipEstablishmentConnector][journeyId] Exception thrown with message"
+          )
+        }
     }
   }
 

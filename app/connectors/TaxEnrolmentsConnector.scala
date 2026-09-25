@@ -89,7 +89,7 @@ class TaxEnrolmentsConnector @Inject() (http: HttpClientV2, config: FrontendAppC
         }
       )
       .recover { case ex =>
-        Left(handleError(ex, "updateTaskStatus", fullUrl))
+        Left(handleError(ex, "enrol", fullUrl))
       }
   }
 
