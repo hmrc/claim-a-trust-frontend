@@ -25,8 +25,9 @@ import views.html.{ErrorTemplate, PageNotFoundView}
 
 import scala.concurrent.duration.DurationInt
 import scala.concurrent.{Await, ExecutionContext, Future}
+import views.ViewSpecBase
 
-class ErrorHandlerSpec extends SpecBase {
+class ErrorHandlerSpec extends SpecBase with ViewSpecBase {
 
   private val messageApi: MessagesApi        = app.injector.instanceOf[MessagesApi]
   private val errorTemplate: ErrorTemplate   = app.injector.instanceOf[ErrorTemplate]
@@ -42,6 +43,17 @@ class ErrorHandlerSpec extends SpecBase {
         val result                          = Await.result(resultFuture, 5.seconds)
         result.body must include(messageApi("pageNotFound.p1")(using Lang("en")))
 
+      }
+    }
+
+    ".internalServerErrorTemplate" should {
+      "render the heading as the page h1" in {
+        implicit val request: RequestHeader = FakeRequest()
+
+        val doc = asDocument(errorHandler.internalServerErrorTemplate.futureValue)
+
+        assertPageTitleEqualsMessage(doc, "global.error.InternalServerError500.heading")
+        doc.select("main p").first.text mustBe messages("global.error.InternalServerError500.message")
       }
     }
   }
