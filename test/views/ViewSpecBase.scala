@@ -52,7 +52,7 @@ trait ViewSpecBase extends SpecBase {
     val headers = doc.getElementsByTag("h1")
     headers.size mustBe 1
 
-    val expectedHeading = messages(expectedMessageKey, args: _*).replaceAll("&nbsp;", " ")
+    val expectedHeading = messages(expectedMessageKey, args*).replaceAll("&nbsp;", " ")
 
     headers.first.text.replaceAll("\u00a0", " ") mustBe expectedHeading
   }

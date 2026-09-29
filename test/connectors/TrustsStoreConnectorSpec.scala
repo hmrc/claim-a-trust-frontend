@@ -39,7 +39,7 @@ class TrustsStoreConnectorSpec
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
   lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(Seq("microservice.services.trusts-store.port" -> server.port(), "auditing.enabled" -> false): _*)
+    .configure(Seq("microservice.services.trusts-store.port" -> server.port(), "auditing.enabled" -> false)*)
     .build()
 
   lazy val connector: TrustsStoreConnector = app.injector.instanceOf[TrustsStoreConnector]

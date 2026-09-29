@@ -62,7 +62,7 @@ class AuditServiceSpec(implicit ec: ExecutionContext) extends SpecBase with Mock
       val request: DataRequest[AnyContent] =
         DataRequest(fakeRequest, internalAuthId, Credentials(ggCredId, ggCredType), affinity, UserAnswers(""))
 
-      auditService.audit(event, utr, isManagedByAgent = true)(request, hc)
+      auditService.audit(event, utr, isManagedByAgent = true)(using request, hc)
 
       val expectedPayload = ClaimATrustAuditSuccessEvent(
         credentialsId = ggCredId,
@@ -73,7 +73,7 @@ class AuditServiceSpec(implicit ec: ExecutionContext) extends SpecBase with Mock
         isManagedByAgent = true
       )
 
-      verify(auditConnector).sendExplicitAudit(eqTo(event), eqTo(expectedPayload))(any(), any(), any())
+      verify(auditConnector).sendExplicitAudit(eqTo(event), eqTo(expectedPayload))(using any(), any(), any())
     }
 
     "build audit success payload from request values for NonTaxable" when {
@@ -85,7 +85,7 @@ class AuditServiceSpec(implicit ec: ExecutionContext) extends SpecBase with Mock
       val request: DataRequest[AnyContent] =
         DataRequest(fakeRequest, internalAuthId, Credentials(ggCredId, ggCredType), affinity, UserAnswers(""))
 
-      auditService.audit(event, urn, isManagedByAgent = true)(request, hc)
+      auditService.audit(event, urn, isManagedByAgent = true)(using request, hc)
 
       val expectedPayload = ClaimATrustAuditSuccessEvent(
         credentialsId = ggCredId,
@@ -96,7 +96,7 @@ class AuditServiceSpec(implicit ec: ExecutionContext) extends SpecBase with Mock
         isManagedByAgent = true
       )
 
-      verify(auditConnector).sendExplicitAudit(eqTo(event), eqTo(expectedPayload))(any(), any(), any())
+      verify(auditConnector).sendExplicitAudit(eqTo(event), eqTo(expectedPayload))(using any(), any(), any())
 
     }
 
@@ -110,7 +110,7 @@ class AuditServiceSpec(implicit ec: ExecutionContext) extends SpecBase with Mock
       val request: DataRequest[AnyContent] =
         DataRequest(fakeRequest, internalAuthId, Credentials(ggCredId, ggCredType), affinity, UserAnswers(""))
 
-      auditService.auditFailure(event, utr, failureReason)(request, hc)
+      auditService.auditFailure(event, utr, failureReason)(using request, hc)
 
       val expectedPayload = ClaimATrustAuditFailureEvent(
         credentialsId = ggCredId,
@@ -120,7 +120,7 @@ class AuditServiceSpec(implicit ec: ExecutionContext) extends SpecBase with Mock
         failureReason = failureReason
       )
 
-      verify(auditConnector).sendExplicitAudit(eqTo(event), eqTo(expectedPayload))(any(), any(), any())
+      verify(auditConnector).sendExplicitAudit(eqTo(event), eqTo(expectedPayload))(using any(), any(), any())
     }
   }
 

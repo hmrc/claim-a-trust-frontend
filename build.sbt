@@ -1,16 +1,23 @@
-import play.sbt.routes.RoutesKeys
-import sbt.Def
-import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
+import uk.gov.hmrc.DefaultBuildSettings.targetJvm
 
-lazy val root = Project("claim-a-trust-frontend", file("."))
+ThisBuild / scalaVersion := "3.9.0"
+ThisBuild / majorVersion := 0
+ThisBuild / targetJvm    := "jvm-21"
+ThisBuild / scalacOptions ++= Seq(
+  "-feature",
+  "-Wconf:msg=Flag.*repeatedly:s"
+)
+
+lazy val microservice = Project("claim-a-trust-frontend", file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin) // Required to prevent https://github.com/scalatest/scalatest/issues/1427
-  .settings(inConfig(Test)(testSettings))
-  .settings(majorVersion := 0)
-  .settings(CodeCoverageSettings())
   .settings(
-    scalaVersion := "3.3.7",
-    RoutesKeys.routesImport += "models._",
+    CodeCoverageSettings(),
+    scalacOptions ++= Seq(
+      "-Wconf:src=routes/.*:s",
+      "-Wconf:msg=unused import&src=html/.*:s"
+    ),
+    routesImport += "models._",
     TwirlKeys.templateImports ++= Seq(
       "play.twirl.api.HtmlFormat",
       "play.twirl.api.HtmlFormat._",
@@ -21,18 +28,10 @@ lazy val root = Project("claim-a-trust-frontend", file("."))
       "models.Mode"
     ),
     PlayKeys.playDefaultPort := 9785,
-    scalacOptions ++= Seq(
-      "-feature",
-      "-Wconf:src=routes/.*:s",
-      "-Wconf:msg=unused import&src=html/.*:s",
-      "-Wconf:msg=Flag.*repeatedly:s"
-    ),
     libraryDependencies ++= AppDependencies(),
-    retrieveManaged := true
+    retrieveManaged := true,
+    Test / fork := true
   )
 
-lazy val testSettings: Seq[Def.Setting[?]] = Seq(
-  fork := true
-)
 
-addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt Test/scalafmt")
+addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt Test/scalafmt it/Test/scalafmt")

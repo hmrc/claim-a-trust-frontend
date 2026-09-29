@@ -93,7 +93,7 @@ class IvSuccessController @Inject() (
       Future.successful(Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode)))
   }
 
-  private def onRelationshipFound(identifier: String)(implicit request: DataRequest[_]): Future[Result] = {
+  private def onRelationshipFound(identifier: String)(implicit request: DataRequest[?]): Future[Result] = {
 
     val hasEnrolled: Boolean = request.userAnswers.get(HasEnrolled).getOrElse(false)
 
@@ -129,7 +129,7 @@ class IvSuccessController @Inject() (
   }
 
   private def handleError(identifier: String, exceptionMessage: String, methodName: String, sessionId: String)(implicit
-    request: DataRequest[_]
+    request: DataRequest[?]
   ): Future[Result] = {
     auditService.auditFailure(CLAIM_A_TRUST_ERROR, identifier, exceptionMessage)
     for {

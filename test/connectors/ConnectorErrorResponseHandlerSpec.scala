@@ -31,7 +31,7 @@ class ConnectorErrorResponseHandlerSpec extends AnyWordSpec with Matchers with R
   }
 
   lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(Seq("auditing.enabled" -> false): _*)
+    .configure(Seq("auditing.enabled" -> false)*)
     .build()
 
   "ConnectorErrorResponseHandler" must {

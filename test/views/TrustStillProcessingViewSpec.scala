@@ -28,7 +28,7 @@ class TrustStillProcessingViewSpec extends ViewBehaviours {
 
     val view = viewFor[TrustStillProcessing](Some(emptyUserAnswers))
 
-    def applyView(id: String) = view.apply(id)(fakeRequest, messages)
+    def applyView(id: String) = view.apply(id)(using fakeRequest, messages)
 
     behave like normalPageWithCaption(applyView(utr), "stillProcessing", "utr", utr, "p2")
 

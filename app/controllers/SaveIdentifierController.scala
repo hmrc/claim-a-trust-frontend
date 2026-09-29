@@ -103,7 +103,7 @@ class SaveIdentifierController @Inject() (
       _              <- sessionRepository.set(updatedAnswers)
     } yield {
       logger.info(
-        s"[$className][saveAndContinue][Session ID: ${Session.id(hc(request))}]" +
+        s"[$className][saveAndContinue][Session ID: ${Session.id(hc(using request))}]" +
           s" user has started the claim a trust journey for $identifier"
       )
       Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode))

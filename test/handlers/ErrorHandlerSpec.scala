@@ -38,9 +38,9 @@ class ErrorHandlerSpec extends SpecBase {
     ".notFoundTemplate" should {
       "return a not found template" in {
         implicit val request: RequestHeader = FakeRequest()
-        val resultFuture: Future[Html]      = errorHandler.notFoundTemplate(request)
+        val resultFuture: Future[Html]      = errorHandler.notFoundTemplate(using request)
         val result                          = Await.result(resultFuture, 5.seconds)
-        result.body must include(messageApi("pageNotFound.p1")(Lang("en")))
+        result.body must include(messageApi("pageNotFound.p1")(using Lang("en")))
 
       }
     }

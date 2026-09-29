@@ -16,14 +16,16 @@
 
 package base
 
+import ch.qos.logback.classic.Level
+import ch.qos.logback.classic.spi.ILoggingEvent
 import config.FrontendAppConfig
-import controllers.actions._
+import controllers.actions.*
 import handlers.ErrorHandler
 import models.UserAnswers
 import org.scalatest.TryValues
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.PlaySpec
-import org.scalatestplus.play.guice._
+import org.scalatestplus.play.guice.*
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.inject.{Injector, bind}
@@ -36,6 +38,9 @@ import services.{FakeRelationshipEstablishmentService, RelationshipEstablishment
 import scala.concurrent.ExecutionContext.Implicits.global
 
 trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues with ScalaFutures with IntegrationPatience {
+
+  def logMessagesWithLevel(logs: List[ILoggingEvent]): List[(Level, String)] =
+    logs.map(e => (e.getLevel, e.getMessage))
 
   val userAnswersId = "id"
 
@@ -66,7 +71,7 @@ trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues with Sca
         Seq(
           "play.filters.disabled" -> List("play.filters.csrf.CSRFFilter", "play.filters.csp.CSPFilter"),
           "play.http.router"      -> "testOnlyDoNotUseInAppConf.Routes"
-        ): _*
+        )*
       )
       .overrides(
         bind[DataRequiredAction].to[DataRequiredActionImpl],

@@ -46,7 +46,7 @@ class DataRetrievalRefinerAction @Inject() (sessionRepository: SessionRepository
       .flatMap {
         case Right(optData) => Future.successful(Right(optData))
         case Left(_)        =>
-          errorHandler.internalServerErrorTemplate(request.request).map(html => Left(InternalServerError(html)))
+          errorHandler.internalServerErrorTemplate(using request.request).map(html => Left(InternalServerError(html)))
       }
 
 }

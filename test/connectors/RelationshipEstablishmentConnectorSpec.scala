@@ -43,7 +43,7 @@ class RelationshipEstablishmentConnectorSpec
 
   lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
-      Seq("microservice.services.relationship-establishment.port" -> server.port(), "auditing.enabled" -> false): _*
+      Seq("microservice.services.relationship-establishment.port" -> server.port(), "auditing.enabled" -> false)*
     )
     .build()
 

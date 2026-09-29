@@ -27,7 +27,7 @@ class PageNotFoundViewSpec extends ViewBehaviours {
 
     val view = application.injector.instanceOf[PageNotFoundView]
 
-    val applyView = view.apply()(fakeRequest, messages)
+    val applyView = view.apply()(using fakeRequest, messages)
 
     behave like normalPage(applyView, "pageNotFound", "p1", "p2")
   }

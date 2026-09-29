@@ -47,7 +47,7 @@ class TaxEnrolmentsConnector @Inject() (http: HttpClientV2, config: FrontendAppC
     http
       .put(url"$fullUrl")
       .withBody(Json.toJson(request))
-      .execute[HttpResponse](HttpReads.Implicits.readRaw, ec)
+      .execute[HttpResponse](using HttpReads.Implicits.readRaw, ec)
       .map(response =>
         response.status match {
           case NO_CONTENT => Right(EnrolmentCreated)
@@ -61,7 +61,7 @@ class TaxEnrolmentsConnector @Inject() (http: HttpClientV2, config: FrontendAppC
               val errorCode: String = (response.json \ "code").asOpt[String].getOrElse("N/A")
 
               val errorMessageBuilder = new StringBuilder()
-              if (errorCode contains "MULTIPLE_ERRORS") {
+              if (errorCode.contains("MULTIPLE_ERRORS")) {
                 val multipleErrors = (response.json \ "errors").get.as[List[Map[String, String]]]
                 multipleErrors.foreach(err =>
                   errorMessageBuilder
@@ -70,6 +70,7 @@ class TaxEnrolmentsConnector @Inject() (http: HttpClientV2, config: FrontendAppC
                     .append(err.getOrElse("message", "N/A"))
                     .append(", ")
                 )
+
                 errorMessageBuilder.setLength(errorMessageBuilder.length() - 2) // chop trailing ", "
 
                 logger.warn(
@@ -84,6 +85,7 @@ class TaxEnrolmentsConnector @Inject() (http: HttpClientV2, config: FrontendAppC
                     + s"$status with error code: $errorCode and message: $errorMessage"
                 )
               }
+
               Left(UpstreamTaxEnrolmentsError(s"HTTP response $status $errorCode: $errorMessageBuilder"))
             }
         }

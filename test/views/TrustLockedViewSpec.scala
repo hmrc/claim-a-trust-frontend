@@ -28,7 +28,7 @@ class TrustLockedViewSpec extends ViewBehaviours {
 
     val view = viewFor[TrustLocked](Some(emptyUserAnswers))
 
-    def applyView(id: String) = view.apply(id)(fakeRequest, messages)
+    def applyView(id: String) = view.apply(id)(using fakeRequest, messages)
 
     behave like normalPageWithCaption(applyView(utr), "locked", "utr", utr, "p1", "p2", "p3", "p4", "link1")
 

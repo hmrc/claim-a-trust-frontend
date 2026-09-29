@@ -89,7 +89,7 @@ class BeforeYouContinueControllerSpec extends SpecBase with EitherValues with Lo
 
         status(result) mustEqual OK
 
-        contentAsString(result) mustEqual view(utr)(request, messages).toString
+        contentAsString(result) mustEqual view(utr)(using request, messages).toString
 
         levelsAndMessages(logs) mustBe List(
           Level.INFO -> (s"$logPrefix[onPageLoad]$session" +
@@ -127,7 +127,11 @@ class BeforeYouContinueControllerSpec extends SpecBase with EitherValues with Lo
       val connector = mock[TrustsStoreConnector]
 
       when(
-        connector.claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
+        connector.claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(using
+          any(),
+          any(),
+          any()
+        )
       )
         .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(Right(true))))
 
@@ -150,7 +154,7 @@ class BeforeYouContinueControllerSpec extends SpecBase with EitherValues with Lo
         redirectLocation(result).value must include(utr)
 
         verify(connector)
-          .claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
+          .claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(using any(), any(), any())
 
         levelsAndMessages(logs) mustBe List(
           Level.INFO -> (s"$logPrefix[onRelationshipNotFound]$session" +
@@ -231,7 +235,7 @@ class BeforeYouContinueControllerSpec extends SpecBase with EitherValues with Lo
 
         when(
           connector
-            .claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(any(), any(), any())
+            .claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(using any(), any(), any())
         )
           .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(Left(ServerError()))))
 

@@ -51,7 +51,7 @@ class LogoutControllerSpec extends SpecBase with MockitoSugar with EitherValues 
     redirectLocation(result).value mustBe frontendAppConfig.logoutUrl
 
     verify(mockAuditConnector, atLeastOnce)
-      .sendExplicitAudit(eqTo("trusts"), captor.capture())(any(), any())
+      .sendExplicitAudit(eqTo("trusts"), captor.capture())(using any(), any())
 
     captor.getValue.keys must contain("utr")
 
@@ -80,7 +80,7 @@ class LogoutControllerSpec extends SpecBase with MockitoSugar with EitherValues 
     redirectLocation(result).value mustBe frontendAppConfig.logoutUrl
 
     verify(mockAuditConnector, atLeastOnce)
-      .sendExplicitAudit(eqTo("trusts"), captor.capture())(any(), any())
+      .sendExplicitAudit(eqTo("trusts"), captor.capture())(using any(), any())
 
     captor.getValue.keys must contain("urn")
 

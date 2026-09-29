@@ -55,7 +55,7 @@ class IvFailureController @Inject() (
 
   private def renderFailureReason(identifier: String, journeyId: String)(implicit
     hc: HeaderCarrier,
-    request: DataRequest[_]
+    request: DataRequest[?]
   ): Future[Result] =
     relationshipEstablishmentConnector.journeyId(journeyId).value.map {
       case Right(RelationshipEstablishmentStatus.Locked)         =>
@@ -135,7 +135,7 @@ class IvFailureController @Inject() (
       _                <- connector.claim(TrustsStoreRequest(request.internalId, identifier, isManagedByAgent, trustLocked = true))
     } yield {
       logger.info(
-        s"[IvFailureController][onTrustIvFailure][Session ID: ${Session.id(hc)}]" +
+        s"[IvFailureController][trustLocked][Session ID: ${Session.id(hc)}]" +
           s" failed IV 3 times, $identifier trust is locked out from IV"
       )
       Ok(lockedView(identifier))
@@ -145,13 +145,13 @@ class IvFailureController @Inject() (
       case Right(call)  => Future.successful(call)
       case Left(NoData) =>
         logger.warn(
-          s"[IvFailureController][onTrustIvFailure][Session ID: ${Session.id(hc)}]" +
+          s"[IvFailureController][trustLocked][Session ID: ${Session.id(hc)}]" +
             s" unable to determine if trust was locked out from IV"
         )
         Future.successful(Redirect(routes.SessionExpiredController.onPageLoad))
       case Left(_)      =>
         logger.warn(
-          s"[$className][onSubmit][Session ID: ${Session.id(hc)}] " +
+          s"[$className][trustLocked][Session ID: ${Session.id(hc)}] " +
             s"Error while storing user answers"
         )
         errorHandler.internalServerErrorTemplate.map(res => InternalServerError(res))

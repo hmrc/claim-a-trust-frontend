@@ -77,7 +77,7 @@ class SaveIdentifierControllerSpec extends SpecBase with EitherValues {
         when(mockSessionRepository.set(captor.capture()))
           .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(Left(NoData))))
 
-        when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(urn))(any()))
+        when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(urn))(using any()))
           .thenReturn(
             EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Left(InvalidIdentifier)))
           )

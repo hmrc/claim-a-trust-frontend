@@ -35,8 +35,6 @@ object MappingsSpec {
 
 class MappingsSpec extends AnyWordSpec with Matchers with OptionValues with Mappings {
 
-  import MappingsSpec._
-
   "text" must {
 
     val testForm: Form[String] =

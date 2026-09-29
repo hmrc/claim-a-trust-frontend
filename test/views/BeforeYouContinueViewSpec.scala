@@ -27,7 +27,7 @@ class BeforeYouContinueViewSpec extends ViewBehaviours {
 
     val view = viewFor[BeforeYouContinueView](Some(emptyUserAnswers))
 
-    val applyView = view(utr)(fakeRequest, messages)
+    val applyView = view(utr)(using fakeRequest, messages)
 
     behave like normalPageWithCaption(applyView, "beforeYouContinue", "utr", utr)
 
