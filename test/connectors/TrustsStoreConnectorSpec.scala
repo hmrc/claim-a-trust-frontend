@@ -19,10 +19,12 @@ package connectors
 import base.LogHelper
 import ch.qos.logback.classic.Level
 import com.github.tomakehurst.wiremock.client.WireMock.*
+import com.github.tomakehurst.wiremock.http.Fault
 import errors.ServerError
 import models.TrustsStoreRequest
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
@@ -31,7 +33,6 @@ import play.api.{Application, Logger}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.tools.LogCapturing
 import utils.WireMockHelper
-import org.scalatest.wordspec.AnyWordSpec
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -131,6 +132,24 @@ class TrustsStoreConnectorSpec
             Level.ERROR -> "[TrustsStoreConnector][claim] Error with status: 500"
           )
         }
+
+      "fails with a connection reset" in
+        withCaptureOfLoggingFrom(connectorLogger) { logs =>
+          server.stubFor(
+            post(urlEqualTo(url))
+              .withRequestBody(equalTo(requestJson))
+              .willReturn(aResponse().withFault(Fault.CONNECTION_RESET_BY_PEER))
+          )
+
+          val result = connector.claim(request).value.futureValue
+
+          val logPrefix        = "[TrustsStoreConnector][claim] Exception thrown with message "
+          val exceptionMessage = logs.head.getMessage.stripPrefix(logPrefix)
+
+          logMessagesWithLevel(logs) mustBe List(Level.ERROR -> s"$logPrefix$exceptionMessage")
+          result                     mustBe Left(ServerError(s"Error occurred when calling $fullUrl with exception $exceptionMessage"))
+        }
+
     }
   }
 
