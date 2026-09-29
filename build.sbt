@@ -2,11 +2,7 @@ import uk.gov.hmrc.DefaultBuildSettings.targetJvm
 
 ThisBuild / scalaVersion := "3.9.0"
 ThisBuild / majorVersion := 0
-ThisBuild / targetJvm    := "jvm-21"
-ThisBuild / scalacOptions ++= Seq(
-  "-feature",
-  "-Wconf:msg=Flag.*repeatedly:s"
-)
+ThisBuild / targetJvm := "jvm-21"
 
 lazy val microservice = Project("claim-a-trust-frontend", file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
@@ -15,7 +11,8 @@ lazy val microservice = Project("claim-a-trust-frontend", file("."))
     CodeCoverageSettings(),
     scalacOptions ++= Seq(
       "-Wconf:src=routes/.*:s",
-      "-Wconf:msg=unused import&src=html/.*:s"
+      "-Wconf:msg=unused import&src=html/.*:s",
+      "-feature"
     ),
     routesImport += "models._",
     TwirlKeys.templateImports ++= Seq(
@@ -33,5 +30,4 @@ lazy val microservice = Project("claim-a-trust-frontend", file("."))
     Test / fork := true
   )
 
-
-addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt Test/scalafmt it/Test/scalafmt")
+addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt Test/scalafmt")
