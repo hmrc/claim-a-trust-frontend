@@ -21,7 +21,7 @@ import config.FrontendAppConfig
 import models.UserAnswers
 import models.auditing.{ClaimATrustAuditFailureEvent, ClaimATrustAuditSuccessEvent}
 import models.requests.DataRequest
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, verify}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.AnyContent

@@ -19,7 +19,7 @@ package controllers
 import base.SpecBase
 import ch.qos.logback.classic.Level
 import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{atLeastOnce, verify}
 import org.scalatest.EitherValues
 import org.scalatestplus.mockito.MockitoSugar

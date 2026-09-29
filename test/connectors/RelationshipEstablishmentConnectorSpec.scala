@@ -16,8 +16,9 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock.*
+import base.LogHelper
 import ch.qos.logback.classic.Level
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.http.Fault
 import config.FrontendAppConfig
 import errors.{ServerError, UpstreamRelationshipError}
@@ -25,13 +26,11 @@ import models.RelationshipEstablishmentStatus
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import play.api.{Application, Logger}
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.{Application, Logger}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.tools.LogCapturing
 import utils.WireMockHelper
-
-import base.LogHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
@@ -51,7 +50,8 @@ class RelationshipEstablishmentConnectorSpec
 
   lazy val app: Application = new GuiceApplicationBuilder()
     .configure(
-      Seq("microservice.services.relationship-establishment.port" -> server.port(), "auditing.enabled" -> false)*
+      "microservice.services.relationship-establishment.port" -> server.port(),
+      "auditing.enabled"                                      -> false
     )
     .build()
 

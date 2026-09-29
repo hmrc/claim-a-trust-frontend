@@ -25,7 +25,7 @@ import models.RelationshipEstablishmentStatus.RelationshipEstablishmentStatus
 import models.auditing.Events.CLAIM_A_TRUST_FAILURE
 import models.auditing.FailureReasons
 import models.{RelationshipEstablishmentStatus, TrustsStoreRequest, UserAnswers}
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.EitherValues
 import org.scalatestplus.mockito.MockitoSugar.mock

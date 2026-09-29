@@ -23,7 +23,7 @@ import connectors.TrustsStoreConnector
 import errors.{ServerError, TrustErrors}
 import models.TrustsStoreRequest
 import navigation.{FakeNavigator, Navigator}
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.EitherValues
 import org.scalatestplus.mockito.MockitoSugar.mock
