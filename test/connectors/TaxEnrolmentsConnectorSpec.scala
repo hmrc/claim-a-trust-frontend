@@ -16,6 +16,7 @@
 
 package connectors
 
+import base.LogHelper
 import ch.qos.logback.classic.Level
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.http.Fault
@@ -36,7 +37,13 @@ import utils.WireMockHelper
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class TaxEnrolmentsConnectorSpec
-    extends AnyWordSpec with Matchers with WireMockHelper with ScalaFutures with IntegrationPatience with LogCapturing {
+    extends AnyWordSpec
+    with Matchers
+    with WireMockHelper
+    with ScalaFutures
+    with IntegrationPatience
+    with LogCapturing
+    with LogHelper {
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
@@ -115,7 +122,7 @@ class TaxEnrolmentsConnectorSpec
             UpstreamTaxEnrolmentsError("HTTP response 400 INVALID_CREDENTIAL_ID: Invalid credential ID given")
           )
 
-          logs.map(e => (e.getLevel, e.getMessage)) mustBe List(
+          logMessagesWithLevel(logs) mustBe List(
             Level.WARN -> ("[TaxEnrolmentsConnector][enrol] Received HTTP response code 400 " +
               "with error code: INVALID_CREDENTIAL_ID and message: Invalid credential ID given")
           )
@@ -129,7 +136,7 @@ class TaxEnrolmentsConnectorSpec
             UpstreamTaxEnrolmentsError("HTTP 401: no message or response body")
           )
 
-          logs.map(e => (e.getLevel, e.getMessage)) mustBe List(Level.WARN -> noBodyWarning(401))
+          logMessagesWithLevel(logs) mustBe List(Level.WARN -> noBodyWarning(401))
         }
 
       "fails with a connection reset" in
@@ -165,7 +172,7 @@ class TaxEnrolmentsConnectorSpec
             UpstreamTaxEnrolmentsError("HTTP 400: no message or response body")
           )
 
-          logs.map(e => (e.getLevel, e.getMessage)) mustBe List(Level.WARN -> noBodyWarning(400))
+          logMessagesWithLevel(logs) mustBe List(Level.WARN -> noBodyWarning(400))
         }
 
       "returns 401 UNAUTHORIZED" in
@@ -176,7 +183,7 @@ class TaxEnrolmentsConnectorSpec
             UpstreamTaxEnrolmentsError("HTTP 401: no message or response body")
           )
 
-          logs.map(e => (e.getLevel, e.getMessage)) mustBe List(Level.WARN -> noBodyWarning(401))
+          logMessagesWithLevel(logs) mustBe List(Level.WARN -> noBodyWarning(401))
         }
 
       "returns 400 with error message" in
@@ -192,7 +199,7 @@ class TaxEnrolmentsConnectorSpec
             UpstreamTaxEnrolmentsError("HTTP response 400 INVALID_IDENTIFIERS: Enrolment identifiers not valid innit")
           )
 
-          logs.map(e => (e.getLevel, e.getMessage)) mustBe List(
+          logMessagesWithLevel(logs) mustBe List(
             Level.WARN -> ("[TaxEnrolmentsConnector][enrol] Received HTTP response code 400 " +
               "with error code: INVALID_IDENTIFIERS and message: Enrolment identifiers not valid innit")
           )
@@ -218,7 +225,7 @@ class TaxEnrolmentsConnectorSpec
             UpstreamTaxEnrolmentsError(s"HTTP response 400 MULTIPLE_ERRORS: $expectedErrors")
           )
 
-          logs.map(e => (e.getLevel, e.getMessage)) mustBe List(
+          logMessagesWithLevel(logs) mustBe List(
             Level.WARN -> s"[TaxEnrolmentsConnector][enrol] Received HTTP response code 400 with multiple errors: $expectedErrors"
           )
         }

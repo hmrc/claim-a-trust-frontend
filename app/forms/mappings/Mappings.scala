@@ -21,16 +21,6 @@ import play.api.data.Forms.of
 
 trait Mappings extends Formatters with Constraints {
 
-  protected def text(errorKey: String = "error.required"): FieldMapping[String] =
-    of(using stringFormatter(errorKey))
-
-  protected def int(
-    requiredKey: String = "error.required",
-    wholeNumberKey: String = "error.wholeNumber",
-    nonNumericKey: String = "error.nonNumeric"
-  ): FieldMapping[Int] =
-    of(using intFormatter(requiredKey, wholeNumberKey, nonNumericKey))
-
   protected def boolean(
     requiredKey: String = "error.required",
     invalidKey: String = "error.boolean"

@@ -19,7 +19,6 @@ package controllers
 import base.SpecBase
 import cats.data.EitherT
 import ch.qos.logback.classic.Level
-import ch.qos.logback.classic.spi.ILoggingEvent
 import connectors.TrustsStoreConnector
 import errors.{ServerError, TrustErrors}
 import models.TrustsStoreRequest
@@ -63,9 +62,6 @@ class BeforeYouContinueControllerSpec extends SpecBase with EitherValues with Lo
   private def postRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest(POST, routes.BeforeYouContinueController.onSubmit.url).withSession(SessionKeys.sessionId -> sessionId)
 
-  private def levelsAndMessages(logs: List[ILoggingEvent]): List[(Level, String)] =
-    logs.map(e => (e.getLevel, e.getMessage))
-
   private def noDataError(methodName: String): (Level, String) =
     Level.ERROR -> (s"$logPrefix[$methodName]$session" +
       " no identifier available in user answers, cannot continue with claiming the trust")
@@ -91,7 +87,7 @@ class BeforeYouContinueControllerSpec extends SpecBase with EitherValues with Lo
 
         contentAsString(result) mustEqual view(utr)(using request, messages).toString
 
-        levelsAndMessages(logs) mustBe List(
+        logMessagesWithLevel(logs) mustBe List(
           Level.INFO -> (s"$logPrefix[onPageLoad]$session" +
             s" relationship does not exist in IV for $utr, sending user to begin journey")
         )
@@ -112,7 +108,7 @@ class BeforeYouContinueControllerSpec extends SpecBase with EitherValues with Lo
 
         redirectLocation(result).value mustBe routes.IvSuccessController.onPageLoad.url
 
-        levelsAndMessages(logs) mustBe List(
+        logMessagesWithLevel(logs) mustBe List(
           Level.INFO -> (s"$logPrefix[onPageLoad]$session" +
             s" relationship is already established in IV for $utr, sending user to successfully claimed")
         )
@@ -156,7 +152,7 @@ class BeforeYouContinueControllerSpec extends SpecBase with EitherValues with Lo
         verify(connector)
           .claim(eqTo(TrustsStoreRequest(userAnswersId, utr, managedByAgent, trustLocked)))(using any(), any(), any())
 
-        levelsAndMessages(logs) mustBe List(
+        logMessagesWithLevel(logs) mustBe List(
           Level.INFO -> (s"$logPrefix[onRelationshipNotFound]$session" +
             s" saved users $utr in trusts-store so they can be identified when they" +
             " return from Trust IV. Sending the user into Trust IV to answer questions")
@@ -178,7 +174,7 @@ class BeforeYouContinueControllerSpec extends SpecBase with EitherValues with Lo
 
           redirectLocation(result).value mustBe routes.SessionExpiredController.onPageLoad.url
 
-          levelsAndMessages(logs) mustBe List(noDataError("onPageLoad"))
+          logMessagesWithLevel(logs) mustBe List(noDataError("onPageLoad"))
         }
 
         application.stop()
@@ -197,7 +193,7 @@ class BeforeYouContinueControllerSpec extends SpecBase with EitherValues with Lo
 
           redirectLocation(result).value mustBe routes.SessionExpiredController.onPageLoad.url
 
-          levelsAndMessages(logs) mustBe List(noDataError("onSubmit"))
+          logMessagesWithLevel(logs) mustBe List(noDataError("onSubmit"))
         }
 
         application.stop()
@@ -216,7 +212,7 @@ class BeforeYouContinueControllerSpec extends SpecBase with EitherValues with Lo
           status(result) mustEqual INTERNAL_SERVER_ERROR
           contentType(result) mustBe Some("text/html")
 
-          levelsAndMessages(logs) mustBe List(storeError("onPageLoad"))
+          logMessagesWithLevel(logs) mustBe List(storeError("onPageLoad"))
         }
 
         application.stop()
@@ -249,7 +245,7 @@ class BeforeYouContinueControllerSpec extends SpecBase with EitherValues with Lo
           status(result) mustEqual INTERNAL_SERVER_ERROR
           contentType(result) mustBe Some("text/html")
 
-          levelsAndMessages(logs) mustBe List(storeError("onSubmit"))
+          logMessagesWithLevel(logs) mustBe List(storeError("onSubmit"))
         }
 
         application.stop()
@@ -275,7 +271,7 @@ class BeforeYouContinueControllerSpec extends SpecBase with EitherValues with Lo
 
           redirectLocation(result).value mustBe routes.IvSuccessController.onPageLoad.url
 
-          levelsAndMessages(logs) mustBe List(
+          logMessagesWithLevel(logs) mustBe List(
             Level.INFO -> (s"$logPrefix[handleRelationshipStatus]$session" +
               s" relationship is already established in IV for $utr sending user to successfully claimed")
           )

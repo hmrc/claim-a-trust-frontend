@@ -33,8 +33,9 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 import scala.concurrent.ExecutionContext
 
-class AuditServiceSpec(implicit ec: ExecutionContext) extends SpecBase with MockitoSugar {
+class AuditServiceSpec extends SpecBase with MockitoSugar {
 
+  private val ec: ExecutionContext           = app.injector.instanceOf[ExecutionContext]
   private val auditConnector: AuditConnector = mock[AuditConnector]
   lazy val config: FrontendAppConfig         = app.injector.instanceOf[FrontendAppConfig]
   private val auditService: AuditService     = new AuditService(auditConnector, config, ec)
@@ -53,7 +54,7 @@ class AuditServiceSpec(implicit ec: ExecutionContext) extends SpecBase with Mock
 
   "Audit service" must {
 
-    "build audit success payload from request values for Taxable" when {
+    "build audit success payload from request values for Taxable" in {
 
       reset(auditConnector)
 
@@ -76,7 +77,7 @@ class AuditServiceSpec(implicit ec: ExecutionContext) extends SpecBase with Mock
       verify(auditConnector).sendExplicitAudit(eqTo(event), eqTo(expectedPayload))(using any(), any(), any())
     }
 
-    "build audit success payload from request values for NonTaxable" when {
+    "build audit success payload from request values for NonTaxable" in {
 
       reset(auditConnector)
 

@@ -31,10 +31,18 @@ import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.bootstrap.tools.LogCapturing
 import utils.WireMockHelper
 
+import base.LogHelper
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class RelationshipEstablishmentConnectorSpec
-    extends AnyWordSpec with Matchers with WireMockHelper with ScalaFutures with IntegrationPatience with LogCapturing {
+    extends AnyWordSpec
+    with Matchers
+    with WireMockHelper
+    with ScalaFutures
+    with IntegrationPatience
+    with LogCapturing
+    with LogHelper {
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
@@ -126,8 +134,8 @@ class RelationshipEstablishmentConnectorSpec
             UpstreamRelationshipError("Unexpected HTTP response code 404")
           )
 
-          logs.map(e => (e.getLevel, e.getMessage)) mustBe List(
-            Level.WARN -> "[RelationshipEstablishmentConnector] [journeyId] Unexpected HTTP response code 404"
+          logMessagesWithLevel(logs) mustBe List(
+            Level.WARN -> "[RelationshipEstablishmentConnector][journeyId] Unexpected HTTP response code 404"
           )
         }
 
@@ -139,8 +147,8 @@ class RelationshipEstablishmentConnectorSpec
             UpstreamRelationshipError("Unexpected HTTP response code 500")
           )
 
-          logs.map(e => (e.getLevel, e.getMessage)) mustBe List(
-            Level.WARN -> "[RelationshipEstablishmentConnector] [journeyId] Unexpected HTTP response code 500"
+          logMessagesWithLevel(logs) mustBe List(
+            Level.WARN -> "[RelationshipEstablishmentConnector][journeyId] Unexpected HTTP response code 500"
           )
         }
 

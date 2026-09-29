@@ -14,18 +14,14 @@
  * limitations under the License.
  */
 
-package forms.behaviours
+package base
 
-import play.api.data.{Form, FormError}
+import ch.qos.logback.classic.Level
+import ch.qos.logback.classic.spi.ILoggingEvent
 
-trait StringFieldBehaviours extends FieldBehaviours {
+trait LogHelper {
 
-  def fieldWithMaxLength(form: Form[?], fieldName: String, maxLength: Int, lengthError: FormError): Unit =
-
-    s"not bind strings longer than $maxLength characters" in
-      forAll(stringsLongerThan(maxLength) -> "longString") { string =>
-        val result = form.bind(Map(fieldName -> string)).apply(fieldName)
-        result.errors mustEqual Seq(lengthError)
-      }
+  def logMessagesWithLevel(logs: List[ILoggingEvent]): List[(Level, String)] =
+    logs.map(e => (e.getLevel, e.getMessage))
 
 }

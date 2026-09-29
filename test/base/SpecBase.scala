@@ -16,8 +16,6 @@
 
 package base
 
-import ch.qos.logback.classic.Level
-import ch.qos.logback.classic.spi.ILoggingEvent
 import config.FrontendAppConfig
 import controllers.actions.*
 import handlers.ErrorHandler
@@ -37,10 +35,8 @@ import services.{FakeRelationshipEstablishmentService, RelationshipEstablishment
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-trait SpecBase extends PlaySpec with GuiceOneAppPerSuite with TryValues with ScalaFutures with IntegrationPatience {
-
-  def logMessagesWithLevel(logs: List[ILoggingEvent]): List[(Level, String)] =
-    logs.map(e => (e.getLevel, e.getMessage))
+trait SpecBase
+    extends PlaySpec with GuiceOneAppPerSuite with TryValues with ScalaFutures with IntegrationPatience with LogHelper {
 
   val userAnswersId = "id"
 

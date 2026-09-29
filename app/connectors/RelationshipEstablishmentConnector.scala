@@ -48,7 +48,7 @@ class RelationshipEstablishmentConnector @Inject() (http: HttpClientV2, config: 
         response.status match {
           case OK     => Right(processRelationshipEstablishmentStatusResponse(response.json))
           case status =>
-            logger.warn(s"[RelationshipEstablishmentConnector] [journeyId] Unexpected HTTP response code $status")
+            logger.warn(s"[RelationshipEstablishmentConnector][journeyId] Unexpected HTTP response code $status")
             Left(UpstreamRelationshipError(s"Unexpected HTTP response code $status"))
         }
       }

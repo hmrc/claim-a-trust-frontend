@@ -21,53 +21,7 @@ import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
 import play.api.data.{Form, FormError}
 
-object MappingsSpec {
-
-  sealed trait Foo
-  case object Bar extends Foo
-  case object Baz extends Foo
-
-  object Foo {
-    val values: Set[Foo] = Set(Bar, Baz)
-  }
-
-}
-
 class MappingsSpec extends AnyWordSpec with Matchers with OptionValues with Mappings {
-
-  "text" must {
-
-    val testForm: Form[String] =
-      Form(
-        "value" -> text()
-      )
-
-    "bind a valid string" in {
-      val result = testForm.bind(Map("value" -> "foobar"))
-      result.get mustEqual "foobar"
-    }
-
-    "not bind an empty string" in {
-      val result = testForm.bind(Map("value" -> ""))
-      result.errors must contain(FormError("value", "error.required"))
-    }
-
-    "not bind an empty map" in {
-      val result = testForm.bind(Map.empty[String, String])
-      result.errors must contain(FormError("value", "error.required"))
-    }
-
-    "return a custom error message" in {
-      val form   = Form("value" -> text("custom.error"))
-      val result = form.bind(Map("value" -> ""))
-      result.errors must contain(FormError("value", "custom.error"))
-    }
-
-    "unbind a valid value" in {
-      val result = testForm.fill("foobar")
-      result.apply("value").value.value mustEqual "foobar"
-    }
-  }
 
   "boolean" must {
 
@@ -104,39 +58,6 @@ class MappingsSpec extends AnyWordSpec with Matchers with OptionValues with Mapp
     "unbind" in {
       val result = testForm.fill(true)
       result.apply("value").value.value mustEqual "true"
-    }
-  }
-
-  "int" must {
-
-    val testForm: Form[Int] =
-      Form(
-        "value" -> int()
-      )
-
-    "bind a valid integer" in {
-      val result = testForm.bind(Map("value" -> "1"))
-      result.get mustEqual 1
-    }
-
-    "not bind an empty value" in {
-      val result = testForm.bind(Map("value" -> ""))
-      result.errors must contain(FormError("value", "error.required"))
-    }
-
-    "not bind invalid regEx value" in {
-      val result = testForm.bind(Map("value" -> "1.1"))
-      result.errors must contain(FormError("value", "error.wholeNumber"))
-    }
-
-    "not bind an empty map" in {
-      val result = testForm.bind(Map.empty[String, String])
-      result.errors must contain(FormError("value", "error.required"))
-    }
-
-    "unbind a valid value" in {
-      val result = testForm.fill(123)
-      result.apply("value").value.value mustEqual "123"
     }
   }
 
