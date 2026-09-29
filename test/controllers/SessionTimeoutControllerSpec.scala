@@ -17,41 +17,61 @@
 package controllers
 
 import base.SpecBase
-import config.FrontendAppConfig
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Request}
+import ch.qos.logback.classic.Level
+import play.api.mvc.{AnyContent, Request}
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import play.api.{Configuration, Environment}
+import play.api.test.Helpers.*
+import play.api.Logger
+import uk.gov.hmrc.http.SessionKeys
+import uk.gov.hmrc.play.bootstrap.tools.LogCapturing
 
-class SessionTimeoutControllerSpec extends SpecBase {
+class SessionTimeoutControllerSpec extends SpecBase with LogCapturing {
 
-  object TestSessionTimeoutController
-      extends SessionTimeoutController(
-        app.injector.instanceOf[FrontendAppConfig],
-        app.injector.instanceOf[Configuration],
-        app.injector.instanceOf[Environment],
-        app.injector.instanceOf[MessagesControllerComponents]
-      )
+  private lazy val controller: SessionTimeoutController =
+    app.injector.instanceOf[SessionTimeoutController]
+
+  private val controllerLogger: Logger = Logger(classOf[SessionTimeoutController])
+
+  private val sessionId = "session-12345"
+
+  private def requestWithSession: Request[AnyContent] =
+    FakeRequest().withSession(SessionKeys.sessionId -> sessionId)
 
   "timeout" should {
 
     "stay on current page with current session" when {
-      "the keep alive method is used" in {
-        val fakeRequest: Request[AnyContent] = FakeRequest().withSession()
-        val res                              = TestSessionTimeoutController.keepAlive(fakeRequest)
-        status(res) mustEqual OK
-      }
+      "the keep alive method is used" in
+        withCaptureOfLoggingFrom(controllerLogger) { logs =>
+          val res = controller.keepAlive(requestWithSession)
+
+          status(res) mustEqual OK
+
+          session(res).get(SessionKeys.sessionId) mustBe Some(sessionId)
+
+          logMessagesWithLevel(logs) mustBe List(
+            Level.INFO -> (s"[SessionTimeoutController][keepAlive][Session ID: $sessionId]" +
+              " user requested to extend the time remaining to complete Trust IV, user has not been signed out")
+          )
+        }
     }
 
     "redirect to session expired page new session " when {
-      "the timeout method is" in {
-        val fakeRequest: Request[AnyContent] = FakeRequest().withSession()
-        val res                              = TestSessionTimeoutController.timeout(fakeRequest)
-        status(res) mustEqual SEE_OTHER
-        redirectLocation(res).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
-      }
-    }
+      "the timeout method is" in
+        withCaptureOfLoggingFrom(controllerLogger) { logs =>
+          val res = controller.timeout(requestWithSession)
 
+          status(res) mustEqual SEE_OTHER
+
+          redirectLocation(res).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
+
+          session(res).isEmpty mustBe true
+
+          logMessagesWithLevel(logs) mustBe List(
+            Level.INFO -> (s"[SessionTimeoutController][timeout][Session ID: $sessionId]" +
+              " user remained inactive on the service, user has been signed out")
+          )
+        }
+    }
   }
 
 }

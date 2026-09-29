@@ -88,7 +88,7 @@ class IvSuccessController @Inject() (
     case RelationshipNotFound =>
       logger.warn(
         s"[$className][onPageLoad][Session ID: ${Session.id(hc)}] no relationship found in Trust IV," +
-          s"cannot continue with enrolling the credential, sending the user back to the start of Trust IV"
+          s" cannot continue with enrolling the credential, sending the user back to the start of Trust IV"
       )
       Future.successful(Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode)))
   }
@@ -110,7 +110,7 @@ class IvSuccessController @Inject() (
       } yield {
         logger.info(
           s"[$className][onRelationshipFound][Session ID: ${Session.id(hc)}] successfully enrolled $identifier to users" +
-            s"credential after passing Trust IV, user can now maintain the trust"
+            s" credential after passing Trust IV, user can now maintain the trust"
         )
 
         Ok(view(isAgentManagingTrust, identifier))

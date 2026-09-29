@@ -18,25 +18,28 @@ package controllers
 
 import base.SpecBase
 import cats.data.EitherT
-import errors.{InvalidIdentifier, NoData, ServerError, TrustErrors}
+import ch.qos.logback.classic.Level
+import errors.{NoData, ServerError, TrustErrors}
 import models.{NormalMode, UserAnswers}
 import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
-import org.mockito.Mockito.when
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{never, verify, when}
 import org.scalatest.EitherValues
 import org.scalatestplus.mockito.MockitoSugar.mock
 import pages.IdentifierPage
+import play.api.Logger
 import play.api.inject.bind
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
-import services.{
-  FakeRelationshipEstablishmentService, RelationEstablishmentStatus, RelationshipEstablishment, RelationshipNotFound
-}
+import services.{FakeRelationshipEstablishmentService, RelationshipNotFound}
+import uk.gov.hmrc.http.SessionKeys
+import uk.gov.hmrc.play.bootstrap.tools.LogCapturing
 
 import scala.concurrent.Future
 
-class SaveIdentifierControllerSpec extends SpecBase with EitherValues {
+class SaveIdentifierControllerSpec extends SpecBase with EitherValues with LogCapturing {
 
   val utr = "1234567890"
   val urn = "ABTRUST12345678"
@@ -44,55 +47,83 @@ class SaveIdentifierControllerSpec extends SpecBase with EitherValues {
   val fakeEstablishmentServiceFailing = new FakeRelationshipEstablishmentService(Right(RelationshipNotFound))
   val fakeEstablishmentServiceError   = new FakeRelationshipEstablishmentService(Left(ServerError()))
 
+  private val controllerLogger: Logger = Logger(classOf[SaveIdentifierController])
+
+  private val sessionId = "session-12345"
+
+  private def logPrefix(functionName: String): String =
+    s"[SaveIdentifierController][$functionName][Session ID: $sessionId]"
+
+  private def saveRequest(identifier: String): FakeRequest[AnyContentAsEmpty.type] =
+    FakeRequest(GET, routes.SaveIdentifierController.save(identifier).url)
+      .withSession(SessionKeys.sessionId -> sessionId)
+
+  private def startedJourneyLog(identifier: String): (Level, String) =
+    Level.INFO -> s"${logPrefix("saveAndContinue")} user has started the claim a trust journey for $identifier"
+
+  private val storeErrorLogs: List[(Level, String)] = List(
+    Level.WARN -> s"${logPrefix("saveAndContinue")} Error while storing user answers",
+    Level.WARN -> s"${logPrefix("save")} Could not save identifier"
+  )
+
+  private def stubRepositorySet(
+    repository: SessionRepository,
+    response: Either[TrustErrors, Boolean]
+  ): ArgumentCaptor[UserAnswers] = {
+    val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
+    when(repository.set(captor.capture()))
+      .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(response)))
+    captor
+  }
+
   "SaveIdentifierController" when {
 
     "invalid identifier provided" must {
 
       "render an error page" in {
-
         val mockSessionRepository = mock[SessionRepository]
 
         val application = applicationBuilder(userAnswers = None, fakeEstablishmentServiceFailing)
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
-        val request = FakeRequest(GET, routes.SaveIdentifierController.save("123").url)
+        withCaptureOfLoggingFrom(controllerLogger) { logs =>
+          val result = route(application, saveRequest("123")).value
 
-        val result = route(application, request).value
+          status(result) mustEqual SEE_OTHER
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustBe routes.FallbackFailureController.onPageLoad.url
+          redirectLocation(result).value mustBe routes.FallbackFailureController.onPageLoad.url
+
+          verify(mockSessionRepository, never()).set(any())
+
+          logMessagesWithLevel(logs) mustBe List(
+            Level.ERROR -> s"${logPrefix("getIdentifier")} Identifier provided is not a valid URN or UTR"
+          )
+        }
+
+        application.stop()
       }
-
     }
 
     "could not save identifier" must {
 
       "render an error page" in {
+        val mockSessionRepository = mock[SessionRepository]
 
-        val mockSessionRepository         = mock[SessionRepository]
-        val captor                        = ArgumentCaptor.forClass(classOf[UserAnswers])
-        val mockRelationshipEstablishment = mock[RelationshipEstablishment]
-
-        when(mockSessionRepository.set(captor.capture()))
-          .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(Left(NoData))))
-
-        when(mockRelationshipEstablishment.check(eqTo("id"), eqTo(urn))(using any()))
-          .thenReturn(
-            EitherT[Future, TrustErrors, RelationEstablishmentStatus](Future.successful(Left(InvalidIdentifier)))
-          )
+        stubRepositorySet(mockSessionRepository, Left(NoData))
 
         val application = applicationBuilder(userAnswers = None, fakeEstablishmentServiceFailing)
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
-        val request = FakeRequest(GET, routes.SaveIdentifierController.save(urn).url)
+        withCaptureOfLoggingFrom(controllerLogger) { logs =>
+          val result = route(application, saveRequest(urn)).value
 
-        val result = route(application, request).value
+          status(result) mustEqual INTERNAL_SERVER_ERROR
+          contentType(result) mustBe Some("text/html")
 
-        status(result) mustEqual INTERNAL_SERVER_ERROR
-
-        contentType(result) mustBe Some("text/html")
+          logMessagesWithLevel(logs) mustBe storeErrorLogs
+        }
 
         application.stop()
       }
@@ -103,54 +134,53 @@ class SaveIdentifierControllerSpec extends SpecBase with EitherValues {
       "save UTR to session repo" when {
 
         "user answers does not exist" in {
-
-          val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
-
           val mockSessionRepository = mock[SessionRepository]
 
-          when(mockSessionRepository.set(captor.capture()))
-            .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(Right(true))))
+          val captor = stubRepositorySet(mockSessionRepository, Right(true))
 
           val application = applicationBuilder(userAnswers = None, fakeEstablishmentServiceFailing)
             .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
             .build()
 
-          val request = FakeRequest(GET, routes.SaveIdentifierController.save(utr).url)
+          withCaptureOfLoggingFrom(controllerLogger) { logs =>
+            val result = route(application, saveRequest(utr)).value
 
-          val result = route(application, request).value
+            status(result) mustEqual SEE_OTHER
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustBe routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
+            redirectLocation(result).value mustBe routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
 
-          captor.getValue.get(IdentifierPage).value mustBe utr
+            captor.getValue.get(IdentifierPage).value mustBe utr
 
+            logMessagesWithLevel(logs) mustBe List(startedJourneyLog(utr))
+          }
+
+          application.stop()
         }
 
         "user answers exists" in {
-
-          val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
-
           val mockSessionRepository = mock[SessionRepository]
 
-          when(mockSessionRepository.set(captor.capture()))
-            .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(Right(true))))
+          val captor = stubRepositorySet(mockSessionRepository, Right(true))
 
           val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), fakeEstablishmentServiceFailing)
             .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
             .build()
 
-          val request = FakeRequest(GET, routes.SaveIdentifierController.save(utr).url)
+          withCaptureOfLoggingFrom(controllerLogger) { logs =>
+            val result = route(application, saveRequest(utr)).value
 
-          val result = route(application, request).value
+            status(result) mustEqual SEE_OTHER
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustBe routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
+            redirectLocation(result).value mustBe routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
 
-          captor.getValue.get(IdentifierPage).value mustBe utr
+            captor.getValue.get(IdentifierPage).value mustBe utr
 
+            logMessagesWithLevel(logs) mustBe List(startedJourneyLog(utr))
+          }
+
+          application.stop()
         }
       }
-
     }
 
     "urn provided" must {
@@ -158,134 +188,139 @@ class SaveIdentifierControllerSpec extends SpecBase with EitherValues {
       "save URN to session repo" when {
 
         "user answers does not exist" in {
-
-          val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
-
           val mockSessionRepository = mock[SessionRepository]
 
-          when(mockSessionRepository.set(captor.capture()))
-            .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(Right(true))))
+          val captor = stubRepositorySet(mockSessionRepository, Right(true))
 
           val application = applicationBuilder(userAnswers = None, fakeEstablishmentServiceFailing)
             .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
             .build()
 
-          val request = FakeRequest(GET, routes.SaveIdentifierController.save(urn).url)
+          withCaptureOfLoggingFrom(controllerLogger) { logs =>
+            val result = route(application, saveRequest(urn)).value
 
-          val result = route(application, request).value
+            status(result) mustEqual SEE_OTHER
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustBe routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
+            redirectLocation(result).value mustBe routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
 
-          captor.getValue.get(IdentifierPage).value mustBe urn
+            captor.getValue.get(IdentifierPage).value mustBe urn
 
+            logMessagesWithLevel(logs) mustBe List(startedJourneyLog(urn))
+          }
+
+          application.stop()
         }
 
         "user answers exists" in {
-
-          val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
-
           val mockSessionRepository = mock[SessionRepository]
 
-          when(mockSessionRepository.set(captor.capture()))
-            .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(Right(true))))
+          val captor = stubRepositorySet(mockSessionRepository, Right(true))
 
           val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), fakeEstablishmentServiceFailing)
             .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
             .build()
 
-          val request = FakeRequest(GET, routes.SaveIdentifierController.save(urn).url)
+          withCaptureOfLoggingFrom(controllerLogger) { logs =>
+            val result = route(application, saveRequest(urn)).value
 
-          val result = route(application, request).value
+            status(result) mustEqual SEE_OTHER
 
-          status(result) mustEqual SEE_OTHER
-          redirectLocation(result).value mustBe routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
+            redirectLocation(result).value mustBe routes.IsAgentManagingTrustController.onPageLoad(NormalMode).url
 
-          captor.getValue.get(IdentifierPage).value mustBe urn
+            captor.getValue.get(IdentifierPage).value mustBe urn
 
+            logMessagesWithLevel(logs) mustBe List(startedJourneyLog(urn))
+          }
+
+          application.stop()
         }
 
         "return an internal server error when user answers do not exist" in {
-
-          val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
-
           val mockSessionRepository = mock[SessionRepository]
 
-          when(mockSessionRepository.set(captor.capture()))
-            .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(Left(ServerError()))))
+          val captor = stubRepositorySet(mockSessionRepository, Left(ServerError()))
 
           val application = applicationBuilder(userAnswers = None, fakeEstablishmentServiceFailing)
             .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
             .build()
 
-          val request = FakeRequest(GET, routes.SaveIdentifierController.save(urn).url)
+          withCaptureOfLoggingFrom(controllerLogger) { logs =>
+            val result = route(application, saveRequest(urn)).value
 
-          val result = route(application, request).value
+            status(result) mustEqual INTERNAL_SERVER_ERROR
+            contentType(result) mustBe Some("text/html")
 
-          status(result) mustEqual INTERNAL_SERVER_ERROR
-          contentType(result) mustBe Some("text/html")
+            captor.getValue.get(IdentifierPage).value mustBe urn
 
-          captor.getValue.get(IdentifierPage).value mustBe urn
+            logMessagesWithLevel(logs) mustBe storeErrorLogs
+          }
 
+          application.stop()
         }
 
         "error while storing user answers" in {
-
-          val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
-
           val answers = emptyUserAnswers
             .set(IdentifierPage, "0987654321")
             .value
 
           val mockSessionRepository = mock[SessionRepository]
 
-          when(mockSessionRepository.set(captor.capture()))
-            .thenReturn(EitherT[Future, TrustErrors, Boolean](Future.successful(Left(ServerError()))))
+          stubRepositorySet(mockSessionRepository, Left(ServerError()))
 
           val application = applicationBuilder(userAnswers = Some(answers), fakeEstablishmentServiceFailing)
             .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
             .build()
 
-          val request = FakeRequest(GET, routes.SaveIdentifierController.save(urn).url)
+          withCaptureOfLoggingFrom(controllerLogger) { logs =>
+            val result = route(application, saveRequest(urn)).value
 
-          val result = route(application, request).value
+            status(result) mustEqual INTERNAL_SERVER_ERROR
+            contentType(result) mustBe Some("text/html")
 
-          status(result) mustEqual INTERNAL_SERVER_ERROR
-
-          contentType(result) mustBe Some("text/html")
+            logMessagesWithLevel(logs) mustBe storeErrorLogs
+          }
 
           application.stop()
         }
 
         "user directed to trust claimed" in {
+          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-          val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-            .build()
+          withCaptureOfLoggingFrom(controllerLogger) { logs =>
+            val result = route(application, saveRequest(urn)).value
 
-          val request = FakeRequest(GET, routes.SaveIdentifierController.save(urn).url)
+            status(result) mustEqual SEE_OTHER
 
-          val result = route(application, request).value
+            redirectLocation(result).value mustEqual routes.IvSuccessController.onPageLoad.url
 
-          status(result) mustEqual SEE_OTHER
+            logMessagesWithLevel(logs) mustBe List(
+              Level.INFO -> (s"${logPrefix("checkIfAlreadyHaveIvRelationship")}" +
+                s" relationship is already established in IV for $urn sending user to successfully claimed")
+            )
+          }
 
-          redirectLocation(result).value mustEqual routes.IvSuccessController.onPageLoad.url
+          application.stop()
         }
 
         "user failed to claim trust" in {
-
           val mockSessionRepository = mock[SessionRepository]
 
           val application = applicationBuilder(userAnswers = Some(emptyUserAnswers), fakeEstablishmentServiceError)
             .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
             .build()
 
-          val request = FakeRequest(GET, routes.SaveIdentifierController.save(utr).url)
+          withCaptureOfLoggingFrom(controllerLogger) { logs =>
+            val result = route(application, saveRequest(utr)).value
 
-          val result = route(application, request).value
+            status(result) mustEqual INTERNAL_SERVER_ERROR
+            contentType(result) mustBe Some("text/html")
 
-          status(result) mustEqual INTERNAL_SERVER_ERROR
+            verify(mockSessionRepository, never()).set(any())
 
-          contentType(result) mustBe Some("text/html")
+            logMessagesWithLevel(logs) mustBe List(
+              Level.WARN -> s"${logPrefix("save")} Could not save identifier"
+            )
+          }
 
           application.stop()
         }
