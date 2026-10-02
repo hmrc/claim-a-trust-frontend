@@ -39,7 +39,7 @@ case object RelationshipNotFound extends RelationEstablishmentStatus
 class RelationshipEstablishmentService @Inject() (
   val authConnector: AuthConnector,
   relationshipForIdentifier: RelationshipForIdentifier
-)(implicit
+)(using
   val config: FrontendAppConfig,
   executionContext: ExecutionContext
 ) extends RelationshipEstablishment with Logging {

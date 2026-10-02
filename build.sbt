@@ -1,7 +1,7 @@
 import uk.gov.hmrc.DefaultBuildSettings.targetJvm
 
 ThisBuild / scalaVersion := "3.9.0"
-ThisBuild / majorVersion := 0
+ThisBuild / majorVersion := 1
 ThisBuild / targetJvm := "jvm-21"
 
 lazy val microservice = Project("claim-a-trust-frontend", file("."))
