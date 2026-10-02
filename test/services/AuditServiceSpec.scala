@@ -21,7 +21,7 @@ import config.FrontendAppConfig
 import models.UserAnswers
 import models.auditing.{ClaimATrustAuditFailureEvent, ClaimATrustAuditSuccessEvent}
 import models.requests.DataRequest
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{reset, verify}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.AnyContent
@@ -33,8 +33,9 @@ import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 
 import scala.concurrent.ExecutionContext
 
-class AuditServiceSpec(implicit ec: ExecutionContext) extends SpecBase with MockitoSugar {
+class AuditServiceSpec extends SpecBase with MockitoSugar {
 
+  private val ec: ExecutionContext           = app.injector.instanceOf[ExecutionContext]
   private val auditConnector: AuditConnector = mock[AuditConnector]
   lazy val config: FrontendAppConfig         = app.injector.instanceOf[FrontendAppConfig]
   private val auditService: AuditService     = new AuditService(auditConnector, config, ec)
@@ -53,7 +54,7 @@ class AuditServiceSpec(implicit ec: ExecutionContext) extends SpecBase with Mock
 
   "Audit service" must {
 
-    "build audit success payload from request values for Taxable" when {
+    "build audit success payload from request values for Taxable" in {
 
       reset(auditConnector)
 
@@ -62,7 +63,7 @@ class AuditServiceSpec(implicit ec: ExecutionContext) extends SpecBase with Mock
       val request: DataRequest[AnyContent] =
         DataRequest(fakeRequest, internalAuthId, Credentials(ggCredId, ggCredType), affinity, UserAnswers(""))
 
-      auditService.audit(event, utr, isManagedByAgent = true)(request, hc)
+      auditService.audit(event, utr, isManagedByAgent = true)(using request, hc)
 
       val expectedPayload = ClaimATrustAuditSuccessEvent(
         credentialsId = ggCredId,
@@ -73,10 +74,10 @@ class AuditServiceSpec(implicit ec: ExecutionContext) extends SpecBase with Mock
         isManagedByAgent = true
       )
 
-      verify(auditConnector).sendExplicitAudit(eqTo(event), eqTo(expectedPayload))(any(), any(), any())
+      verify(auditConnector).sendExplicitAudit(eqTo(event), eqTo(expectedPayload))(using any(), any(), any())
     }
 
-    "build audit success payload from request values for NonTaxable" when {
+    "build audit success payload from request values for NonTaxable" in {
 
       reset(auditConnector)
 
@@ -85,7 +86,7 @@ class AuditServiceSpec(implicit ec: ExecutionContext) extends SpecBase with Mock
       val request: DataRequest[AnyContent] =
         DataRequest(fakeRequest, internalAuthId, Credentials(ggCredId, ggCredType), affinity, UserAnswers(""))
 
-      auditService.audit(event, urn, isManagedByAgent = true)(request, hc)
+      auditService.audit(event, urn, isManagedByAgent = true)(using request, hc)
 
       val expectedPayload = ClaimATrustAuditSuccessEvent(
         credentialsId = ggCredId,
@@ -96,7 +97,7 @@ class AuditServiceSpec(implicit ec: ExecutionContext) extends SpecBase with Mock
         isManagedByAgent = true
       )
 
-      verify(auditConnector).sendExplicitAudit(eqTo(event), eqTo(expectedPayload))(any(), any(), any())
+      verify(auditConnector).sendExplicitAudit(eqTo(event), eqTo(expectedPayload))(using any(), any(), any())
 
     }
 
@@ -110,7 +111,7 @@ class AuditServiceSpec(implicit ec: ExecutionContext) extends SpecBase with Mock
       val request: DataRequest[AnyContent] =
         DataRequest(fakeRequest, internalAuthId, Credentials(ggCredId, ggCredType), affinity, UserAnswers(""))
 
-      auditService.auditFailure(event, utr, failureReason)(request, hc)
+      auditService.auditFailure(event, utr, failureReason)(using request, hc)
 
       val expectedPayload = ClaimATrustAuditFailureEvent(
         credentialsId = ggCredId,
@@ -120,7 +121,7 @@ class AuditServiceSpec(implicit ec: ExecutionContext) extends SpecBase with Mock
         failureReason = failureReason
       )
 
-      verify(auditConnector).sendExplicitAudit(eqTo(event), eqTo(expectedPayload))(any(), any(), any())
+      verify(auditConnector).sendExplicitAudit(eqTo(event), eqTo(expectedPayload))(using any(), any(), any())
     }
   }
 

@@ -41,13 +41,14 @@ class AuthenticatedIdentifierAction @Inject() (
 
     implicit val hc: HeaderCarrier = HeaderCarrierConverter.fromRequestAndSession(request, request.session)
 
-    authorised().retrieve(Retrievals.internalId and Retrievals.credentials and Retrievals.affinityGroup) {
-      case Some(internalId) ~ Some(credentials) ~ Some(affinityGroup) =>
-        block(IdentifierRequest(request, internalId, credentials, affinityGroup))
-      case _                                                          =>
-        throw new UnauthorizedException("Unable to retrieve internal Id")
-    } recoverWith
-      recoverFromException()
+    authorised()
+      .retrieve(Retrievals.internalId and Retrievals.credentials and Retrievals.affinityGroup) {
+        case Some(internalId) ~ Some(credentials) ~ Some(affinityGroup) =>
+          block(IdentifierRequest(request, internalId, credentials, affinityGroup))
+        case _                                                          =>
+          throw new UnauthorizedException("Unable to retrieve internal Id")
+      }
+      .recoverWith(recoverFromException())
   }
 
 }

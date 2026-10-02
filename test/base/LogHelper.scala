@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
-package viewmodels
+package base
 
-trait Section
+import ch.qos.logback.classic.Level
+import ch.qos.logback.classic.spi.ILoggingEvent
+
+trait LogHelper {
+
+  def logMessagesWithLevel(logs: List[ILoggingEvent]): List[(Level, String)] =
+    logs.map(e => (e.getLevel, e.getMessage))
+
+}

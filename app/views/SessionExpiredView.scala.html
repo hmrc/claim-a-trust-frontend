@@ -19,10 +19,9 @@
 
 @this(
     mainTemplate: MainTemplate,
-    appConfig: FrontendAppConfig,
-        heading: Heading,
-        formHelper: FormWithCSRF,
-        submitButton: SubmitButton
+    heading: Heading,
+    formHelper: FormWithCSRF,
+    submitButton: SubmitButton
 )
 
 @()(implicit request: RequestHeader, messages: Messages)
@@ -38,7 +37,7 @@
     <p>@messages("session_expired.guidance")</p>
     <p>@messages("session_expired.guidance.2")</p>
 
-    @formHelper(action = SessionExpiredController.onSubmit, Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.SessionExpiredController.onSubmit, Symbol("autoComplete") -> "off") {
         @submitButton(Some(messages("site.sign_in")))
     }
 }

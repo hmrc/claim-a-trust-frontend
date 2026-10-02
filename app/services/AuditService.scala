@@ -33,7 +33,7 @@ class AuditService @Inject() (
 ) {
 
   def audit(event: String, identifier: String, isManagedByAgent: Boolean)(implicit
-    request: DataRequest[_],
+    request: DataRequest[?],
     hc: HeaderCarrier
   ): Unit = {
 
@@ -55,7 +55,7 @@ class AuditService @Inject() (
   }
 
   def auditFailure(event: String, identifier: String, failureReason: String)(implicit
-    request: DataRequest[_],
+    request: DataRequest[?],
     hc: HeaderCarrier
   ): Unit = {
 

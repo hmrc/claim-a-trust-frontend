@@ -14,7 +14,6 @@
  * limitations under the License.
  *@
 
-@import controllers.routes._
 @import models.Mode
 @import views.html.components.{ErrorSummary, InputYesNo, SubmitButton}
 
@@ -26,14 +25,14 @@
     submitButton: SubmitButton
 )
 
-@(form: Form[_], mode: Mode, identifier: String)(implicit request: RequestHeader, messages: Messages)
+@(form: Form[?], mode: Mode, identifier: String)(implicit request: RequestHeader, messages: Messages)
 
 @mainTemplate(
     title = s"${errorPrefix(form)}${messages("isAgentManagingTrustYesNo.title")}",
     showBackLink = true
     ) {
 
-    @formHelper(action = IsAgentManagingTrustController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.IsAgentManagingTrustController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
         @errorSummary(form.errors)
 

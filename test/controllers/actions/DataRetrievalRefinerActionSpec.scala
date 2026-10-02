@@ -18,15 +18,14 @@ package controllers.actions
 
 import base.SpecBase
 import cats.data.EitherT
-import errors.TrustErrors
-import handlers.ErrorHandler
+import errors.{ServerError, TrustErrors}
 import models.UserAnswers
 import models.requests.{IdentifierRequest, OptionalDataRequest}
 import org.mockito.Mockito.when
 import org.scalatest.EitherValues
-import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.mvc.Result
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import uk.gov.hmrc.auth.core.AffinityGroup.Organisation
 import uk.gov.hmrc.auth.core.retrieve.Credentials
@@ -34,51 +33,54 @@ import uk.gov.hmrc.auth.core.retrieve.Credentials
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class DataRetrievalRefinerActionSpec extends SpecBase with MockitoSugar with ScalaFutures with EitherValues {
-
-  private val mockErrorHandler = mock[ErrorHandler]
+class DataRetrievalRefinerActionSpec extends SpecBase with MockitoSugar with EitherValues {
 
   class Harness(sessionRepository: SessionRepository)
-      extends DataRetrievalRefinerAction(sessionRepository, mockErrorHandler) {
+      extends DataRetrievalRefinerAction(sessionRepository, errorHandler) {
     def callRefine[A](request: IdentifierRequest[A]): Future[Either[Result, OptionalDataRequest[A]]] = refine(request)
+  }
+
+  private def identifierRequest =
+    new IdentifierRequest(fakeRequest, "id", Credentials("providerId", "GG"), Organisation)
+
+  private def repositoryReturning(response: Either[TrustErrors, Option[UserAnswers]]): SessionRepository = {
+    val sessionRepository = mock[SessionRepository]
+    when(sessionRepository.get("id"))
+      .thenReturn(EitherT[Future, TrustErrors, Option[UserAnswers]](Future.successful(response)))
+    sessionRepository
   }
 
   "Data Retrieval Action" when {
 
     "there is no data in the cache" must {
-
       "set userAnswers to 'None' in the request" in {
+        val action = new Harness(repositoryReturning(Right(None)))
 
-        val sessionRepository = mock[SessionRepository]
-        when(sessionRepository.get("id"))
-          .thenReturn(EitherT[Future, TrustErrors, Option[UserAnswers]](Future.successful(Right(None))))
-        val action            = new Harness(sessionRepository)
-
-        val futureResult =
-          action.callRefine(new IdentifierRequest(fakeRequest, "id", Credentials("providerId", "GG"), Organisation))
-
-        whenReady(futureResult) { result =>
+        whenReady(action.callRefine(identifierRequest)) { result =>
           result.value.userAnswers.isEmpty mustBe true
         }
       }
     }
 
     "there is data in the cache" must {
-
       "build a userAnswers object and add it to the request" in {
+        val action = new Harness(repositoryReturning(Right(Some(new UserAnswers("id")))))
 
-        val sessionRepository = mock[SessionRepository]
-        when(sessionRepository.get("id"))
-          .thenReturn(
-            EitherT[Future, TrustErrors, Option[UserAnswers]](Future.successful(Right(Some(new UserAnswers("id")))))
-          )
-        val action            = new Harness(sessionRepository)
-
-        val futureResult =
-          action.callRefine(new IdentifierRequest(fakeRequest, "id", Credentials("providerId", "GG"), Organisation))
-
-        whenReady(futureResult) { result =>
+        whenReady(action.callRefine(identifierRequest)) { result =>
           result.value.userAnswers.isDefined mustBe true
+        }
+      }
+    }
+
+    "the session repository fails" must {
+      "return an internal server error page" in {
+        val action = new Harness(repositoryReturning(Left(ServerError("mongo unavailable"))))
+
+        whenReady(action.callRefine(identifierRequest)) { result =>
+          val errorResult = Future.successful(result.left.value)
+
+          status(errorResult)      mustBe INTERNAL_SERVER_ERROR
+          contentType(errorResult) mustBe Some("text/html")
         }
       }
     }

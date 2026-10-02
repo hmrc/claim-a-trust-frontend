@@ -88,12 +88,12 @@ class IvSuccessController @Inject() (
     case RelationshipNotFound =>
       logger.warn(
         s"[$className][onPageLoad][Session ID: ${Session.id(hc)}] no relationship found in Trust IV," +
-          s"cannot continue with enrolling the credential, sending the user back to the start of Trust IV"
+          s" cannot continue with enrolling the credential, sending the user back to the start of Trust IV"
       )
       Future.successful(Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode)))
   }
 
-  private def onRelationshipFound(identifier: String)(implicit request: DataRequest[_]): Future[Result] = {
+  private def onRelationshipFound(identifier: String)(implicit request: DataRequest[?]): Future[Result] = {
 
     val hasEnrolled: Boolean = request.userAnswers.get(HasEnrolled).getOrElse(false)
 
@@ -110,7 +110,7 @@ class IvSuccessController @Inject() (
       } yield {
         logger.info(
           s"[$className][onRelationshipFound][Session ID: ${Session.id(hc)}] successfully enrolled $identifier to users" +
-            s"credential after passing Trust IV, user can now maintain the trust"
+            s" credential after passing Trust IV, user can now maintain the trust"
         )
 
         Ok(view(isAgentManagingTrust, identifier))
@@ -129,7 +129,7 @@ class IvSuccessController @Inject() (
   }
 
   private def handleError(identifier: String, exceptionMessage: String, methodName: String, sessionId: String)(implicit
-    request: DataRequest[_]
+    request: DataRequest[?]
   ): Future[Result] = {
     auditService.auditFailure(CLAIM_A_TRUST_ERROR, identifier, exceptionMessage)
     for {
@@ -137,7 +137,7 @@ class IvSuccessController @Inject() (
       _  <- sessionRepository.set(ua)
     } yield ()
     logger.error(
-      s"[$className][handleError][Session ID: ${Session.id(hc)}] failed to create enrolment for " +
+      s"[$className][$methodName][Session ID: $sessionId] failed to create enrolment for " +
         s"$identifier with tax-enrolments, users credential has not been updated, user needs to claim again"
     )
     errorHandler.internalServerErrorTemplate.map(res => InternalServerError(res))
