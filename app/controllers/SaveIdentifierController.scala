@@ -28,7 +28,6 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import services.{RelationshipEstablishment, RelationshipFound, RelationshipNotFound}
-import uk.gov.hmrc.http.SessionKeys.sessionId
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.TrustEnvelope.TrustEnvelope
 import utils.{IdentifierRegex, Session, TrustEnvelope}
@@ -103,7 +102,7 @@ class SaveIdentifierController @Inject() (
       _              <- sessionRepository.set(updatedAnswers)
     } yield {
       logger.info(
-        s"[$className][saveAndContinue][Session ID: ${Session.id(hc(request))}]" +
+        s"[$className][saveAndContinue][Session ID: ${Session.id(hc(using request))}]" +
           s" user has started the claim a trust journey for $identifier"
       )
       Redirect(routes.IsAgentManagingTrustController.onPageLoad(NormalMode))
@@ -111,7 +110,7 @@ class SaveIdentifierController @Inject() (
     result.value.map {
       case Right(call) => Right(call)
       case Left(error) =>
-        logger.warn(s"[$className][saveAndContinue][Session ID: $sessionId] Error while storing user answers")
+        logger.warn(s"[$className][saveAndContinue][Session ID: ${Session.id(hc)}] Error while storing user answers")
         Left(error)
     }
   }

@@ -16,33 +16,45 @@
 
 package connectors
 
-import com.github.tomakehurst.wiremock.client.WireMock._
+import base.LogHelper
+import ch.qos.logback.classic.Level
+import com.github.tomakehurst.wiremock.client.WireMock.*
+import com.github.tomakehurst.wiremock.http.Fault
 import errors.ServerError
 import models.TrustsStoreRequest
-import org.scalatest.RecoverMethods
+import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.matchers.must.Matchers
 import org.scalatest.wordspec.AnyWordSpec
-import play.api.Application
 import play.api.http.Status
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
+import play.api.{Application, Logger}
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.bootstrap.tools.LogCapturing
 import utils.WireMockHelper
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class TrustsStoreConnectorSpec extends AnyWordSpec with Matchers with WireMockHelper with RecoverMethods {
+class TrustsStoreConnectorSpec
+    extends AnyWordSpec
+    with Matchers
+    with WireMockHelper
+    with ScalaFutures
+    with IntegrationPatience
+    with LogCapturing
+    with LogHelper {
 
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
 
   lazy val app: Application = new GuiceApplicationBuilder()
-    .configure(Seq("microservice.services.trusts-store.port" -> server.port(), "auditing.enabled" -> false): _*)
+    .configure("microservice.services.trusts-store.port" -> server.port(), "auditing.enabled" -> false)
     .build()
 
   lazy val connector: TrustsStoreConnector = app.injector.instanceOf[TrustsStoreConnector]
 
-  lazy val url: String = "/trusts-store/claim"
+  lazy val url: String     = "/trusts-store/claim"
+  lazy val fullUrl: String = s"http://localhost:${server.port()}$url"
 
   val utr            = "1234567890"
   val internalId     = "some-authenticated-internal-id"
@@ -55,11 +67,15 @@ class TrustsStoreConnectorSpec extends AnyWordSpec with Matchers with WireMockHe
     trustLocked = false
   )
 
-  private def wiremock(payload: String, expectedStatus: Int, expectedResponse: String) =
+  val requestJson: String = Json.stringify(Json.toJson(request))
+
+  private val connectorLogger: Logger = Logger(classOf[TrustsStoreConnector])
+
+  private def wiremock(expectedStatus: Int, expectedResponse: String) =
     server.stubFor(
       post(urlEqualTo(url))
         .withHeader(CONTENT_TYPE, containing("application/json"))
-        .withRequestBody(equalTo(payload))
+        .withRequestBody(equalTo(requestJson))
         .willReturn(
           aResponse()
             .withStatus(expectedStatus)
@@ -72,73 +88,69 @@ class TrustsStoreConnectorSpec extends AnyWordSpec with Matchers with WireMockHe
     "call POST /claim" which {
 
       "returns 201 CREATED" in {
-
-        val json = Json.stringify(Json.toJson(request))
-
         val response =
           """{
             |  "id": "a string representing the tax reference to associate with this internalId",
             |  "managedByAgent": "boolean derived from answers in the claim a trust journey"
             |}""".stripMargin
 
-        wiremock(
-          payload = json,
-          expectedStatus = Status.CREATED,
-          expectedResponse = response
-        )
+        wiremock(expectedStatus = Status.CREATED, expectedResponse = response)
 
-        connector.claim(request).value map { response =>
-          response mustBe Right(true)
-        }
-
+        connector.claim(request).value.futureValue mustBe Right(true)
       }
 
-      "returns 400 BAD_REQUEST" in {
+      "returns 400 BAD_REQUEST" in
+        withCaptureOfLoggingFrom(connectorLogger) { logs =>
+          val response =
+            """{
+              |  "status": "400",
+              |  "message": "Unable to parse request body into a TrustClaim"
+              |}""".stripMargin
 
-        val json = Json.stringify(Json.toJson(request))
+          wiremock(expectedStatus = Status.BAD_REQUEST, expectedResponse = response)
 
-        val response =
-          """{
-            |  "status": "400",
-            |  "message": "Unable to parse request body into a TrustClaim"
-            |}
-            |""".stripMargin
+          connector.claim(request).value.futureValue mustBe Left(ServerError(s"HTTP response 400 for $fullUrl"))
 
-        wiremock(
-          payload = json,
-          expectedStatus = Status.BAD_REQUEST,
-          expectedResponse = response
-        )
-
-        recoverToSucceededIf[ServerError] {
-          connector.claim(request).value
+          logMessagesWithLevel(logs) mustBe List(
+            Level.ERROR -> "[TrustsStoreConnector][claim] Error with status: 400"
+          )
         }
 
-      }
+      "returns 500 INTERNAL_SERVER_ERROR" in
+        withCaptureOfLoggingFrom(connectorLogger) { logs =>
+          val response =
+            """{
+              |  "status": "500",
+              |  "message": "unable to store to trusts store"
+              |}""".stripMargin
 
-      "returns 500 INTERNAL_SERVER_ERROR" in {
+          wiremock(expectedStatus = Status.INTERNAL_SERVER_ERROR, expectedResponse = response)
 
-        val json = Json.stringify(Json.toJson(request))
+          connector.claim(request).value.futureValue mustBe Left(ServerError(s"HTTP response 500 for $fullUrl"))
 
-        val response =
-          """{
-            |  "status": "500",
-            |  "message":  ""unable to store to trusts store""
-            |}""".stripMargin
-
-        wiremock(
-          payload = json,
-          expectedStatus = Status.INTERNAL_SERVER_ERROR,
-          expectedResponse = response
-        )
-
-        recoverToSucceededIf[ServerError] {
-          connector.claim(request).value
+          logMessagesWithLevel(logs) mustBe List(
+            Level.ERROR -> "[TrustsStoreConnector][claim] Error with status: 500"
+          )
         }
-      }
+
+      "fails with a connection reset" in
+        withCaptureOfLoggingFrom(connectorLogger) { logs =>
+          server.stubFor(
+            post(urlEqualTo(url))
+              .withRequestBody(equalTo(requestJson))
+              .willReturn(aResponse().withFault(Fault.CONNECTION_RESET_BY_PEER))
+          )
+
+          val result = connector.claim(request).value.futureValue
+
+          val logPrefix        = "[TrustsStoreConnector][claim] Exception thrown with message "
+          val exceptionMessage = logs.head.getMessage.stripPrefix(logPrefix)
+
+          logMessagesWithLevel(logs) mustBe List(Level.ERROR -> s"$logPrefix$exceptionMessage")
+          result                     mustBe Left(ServerError(s"Error occurred when calling $fullUrl with exception $exceptionMessage"))
+        }
 
     }
-
   }
 
 }

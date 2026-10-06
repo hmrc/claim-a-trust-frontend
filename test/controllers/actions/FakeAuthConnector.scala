@@ -35,7 +35,7 @@ class FakeFailingAuthConnector @Inject() (exceptionToReturn: Throwable) extends 
 
 }
 
-class FakeAuthConnector(stubbedRetrievalResult: Future[_]) extends AuthConnector {
+class FakeAuthConnector(stubbedRetrievalResult: Future[?]) extends AuthConnector {
 
   override def authorise[A](predicate: Predicate, retrieval: Retrieval[A])(implicit
     hc: HeaderCarrier,

@@ -33,7 +33,7 @@ class IvSuccessViewSpec extends ViewBehaviours {
 
       val view = application.injector.instanceOf[IvSuccessView]
 
-      val applyView = view.apply(isAgent = true, utr)(fakeRequest, messages)
+      val applyView = view.apply(isAgent = true, utr)(using fakeRequest, messages)
 
       behave like normalPageWithCaption(
         applyView,
@@ -53,7 +53,7 @@ class IvSuccessViewSpec extends ViewBehaviours {
 
       val view = viewFor[IvSuccessView](Some(emptyUserAnswers))
 
-      val applyView = view.apply(isAgent = true, utr)(fakeRequest, messages)
+      val applyView = view.apply(isAgent = true, utr)(using fakeRequest, messages)
 
       val doc = asDocument(applyView)
       assertContainsText(doc, messages("utr.subheading", utr))
@@ -63,7 +63,7 @@ class IvSuccessViewSpec extends ViewBehaviours {
 
       val view = viewFor[IvSuccessView](Some(emptyUserAnswers))
 
-      val applyView = view.apply(isAgent = true, urn)(fakeRequest, messages)
+      val applyView = view.apply(isAgent = true, urn)(using fakeRequest, messages)
 
       val doc = asDocument(applyView)
       assertContainsText(doc, messages("urn.subheading", urn))
@@ -79,7 +79,7 @@ class IvSuccessViewSpec extends ViewBehaviours {
 
       val view = application.injector.instanceOf[IvSuccessView]
 
-      def applyView(id: String) = view.apply(isAgent = false, id)(fakeRequest, messages)
+      def applyView(id: String) = view.apply(isAgent = false, id)(using fakeRequest, messages)
 
       behave like normalPageWithCaption(
         applyView(utr),

@@ -30,7 +30,7 @@
     showBackLink = true
 ) {
 
-    @formHelper(action = BeforeYouContinueController.onSubmit, Symbol("autoComplete") -> "off") {
+    @formHelper(action = routes.BeforeYouContinueController.onSubmit, Symbol("autoComplete") -> "off") {
 
         @heading(
             messagePrefix = "beforeYouContinue",

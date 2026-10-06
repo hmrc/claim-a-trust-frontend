@@ -17,28 +17,68 @@
 package controllers
 
 import base.SpecBase
+import ch.qos.logback.classic.Level
+import play.api.Logger
+import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
+import uk.gov.hmrc.http.SessionKeys
+import uk.gov.hmrc.play.bootstrap.tools.LogCapturing
 
-class FallbackFailureControllerSpec extends SpecBase {
+class FallbackFailureControllerSpec extends SpecBase with LogCapturing {
 
-  def onFailureRoute = routes.FallbackFailureController.onPageLoad.url
+  def onFailureRoute: String = routes.FallbackFailureController.onPageLoad.url
+
+  private val controllerLogger: Logger = Logger(classOf[FallbackFailureController])
+
+  private val sessionId = "session-12345"
+  private val logPrefix = s"[FallbackFailureController][onPageLoad][Session ID: $sessionId]"
+
+  private def request: FakeRequest[AnyContentAsEmpty.type] =
+    FakeRequest(GET, onFailureRoute).withSession(SessionKeys.sessionId -> sessionId)
 
   "FallbackFailure Controller" must {
 
-    "render internal server error view" in {
+    "render internal server error view and log an error with the referer" when {
+      "a Referer header is present" in {
+        val referer = "http://localhost:1234/some-url"
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
 
-      val request = FakeRequest(GET, onFailureRoute)
+        withCaptureOfLoggingFrom(controllerLogger) { logs =>
+          val result = route(application, request.withHeaders(REFERER -> referer)).value
 
-      val result = route(application, request).value
+          status(result) mustEqual INTERNAL_SERVER_ERROR
+          contentType(result) mustBe Some("text/html")
 
-      status(result) mustEqual INTERNAL_SERVER_ERROR
+          logMessagesWithLevel(logs) mustBe List(
+            Level.ERROR -> (s"$logPrefix Trust IV encountered a problem that could not be recovered from." +
+              s" referer url: $referer")
+          )
+        }
 
-      application.stop()
+        application.stop()
+      }
     }
 
+    "render internal server error view and log a warning" when {
+      "there is no Referer header" in {
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+        withCaptureOfLoggingFrom(controllerLogger) { logs =>
+          val result = route(application, request).value
+
+          status(result) mustEqual INTERNAL_SERVER_ERROR
+          contentType(result) mustBe Some("text/html")
+
+          logMessagesWithLevel(logs) mustBe List(
+            Level.WARN -> s"$logPrefix Trust IV encountered a problem that could not be recovered from"
+          )
+        }
+
+        application.stop()
+      }
+    }
   }
 
 }

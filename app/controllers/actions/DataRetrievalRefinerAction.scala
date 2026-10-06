@@ -33,7 +33,7 @@ class DataRetrievalRefinerAction @Inject() (sessionRepository: SessionRepository
   override protected def refine[A](request: IdentifierRequest[A]): Future[Either[Result, OptionalDataRequest[A]]] =
     sessionRepository
       .get(request.identifier)
-      .map { maybeUserAnswers: Option[UserAnswers] =>
+      .map { (maybeUserAnswers: Option[UserAnswers]) =>
         OptionalDataRequest(
           request = request.request,
           internalId = request.identifier,
@@ -46,7 +46,7 @@ class DataRetrievalRefinerAction @Inject() (sessionRepository: SessionRepository
       .flatMap {
         case Right(optData) => Future.successful(Right(optData))
         case Left(_)        =>
-          errorHandler.internalServerErrorTemplate(request.request).map(html => Left(InternalServerError(html)))
+          errorHandler.internalServerErrorTemplate(using request.request).map(html => Left(InternalServerError(html)))
       }
 
 }

@@ -20,23 +20,19 @@
 @import resources._
 
 @this(
-        appConfig: FrontendAppConfig,
-        hmrcStandardPage: HmrcStandardPage,
-        hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
-        stylesheets: Stylesheets,
-        govukBackLink: GovukBackLink,
-        hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper
+    appConfig: FrontendAppConfig,
+    hmrcStandardPage: HmrcStandardPage,
+    hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
+    stylesheets: Stylesheets,
+    govukBackLink: GovukBackLink,
+    hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper
 )
 
-@(title: String,
-        sidebarLinks: Option[Html] = None,
-        contentHeader: Option[Html] = None,
-        bodyClasses: Option[String] = None,
-        mainClass: Option[String] = None,
-        scriptElem: Option[Html] = None,
-        timeoutEnabled: Boolean = true,
-        canSignOut: Boolean = true,
-        showBackLink: Boolean = false
+@(
+    title: String,
+    timeoutEnabled: Boolean = true,
+    canSignOut: Boolean = true,
+    showBackLink: Boolean = false
 )(mainContent: Html)(implicit request: RequestHeader, messages: Messages)
 
 @additionalHead = {
@@ -63,9 +59,9 @@
 }
 }
 
-    @mainContentWithGetHelp = {
-    @mainContent
-    @hmrcReportTechnicalIssueHelper()
+@mainContentWithGetHelp = {
+  @mainContent
+  @hmrcReportTechnicalIssueHelper()
 }
 
 @hmrcStandardPage(HmrcStandardPageParams(

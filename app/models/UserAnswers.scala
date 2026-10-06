@@ -31,7 +31,7 @@ final case class UserAnswers(
 ) extends Logging {
 
   def get[A](page: QuestionPage[A])(implicit rds: Reads[A]): Option[A] =
-    Reads.optionNoError(Reads.at(page.path)).reads(data).getOrElse(None)
+    Reads.optionNoError(using Reads.at(page.path)).reads(data).getOrElse(None)
 
   def set[A](page: QuestionPage[A], value: A)(implicit writes: Writes[A]): Either[TrustErrors, UserAnswers] = {
 
@@ -72,8 +72,8 @@ object UserAnswers {
     (
       (__ \ "_id").read[String] and
         (__ \ "data").read[JsObject] and
-        (__ \ "lastUpdated").read(MongoJavatimeFormats.instantReads)
-    )(UserAnswers.apply _)
+        (__ \ "lastUpdated").read(using MongoJavatimeFormats.instantReads)
+    )(UserAnswers.apply)
   }
 
   implicit lazy val writes: OWrites[UserAnswers] = {
@@ -83,8 +83,8 @@ object UserAnswers {
     (
       (__ \ "_id").write[String] and
         (__ \ "data").write[JsObject] and
-        (__ \ "lastUpdated").write(MongoJavatimeFormats.instantWrites)
-    )(unlift(UserAnswers.unapply))
+        (__ \ "lastUpdated").write(using MongoJavatimeFormats.instantWrites)
+    )(ua => (ua.id, ua.data, ua.lastUpdated))
   }
 
 }
