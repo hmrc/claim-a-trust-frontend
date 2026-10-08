@@ -46,7 +46,7 @@ class TestRelationshipEstablishmentController @Inject() (
 
     identifier match {
       case IdentifierRegex.UtrRegex(utr) =>
-        if (utr.startsWith("1")) {
+        if (utr.startsWith("1") || utr == "2244131605" || utr == "2244131602") {
           createRelationship(utr)
         } else {
           logger.info(
@@ -55,7 +55,11 @@ class TestRelationshipEstablishmentController @Inject() (
           Future.successful(Redirect(controllers.routes.CouldNotConfirmIdentityController.onPageLoad))
         }
       case IdentifierRegex.UrnRegex(urn) =>
-        if (urn.toLowerCase.startsWith("nt")) {
+        if (
+          urn.toLowerCase.startsWith("nt") ||
+          urn.toUpperCase == "XLTRUST80000356" ||
+          urn.toUpperCase == "XDTRUST80000355"
+        ) {
           createRelationship(urn)
         } else {
           logger.info(
