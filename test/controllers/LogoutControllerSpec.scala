@@ -32,6 +32,7 @@ import play.api.test.Helpers.*
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.tools.LogCapturing
+import java.net.URLEncoder
 
 class LogoutControllerSpec extends SpecBase with MockitoSugar with EitherValues with LogCapturing {
 
@@ -61,7 +62,11 @@ class LogoutControllerSpec extends SpecBase with MockitoSugar with EitherValues 
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe frontendAppConfig.logoutUrl
+      val continueUrl = URLEncoder.encode(frontendAppConfig.feedbackFrontendUrl, "UTF-8")
+
+      val expectedUrl = s"${frontendAppConfig.logoutWithBasGatewayUrl}?continue=$continueUrl"
+
+      redirectLocation(result).value mustBe expectedUrl
 
       verify(mockAuditConnector, atLeastOnce)
         .sendExplicitAudit(eqTo("trusts"), captor.capture())(using any(), any())
@@ -91,7 +96,11 @@ class LogoutControllerSpec extends SpecBase with MockitoSugar with EitherValues 
 
       status(result) mustEqual SEE_OTHER
 
-      redirectLocation(result).value mustBe frontendAppConfig.logoutUrl
+      val continueUrl = URLEncoder.encode(frontendAppConfig.feedbackFrontendUrl, "UTF-8")
+
+      val expectedUrl = s"${frontendAppConfig.logoutWithBasGatewayUrl}?continue=$continueUrl"
+
+      redirectLocation(result).value mustBe expectedUrl
 
       verify(mockAuditConnector, atLeastOnce)
         .sendExplicitAudit(eqTo("trusts"), captor.capture())(using any(), any())
