@@ -42,8 +42,22 @@ class FrontendAppConfigSpec extends SpecBase {
       appConfig.loginContinueUrl mustBe "http://localhost:9785/claim-a-trust"
     }
 
-    "return the correct logoutUrl" in {
-      appConfig.logoutUrl mustBe "http://localhost:9514/feedback/trusts?useServiceNavigation"
+    ".logoutUrl" must {
+      "be the configured logout URL" in {
+        appConfig.logoutUrl mustBe "/gg/sign-out"
+      }
+    }
+
+    ".logoutWithBasGatewayUrl" must {
+      "append the logout URL to the local bas gateway URL" in {
+        appConfig.logoutWithBasGatewayUrl mustBe "http://localhost:9553/gg/sign-out"
+      }
+    }
+
+    ".feedbackFrontendUrl" must {
+      "append the service navigation parameter to the URL" in {
+        appConfig.feedbackFrontendUrl mustBe "http://localhost:9514/feedback/trusts?useServiceNavigation"
+      }
     }
 
     "return the real relationship establishment URL when stubbing is disabled" in {

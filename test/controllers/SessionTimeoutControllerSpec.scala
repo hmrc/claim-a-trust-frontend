@@ -24,6 +24,7 @@ import play.api.test.Helpers.*
 import play.api.Logger
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.play.bootstrap.tools.LogCapturing
+import java.net.URLEncoder
 
 class SessionTimeoutControllerSpec extends SpecBase with LogCapturing {
 
@@ -60,9 +61,11 @@ class SessionTimeoutControllerSpec extends SpecBase with LogCapturing {
         withCaptureOfLoggingFrom(controllerLogger) { logs =>
           val res = controller.timeout(requestWithSession)
 
+          val continueUrl = URLEncoder.encode(frontendAppConfig.timeOutUrl, "UTF-8")
+
           status(res) mustEqual SEE_OTHER
 
-          redirectLocation(res).value mustEqual controllers.routes.SessionExpiredController.onPageLoad.url
+          redirectLocation(res).value mustEqual s"${frontendAppConfig.logoutWithBasGatewayUrl}?continue=$continueUrl"
 
           session(res).isEmpty mustBe true
 
